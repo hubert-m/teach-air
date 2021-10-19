@@ -34,6 +34,12 @@ Serwer lokalny `php -S localhost:8000 -t public`
 
 Odświeżenie paczek w katalogu `vendor` - `composer install`
 
+Tworzenie migracji tabel `php artisan make:migration create_users`
+
+Wykonanie migracji `php artisan migrate`
+
+Usunięcie wszystkich tabel i utworzenie od nowa `php artisan migrate:fresh`
+
 # Lumen PHP Framework
 
 [![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
