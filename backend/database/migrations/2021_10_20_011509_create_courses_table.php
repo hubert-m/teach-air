@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCourses extends Migration
+class CreateCoursesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -30,6 +30,36 @@ class CreateCourses extends Migration
             $table->foreign('parent_id')->references('id')->on('courses');
             $table->foreign('created_by')->references('id')->on('users');
         });
+
+
+        DB::table('courses')->insert(
+            array(
+                'name' => 'VII Semestr',
+                'description' => 'Grupa 4 rok, 7 semestr',
+                'slug' => 'vii-semestr',
+                'created_by' => 1
+            )
+        );
+
+        DB::table('courses')->insert(
+            array(
+                'name' => 'Programowanie i bazy danych',
+                'description' => 'Grupa 4 rok, 7 semestr - specjalizacja',
+                'slug' => 'vii-semestr-programowanie-i-bazy-danych',
+                'parent_id' => 1,
+                'created_by' => 1
+            )
+        );
+
+        DB::table('courses')->insert(
+            array(
+                'name' => 'Sieci komputerowe',
+                'description' => 'Grupa 4 rok, 7 semestr - specjalizacja',
+                'slug' => 'vii-semestr-sieci-komputerowe',
+                'parent_id' => 1,
+                'created_by' => 1
+            )
+        );
     }
 
     /**

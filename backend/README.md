@@ -34,7 +34,11 @@ Serwer lokalny `php -S localhost:8000 -t public`
 
 Odświeżenie paczek w katalogu `vendor` - `composer install`
 
-Tworzenie migracji tabel `php artisan make:migration create_users`
+Tworzenie migracji tabel `php artisan make:migration create_users_table`
+
+Tworzenie modelu `php artisan make:model Course`
+
+Tworzenie kontrolera `php artisan make:controller UserController`
 
 Wykonanie migracji `php artisan migrate`
 
