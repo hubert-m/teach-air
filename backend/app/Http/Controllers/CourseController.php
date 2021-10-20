@@ -25,16 +25,23 @@ class CourseController extends Controller
 
     public function create(Request $request)
     {
-        $course = new Course;
-        $course->name = $request->name;
-        $course->description = $request->description;
-        $course->icon = $request->icon;
-        $course->slug = $request->slug;
-        $course->parent_id = $request->parent_id;
-        $course->created_by = $request->created_by;
-
-        $course->save();
-        return response()->json($course);
+        try {
+            $course = new Course;
+            $course->name = $request->name;
+            $course->description = $request->description;
+            $course->icon = $request->icon;
+            $course->slug = $request->slug ?: self::slugify($request->name);
+            $course->parent_id = $request->parent_id;
+            $course->created_by = $request->created_by;
+            $course->save();
+            return response()->json($course);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => [
+                    'description' => $e->getMessage()
+                ]
+            ], 500);
+        }
     }
 
     public function show($id)
@@ -45,7 +52,7 @@ class CourseController extends Controller
 
     public function update(Request $request, $id)
     {
-        $course= Course::find($id);
+        $course = Course::find($id);
 
         $course->name = $request->input('name');
         $course->description = $request->input('description');
