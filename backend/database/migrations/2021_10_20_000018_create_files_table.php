@@ -24,7 +24,7 @@ class CreateFilesTable extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
 
-        Schema::table('posts', function($table) {
+        Schema::table('files', function($table) {
             $table->foreign('created_by')->references('id')->on('users');
         });
     }

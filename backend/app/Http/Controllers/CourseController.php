@@ -33,6 +33,7 @@ class CourseController extends Controller
     {
         $this->validate($this->request, [
             'name' => 'required',
+            'parent_id' => 'numeric',
             'created_by' => 'numeric'
         ]);
 
@@ -79,11 +80,15 @@ class CourseController extends Controller
             ], 404);
         }
 
+        $this->validate($this->request, [
+            'parent_id' => 'numeric'
+        ]);
+
         try {
             $course->name = $request->input('name') ?: $course->name;
             $course->description = $request->input('description') ?: $course->description;
             $course->icon = $request->input('icon') ?: $course->icon;
-            $course->slug = $request->input('slug') ?: $course->slug;
+            $course->slug = $request->input('slug') ?: self::slugify($request->input('name')) ?: $course->slug;
             $course->parent_id = $request->input('parent_id') ?: $course->parent_id;
             $course->save();
 

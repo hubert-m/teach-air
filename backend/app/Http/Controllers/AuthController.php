@@ -75,15 +75,4 @@ class AuthController extends Controller
             'error' => 'Email or password is wrong.',
         ], 400);
     }
-
-    /**
-     * Authenticate a user and return the token if the provided credentials are correct.
-     *
-     * @param  User $user
-     * @return mixed
-     */
-    public function verifyGet(User $user)
-    {
-        return response()->json($this->request->auth, 200);
-    }
 }
