@@ -82,6 +82,17 @@ $app->configure('app');
 //     'auth' => App\Http\Middleware\Authenticate::class,
 // ]);
 
+// CorsMiddleware to handle cors domain requests
+$app->middleware([
+    App\Http\Middleware\CorsMiddleware::class
+]);
+
+
+// JWT MiddleWare to valide user requests
+$app->routeMiddleware([
+    'jwt.auth' => App\Http\Middleware\JwtMiddleware::class,
+]);
+
 /*
 |--------------------------------------------------------------------------
 | Register Service Providers
@@ -96,6 +107,10 @@ $app->configure('app');
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
+
+// Setup CORS
+$app->register(App\Providers\CatchAllOptionsRequestsProvider::class);
+$app->register(Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

@@ -19,10 +19,23 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix'=>'api/v1'], function() use($router){
 
-    $router->get('/courses', 'CourseController@index');
-    $router->post('/courses', 'CourseController@create');
-    $router->get('/courses/{id}', 'CourseController@show');
-    $router->put('/courses/{id}', 'CourseController@update');
-    $router->delete('/courses/{id}', 'CourseController@destroy');
+    // generuje token na podstawie adresu email i hasla
+    $router->post('/auth/verify', ['uses' => 'AuthController@verify']);
+
+    // Protected routes
+    $router->group(
+        ['middleware' => 'jwt.auth'],
+        function () use ($router) {
+            $router->get('/auth/verify', ['uses' => 'AuthController@verifyGet']);
+            $router->get('/users/me', ['uses' => 'UserController@me']);
+
+            $router->get('/courses', 'CourseController@index');
+            $router->post('/courses', 'CourseController@create');
+            $router->get('/courses/{id}', 'CourseController@show');
+            $router->put('/courses/{id}', 'CourseController@update');
+            $router->delete('/courses/{id}', 'CourseController@destroy');
+        }
+    );
+
 
 });
