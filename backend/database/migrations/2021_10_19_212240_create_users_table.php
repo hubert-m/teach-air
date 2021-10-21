@@ -41,7 +41,7 @@ class CreateUsersTable extends Migration
         DB::table('users')->insert(
             array(
                 'email' => 'hubert.machala@o2.pl',
-                'password' => 'sha512#password12345',
+                'password' => '12345',
                 'name' => 'Hubert',
                 'lastname' => 'Machała',
                 'sex_id' => 1
