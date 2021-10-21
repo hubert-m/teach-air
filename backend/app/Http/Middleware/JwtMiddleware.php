@@ -36,7 +36,7 @@ class JwtMiddleware
         }
 
         // Find token user
-        $user = User::find($credentials->sub_id)->first();
+        $user = User::find($credentials->sub_id);
 
         // Decore request with user
         $request->auth = $user;

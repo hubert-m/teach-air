@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
-// use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -65,9 +65,7 @@ class AuthController extends Controller
             ], 400);
         }
         // Verify the password and generate the token
-        // if (Hash::check($this->request->input('password'), $user->password)) {
-        // Na razie bez hashowania - po zrobieniu rejestracji TODO
-        if($this->request->input('password') == $user->password) {
+        if (Hash::check($this->request->input('password'), $user->password)) {
             return response()->json([
                 'token' => $this->jwt($user)
             ], 200);
@@ -86,8 +84,6 @@ class AuthController extends Controller
      */
     public function verifyGet(User $user)
     {
-        return response()->json([
-            $this->request->auth
-        ], 200);
+        return response()->json($this->request->auth, 200);
     }
 }

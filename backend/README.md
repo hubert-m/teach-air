@@ -36,13 +36,17 @@ Odświeżenie paczek w katalogu `vendor` - `composer install`
 
 Tworzenie migracji tabel `php artisan make:migration create_users_table`
 
-Tworzenie modelu `php artisan make:model Course`
+Tworzenie modelu `php artisan make:model User`
 
 Tworzenie kontrolera `php artisan make:controller UserController`
+
+Tworzenie wypełniacza do tabeli `php artisan make:factory UserFactory` - jeśli korzystamy z faker php lub `php artisan make:seeder UserSeeder` - jeśli używamy randomowych ciągów znaków. Dodać wpis do `DatabaseSeeder.php`
 
 Wykonanie migracji `php artisan migrate`
 
 Usunięcie wszystkich tabel i utworzenie od nowa `php artisan migrate:fresh`
+
+To co powyżej, ale z wypałniaczami `php artisan migrate:fresh --seed`
 
 # Lumen PHP Framework
 
