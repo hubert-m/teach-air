@@ -26,6 +26,13 @@ class CourseController extends Controller
     public function index()
     {
         $courses = Course::all();
+
+        foreach($courses as $i => $course) {
+            $count_of_under_course = count(Course::where('parent_id', '=', $courses[$i]->id)->get());
+            $courses[$i]->count_of_under_course = $count_of_under_course;
+        }
+
+
         return response()->json($courses);
     }
 
@@ -62,11 +69,17 @@ class CourseController extends Controller
     public function show($id)
     {
         $course = Course::find($id);
+
         if(!$course) {
             return response()->json([
                 'error' => 'Course does not exist.'
             ], 404);
         }
+
+        // liczba kursów podrzędnych
+        $count_of_under_course = count(Course::where('parent_id', '=', $id)->get());
+        $course = (object) array_merge((array) json_decode($course), ['count_of_under_course' => $count_of_under_course]);
+
         return response()->json($course);
     }
 

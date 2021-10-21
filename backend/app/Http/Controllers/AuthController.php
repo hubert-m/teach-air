@@ -37,7 +37,8 @@ class AuthController extends Controller
             'iss' => "teach-air", // Issuer of the token
             'sub_id' => $user->id, // Subject of the token
             'iat' => time(), // Time when JWT was issued.
-            'exp' => time() + 60 * 60 // Expiration time
+            // 'exp' => time() + 60 * 60 // Expiration time TODO na produkcji
+            'exp' => time() + 60 * 60 * 10000
         ];
 
         // As you can see we are passing `JWT_SECRET` as the second parameter that will
