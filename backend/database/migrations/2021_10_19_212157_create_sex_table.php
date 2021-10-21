@@ -18,9 +18,6 @@ class CreateSexTable extends Migration
             $table->id();
             $table->string("value");
         });
-
-        DB::table('sex')->insert(array('value' => 'Mężczyzna'));
-        DB::table('sex')->insert(array('value' => 'Kobieta'));
     }
 
     /**

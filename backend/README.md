@@ -48,6 +48,11 @@ Usunięcie wszystkich tabel i utworzenie od nowa `php artisan migrate:fresh`
 
 To co powyżej, ale z wypałniaczami `php artisan migrate:fresh --seed`
 
+Wypełnienie bazy danych bez restartowania tabel `php artisan db:seed`
+
+### Hasło dla wszystkich kont z wypełniacza to `12345`
+### Konto tworzone przy tworzeniu tabel - `admin@teach-air.pl` `12345`
+
 # Lumen PHP Framework
 
 [![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)

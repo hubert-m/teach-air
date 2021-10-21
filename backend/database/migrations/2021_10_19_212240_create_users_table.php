@@ -38,16 +38,6 @@ class CreateUsersTable extends Migration
         Schema::table('users', function($table) {
             $table->foreign('sex_id')->references('id')->on('sex');
         });
-
-        DB::table('users')->insert(
-            array(
-                'email' => 'hubert.machala@o2.pl',
-                'password' => Hash::make('12345'),
-                'name' => 'Hubert',
-                'lastname' => 'Machała',
-                'sex_id' => 1
-            )
-        );
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,15 +20,32 @@ class UserFactory extends Factory
      * Define the model's default state.
      *
      * @return array
+     * @throws Exception
      */
     public function definition()
     {
-        return [
+        $male = [
             'email' => $this->faker->unique()->safeEmail,
             'password' => Hash::make('12345'),
-            'name' => $this->faker->name,
+            'name' => $this->faker->firstNameMale,
             'lastname' => $this->faker->lastName,
+            'phone' => $this->faker->phoneNumber,
             'sex_id' => 1
         ];
+
+        $female = [
+            'email' => $this->faker->unique()->safeEmail,
+            'password' => Hash::make('12345'),
+            'name' => $this->faker->firstNameFemale,
+            'second_name' => $this->faker->firstNameFemale,
+            'lastname' => $this->faker->lastName,
+            'profile_image' => $this->faker->imageUrl,
+            'sex_id' => 2
+        ];
+
+        $result = [$male, $female];
+
+        // losowo dodaje kobiety i mężczyzn
+        return $result[random_int(0,1)];
     }
 }

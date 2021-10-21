@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Sex;
 use Closure;
 use Exception;
 use App\Models\User;
@@ -37,6 +38,8 @@ class JwtMiddleware
 
         // Find token user
         $user = User::find($credentials->sub_id);
+
+        $user = (object) array_merge((array) json_decode($user), ['sex_id' => Sex::find($user->sex_id)]);
 
         // Decore request with user
         $request->auth = $user;

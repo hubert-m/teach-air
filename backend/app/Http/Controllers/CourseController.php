@@ -33,7 +33,7 @@ class CourseController extends Controller
     {
         $this->validate($this->request, [
             'name' => 'required',
-            'created_by' => 'required|numeric'
+            'created_by' => 'numeric'
         ]);
 
         try {
@@ -43,7 +43,7 @@ class CourseController extends Controller
             $course->icon = $request->icon;
             $course->slug = $request->slug ?: self::slugify($request->name);
             $course->parent_id = $request->parent_id;
-            $course->created_by = $request->created_by;
+            $course->created_by = $request->created_by ?: $request->auth->id;
             $course->save();
 
             return response()->json([
