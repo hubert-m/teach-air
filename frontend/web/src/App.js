@@ -1,25 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect, useState} from 'react';
+import Routes from './routes';
+import Header from "./components/Header";
+import {useHistory} from "react-router";
+import {getMe, getToken} from "./helpers/User";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [userToken, setUserToken] = useState(getToken());
+    const [userData, setUserData] = useState(null);
+    const history = useHistory();
+
+    useEffect(() => {
+        if(!!getToken()) {
+            getMe().then(userDataTmp => {
+                setUserData(userDataTmp);
+            }).catch(errorMessage => {
+                alert(errorMessage);
+            });
+        }
+    }, [userToken])
+
+    return (
+        <>
+            <Header history={history} userData={userData}/>
+            <Routes userData={userData}/>
+        </>
+    );
 }
 
 export default App;
