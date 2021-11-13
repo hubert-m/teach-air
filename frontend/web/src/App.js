@@ -3,6 +3,8 @@ import Routes from './routes';
 import Header from "./components/Header";
 import {useHistory} from "react-router";
 import {getMe, getToken} from "./helpers/User";
+import Footer from "./components/Footer";
+import "./App.css";
 
 function App() {
     const [userToken, setUserToken] = useState(getToken());
@@ -23,6 +25,7 @@ function App() {
         <>
             <Header history={history} userData={userData}/>
             <Routes userData={userData}/>
+            <Footer />
         </>
     );
 }
