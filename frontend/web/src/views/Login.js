@@ -27,19 +27,19 @@ class Login extends React.Component {
                             <div className="form-group">
                                 <label htmlFor="email">Adres e-mail</label>
                                 <input type="email" className="form-control" id="email"
-                                       aria-describedby="emailHelp" placeholder="Enter email"
+                                       aria-describedby="emailHelp" placeholder="E-mail"
                                        value={this.state.email}
                                        onChange={this.onInputChanged}/>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="password">Hasło</label>
                                 <input type="password" className="form-control" id="password"
-                                       placeholder="Password"
+                                       placeholder="Hasło"
                                        value={this.state.password}
                                        onChange={this.onInputChanged}/>
                             </div>
                             <button className="btn btn-primary"
-                                    onClick={() => this.login()}>Login
+                                    onClick={() => this.login()}>Zaloguj
                             </button>
                         </div>
                     </div>

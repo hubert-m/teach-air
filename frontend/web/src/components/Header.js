@@ -6,8 +6,7 @@ import Settings from "../constants/Settings";
 function Header({history, userData}) {
 
     const handleLogout = () => {
-        logout();
-        history.push(Routes.HOME);
+        history.push(Routes.LOGOUT);
     }
 
     const handleLogin = () => {
@@ -18,8 +17,10 @@ function Header({history, userData}) {
         <nav className="navbar navbar-light bg-light">
             <a className="navbar-brand" href={Routes.HOME}>{Settings.TITLE}</a>
 
-            {getToken() ? (<button type="button" className="btn btn-secondary btn-sm" onClick={() => handleLogout()}>Wyloguj
-            </button>) : (
+            {getToken() ? (
+                <button type="button" className="btn btn-secondary btn-sm" onClick={() => handleLogout()}>Wyloguj
+                </button>
+            ) : (
                 <button type="button" className="btn btn-secondary btn-sm" onClick={() => handleLogin()}>Zaloguj się
                 </button>)}
         </nav>
