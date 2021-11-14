@@ -1,28 +1,16 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {Link} from "react-router-dom";
-import {getMe, getToken} from "../helpers/User";
 import Routes from "../constants/Routes";
 import {StatusUserName} from "../constants/StatusUser";
 
-function Home() {
+function Home({userToken, userData}) {
 
-    const [userData, setUserData] = useState(null);
-
-    useEffect(() => {
-        if (!!getToken()) {
-            getMe().then(userDataTmp => {
-                setUserData(userDataTmp)
-            }).catch(errorMessage => {
-                alert(errorMessage);
-            });
-        }
-    }, [])
-    console.log(userData);
     return (
         <>
             <h1>Strona Główna - Teach Air</h1>
             <h2>Projekt inżynierski</h2>
-            {!!getToken() ? (
+
+            {userToken ? (
                 <>
                 <p>Jesteś zalogowany jako {userData?.name} {userData?.second_name} {userData?.lastname}</p>
                     <p>E-mail: {userData?.email}</p>

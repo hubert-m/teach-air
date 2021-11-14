@@ -5,11 +5,13 @@ import {useEffect} from "react";
 import {useHistory} from "react-router";
 
 
-function Logout () {
+function Logout ({ setUserToken, setUserData }) {
     const history = useHistory();
 
     useEffect(() => {
         logout();
+        setUserToken(null);
+        setUserData(null);
         history.push(Routes.HOME);
     }, [])
 

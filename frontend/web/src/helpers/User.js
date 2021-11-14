@@ -2,11 +2,12 @@ import axios from "axios";
 import Settings from "../constants/Settings";
 import validateEmail from "./validateEmail";
 import Routes from "../constants/Routes";
+import ApiEndpoints from "../constants/ApiEndpoints";
 
 const getMe = () => {
     return new Promise((resolve, reject) => {
         const config = {headers: {token: localStorage.getItem("userToken")}};
-        axios.get(Settings.API + '/users/me/', config).then((response) => {
+        axios.get(Settings.API + ApiEndpoints.USERS_ME, config).then((response) => {
             // localStorage.setItem("userData", JSON.stringify(response.data));
             resolve(response.data);
         }).catch((error) => {
@@ -52,7 +53,7 @@ const authenticate = (data) => {
             return;
         }
 
-        axios.post(Settings.API + '/auth/verify/', data).then((response) => {
+        axios.post(Settings.API + ApiEndpoints.LOGIN, data).then((response) => {
             localStorage.setItem("userToken", response.data.token);
             resolve(response.data);
         }).catch((error) => {

@@ -1,3 +1,5 @@
+@import "assets/css/Navbar.css";
+@import "assets/css/Content.css";
 @import "assets/css/Footer.css";
 
 :root {
@@ -5,4 +7,5 @@
   --black-color: #000;
   --red-color: red;
   --green-color: green;
+
 }

@@ -12,19 +12,21 @@ function App() {
     const history = useHistory();
 
     useEffect(() => {
-        if(!!getToken()) {
+        if(!!userToken) {
             getMe().then(userDataTmp => {
                 setUserData(userDataTmp);
             }).catch(errorMessage => {
                 alert(errorMessage);
             });
+        } else {
+            setUserToken(getToken());
         }
     }, [userToken])
 
     return (
         <>
-            <Header history={history} userData={userData}/>
-            <Routes userData={userData}/>
+            <Header history={history} userData={userData} userToken={userToken}/>
+            <Routes userToken={userToken} setUserToken={setUserToken} userData={userData} setUserData={setUserData}/>
             <Footer />
         </>
     );

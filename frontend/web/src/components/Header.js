@@ -1,29 +1,41 @@
 import React from 'react';
-import {getToken, logout} from '../helpers/User';
 import Routes from "../constants/Routes";
 import Settings from "../constants/Settings";
+import {Link, NavLink} from 'react-router-dom'
+import {Navbar, Container, Nav, NavDropdown} from "react-bootstrap";
 
-function Header({history, userData}) {
-
-    const handleLogout = () => {
-        history.push(Routes.LOGOUT);
-    }
-
-    const handleLogin = () => {
-        history.push(Routes.LOGIN);
-    }
+function Header({history, userData, userToken}) {
 
     return (
-        <nav className="navbar navbar-light bg-light">
-            <a className="navbar-brand" href={Routes.HOME}>{Settings.TITLE}</a>
-
-            {getToken() ? (
-                <button type="button" className="btn btn-secondary btn-sm" onClick={() => handleLogout()}>Wyloguj
-                </button>
-            ) : (
-                <button type="button" className="btn btn-secondary btn-sm" onClick={() => handleLogin()}>Zaloguj się
-                </button>)}
-        </nav>
+        <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+            <Container>
+                <Navbar.Brand as={NavLink} to={Routes.HOME}>{Settings.TITLE}</Navbar.Brand>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
+                <Navbar.Collapse id="responsive-navbar-nav">
+                    <Nav className="me-auto">
+                        <Nav.Link href="#">Podstrona 1</Nav.Link>
+                        <Nav.Link href="#">Podstrona 2</Nav.Link>
+                    </Nav>
+                    <Nav>
+                        {userToken ? (
+                            <>
+                                <Nav.Link as={NavLink} to={Routes.MAIN_COURSES}>Kursy</Nav.Link>
+                                <Nav.Link as={NavLink} to={Routes.MESSAGES_LIST}>Wiadomości</Nav.Link>
+                                <NavDropdown title="Konto" id="collasible-nav-dropdown">
+                                    <NavDropdown.Item as={NavLink} to={Routes.SETTINGS}>Ustawienia</NavDropdown.Item>
+                                    <NavDropdown.Item as={NavLink} to={Routes.LOGOUT}>Wyloguj</NavDropdown.Item>
+                                </NavDropdown>
+                            </>
+                        ) : (
+                            <>
+                                <Nav.Link as={NavLink} to={Routes.LOGIN}>Logowanie</Nav.Link>
+                                <Nav.Link as={NavLink} to={Routes.REGISTER}>Rejestracja</Nav.Link>
+                            </>
+                        )}
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+        </Navbar>
     );
 }
 
