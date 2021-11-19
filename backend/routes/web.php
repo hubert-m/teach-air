@@ -23,6 +23,7 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
     $router->post('/auth/verify', ['uses' => 'AuthController@verify']);
     // rejestracja nowego użytkownika - nie wymaga tokenu
     $router->post('/users', 'UserController@create');
+    $router->get('/users/sex_list', 'UserController@sex_list');
 
     // Protected routes
     $router->group(

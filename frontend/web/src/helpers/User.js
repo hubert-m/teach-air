@@ -71,10 +71,53 @@ const logout = () => {
 }
 
 
+const register = (data) => {
+    return new Promise((resolve, reject) => {
+
+        let error = null;
+        if (!data.email || !data.password || !data.passwordRepeat || !data.name || !data.lastname || !data.sex_id)
+            error = "Musisz wypełnić wszystkie pola";
+        else if (!validateEmail(data.email))
+            error = "Wprowadzony adres e-mail jest nieprawidłowy";
+        else if (data.password != data.passwordRepeat)
+            error = "Wprowadzone hasła nie są takie same";
+
+
+        if (error) {
+            reject(error);
+            return;
+        }
+
+        axios.post(Settings.API + ApiEndpoints.REGISTER, data).then((response) => {
+            localStorage.setItem("userToken", response.data.token);
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+}
+
+const getSexList = () => {
+    return new Promise((resolve, reject) => {
+        axios.get(Settings.API + ApiEndpoints.SEX_LIST).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+};
+
+
 export {
     getMe,
     getToken,
     authenticate,
     logout,
+    register,
+    getSexList,
     // getUserData,
 };

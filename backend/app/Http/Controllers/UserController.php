@@ -28,6 +28,12 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
+
+        foreach($users as $i => $user) {
+            $sex = Sex::where('id', '=', $user->sex_id)->first();
+            $users[$i]->sex_id = $sex;
+        }
+
         return response()->json($users);
     }
 
@@ -83,6 +89,10 @@ class UserController extends Controller
                 'error' => 'User does not exist.'
             ], 404);
         }
+
+        $sex = Sex::where('id', '=', $user->sex_id)->first();
+        $user->sex_id = $sex;
+
         return response()->json($user);
     }
 
@@ -94,6 +104,15 @@ class UserController extends Controller
      */
     public function me()
     {
+        $sex = Sex::where('id', '=', $this->request->auth->sex_id)->first();
+        $this->request->auth->sex_id = $sex;
         return response()->json($this->request->auth, 200);
+    }
+
+
+    public function sex_list()
+    {
+        $sex = Sex::all();
+        return response()->json($sex);
     }
 }

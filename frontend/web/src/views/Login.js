@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import * as _ from "lodash";
+import React, {useState} from 'react';
 import {authenticate, getToken} from "../helpers/User";
-import Routes from "../constants/Routes";
 import SweetAlert from 'react-bootstrap-sweetalert';
+import Routes from "../constants/Routes";
 import {useHistory} from "react-router";
+import {Link} from "react-router-dom";
+
 
 function Login({setUserToken}) {
     const history = useHistory();
@@ -13,18 +14,12 @@ function Login({setUserToken}) {
     const [errorMessage, setErrorMessage] = useState(null);
     const [showSuccess, setShowSuccess] = useState(false);
 
-    useEffect(() => {
-        if (!!getToken()) {
-            history.push(Routes.HOME);
-        }
-    }, [])
-
     const login = (event) => {
         // event.preventDefault();
         authenticate({email, password}).then(() => {
-            setUserToken(getToken());
             setShowSuccess(true);
             setTimeout(() => {
+                setUserToken(getToken());
                 history.push(Routes.HOME);
             }, 4000)
         }).catch(errorMessage => {
@@ -34,51 +29,43 @@ function Login({setUserToken}) {
     }
 
     return (
-        <React.Fragment>
-            <div className="row justify-content-md-center">
-                <div className="col-md-5">
-                    <div className="shadow-sm p-5 mb-5 bg-white rounded mt-5">
-                        <div className="form-group">
-                            <label htmlFor="email">Adres e-mail</label>
-                            <input type="email" className="form-control" id="email"
-                                   aria-describedby="emailHelp" placeholder="E-mail"
-                                   value={email}
-                                   onChange={e => setEmail(e.target.value)}/>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="password">Hasło</label>
-                            <input type="password" className="form-control" id="password"
-                                   placeholder="Hasło"
-                                   value={password}
-                                   onChange={e => setPassword(e.target.value)}/>
-                        </div>
-                        <button className="btn btn-primary"
-                                onClick={() => login()}>Zaloguj
-                        </button>
-                        <SweetAlert
-                            error
-                            show={showError}
-                            title="Coś poszło nie tak :("
-                            confirmBtnText="Już poprawiam, Sir!"
-                            confirmBtnBsStyle="danger"
-                            onConfirm={() => setShowError(false)}
-                        >
-                            {errorMessage}
-                        </SweetAlert>
-                        <SweetAlert
-                            success
-                            show={showSuccess}
-                            title="Hurraaa :)"
-                            onConfirm={() => setShowSuccess(false)}
-                        >
-                            Za chwile zostaniesz przekierowany na stronę główną
-                        </SweetAlert>
+        <>
+            <div className="wrapper fadeInDown">
+                <div id="formContentLogin">
+                    <h2>Panel logowania</h2>
+                    <input type="email" id="email" className="form-control fadeIn second" name="email"
+                           placeholder="E-mail" aria-describedby="emailHelp" value={email}
+                           onChange={e => setEmail(e.target.value)}/>
+                    <input type="password" id="password" className="form-control fadeIn third" name="password"
+                           placeholder="Hasło" value={password}
+                           onChange={e => setPassword(e.target.value)}/>
+                    <button className="fadeIn fourth" onClick={() => login()}>Zaloguj</button>
+                    <div id="formFooter">
+                        <Link to={Routes.FORGET_PASSWORD}>Zapomniałeś hasła?</Link>
                     </div>
                 </div>
             </div>
-        </React.Fragment>
-    );
 
+            <SweetAlert
+                error
+                show={showError}
+                title="Coś poszło nie tak :("
+                confirmBtnText="Już poprawiam, Sir!"
+                confirmBtnBsStyle="danger"
+                onConfirm={() => setShowError(false)}
+            >
+                {errorMessage}
+            </SweetAlert>
+            <SweetAlert
+                success
+                show={showSuccess}
+                title="Hurraaa :)"
+                onConfirm={() => setShowSuccess(false)}
+            >
+                Za chwile zostaniesz przekierowany na stronę główną
+            </SweetAlert>
+        </>
+    );
 }
 
 

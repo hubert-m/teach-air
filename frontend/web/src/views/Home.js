@@ -1,25 +1,34 @@
 import React from "react";
-import {Link} from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 import Routes from "../constants/Routes";
 import {StatusUserName} from "../constants/StatusUser";
 
 function Home({userToken, userData}) {
-
+    console.log(userData);
     return (
         <>
-            <h1>Strona Główna - Teach Air</h1>
-            <h2>Projekt inżynierski</h2>
+            <div className="jumbotron">
+                <h1 className="display-4">Teach Air</h1>
+                <p className="lead">Aplikacja wspomagająca wprowadzenie kursów i szkoleń online</p>
+                <hr className="my-4"/>
+                {userToken ? (
+                    <>
+                        <p>Jesteś zalogowany jako {userData?.name} {userData?.second_name} {userData?.lastname}</p>
+                        <p>E-mail: {userData?.email}</p>
+                        <p>Płeć: {userData?.sex_id?.value}</p>
+                        <p>Status: {StatusUserName[userData?.status]} - {userData?.status}</p>
+                    </>
+                ) : (
+                    <>
+                        <p>Zarejestruj się już teraz i bierz udział w zajęciach</p>
+                        <p className="lead">
+                            <Link className="btn btn-primary btn-lg" to={Routes.REGISTER} role="button">Zarejestruj
+                                się</Link>
+                        </p>
+                    </>
+                )}
 
-            {userToken ? (
-                <>
-                <p>Jesteś zalogowany jako {userData?.name} {userData?.second_name} {userData?.lastname}</p>
-                    <p>E-mail: {userData?.email}</p>
-                    <p>Płeć: {userData?.sex_id}</p>
-                    <p>Status: {StatusUserName[userData?.status]} - {userData?.status}</p>
-                </>
-            ) : (
-                <Link to={Routes.LOGIN}>Zaloguj się</Link>
-            )}
+            </div>
         </>
     );
 

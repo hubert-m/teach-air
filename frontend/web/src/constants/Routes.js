@@ -2,6 +2,7 @@ const Routes = {
     HOME: '/',
     LOGIN: '/login',
     LOGOUT: '/logout',
+    FORGET_PASSWORD: '/forget-password',
     REGISTER: '/register',
     SETTINGS: '/account/settings',
     MESSAGES_LIST: '/messages',
