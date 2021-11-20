@@ -122,7 +122,7 @@ class UserController extends Controller
             'sex' => 'required',
         ]);
 
-        $sex = Sex::where('value', '=', $this->request->value)->first();
+        $sex = Sex::where('value', '=', $this->request->sex)->first();
         if($sex) {
             return response()->json([
                 'error' => 'Sex is already in database'
