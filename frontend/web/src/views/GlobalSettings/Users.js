@@ -3,8 +3,10 @@ import {getAllUsers} from "../../helpers/User";
 import Container from "./Container";
 import {withRouter} from "react-router";
 import {StatusUser, StatusUserName} from "../../constants/StatusUser";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faGraduationCap, faCheckCircle, faCrown, faUser} from '@fortawesome/free-solid-svg-icons';
 
-const Users = () => {
+const Users = ({userData}) => {
 
     const [usersList, setUsersList] = useState([]);
 
@@ -30,7 +32,7 @@ const Users = () => {
                     <th scope="col">Płeć</th>
                     <th scope="col">E-mail</th>
                     <th scope="col">Telefon</th>
-                    <th scope="col">Status</th>
+                    <th scope="col" colSpan={3}>Status</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -54,7 +56,7 @@ const Users = () => {
                                 ) : status === StatusUser.TEACHER ?
                                     (
                                         <td><span
-                                            className="badge bg-success">{StatusUserName[StatusUser.TEACHER]}</span>
+                                            className="badge bg-warning">{StatusUserName[StatusUser.TEACHER]}</span>
                                         </td>
                                     ) : (
                                         <td><span
@@ -62,6 +64,54 @@ const Users = () => {
                                         </td>
                                     )
                         }
+                        {id !== userData?.id && status === StatusUser.UNACTIVATED ? (
+                            <>
+                                <td>
+                                    <button type="button" className="btn btn-success"><FontAwesomeIcon
+                                        icon={faCheckCircle}/>
+                                    </button>
+                                </td>
+                                <td>&nbsp;</td>
+                            </>
+                        ) : id !== userData?.id && status === StatusUser.STUDENT ? (
+                            <>
+                                <td>
+                                    <button type="button" className="btn btn-warning"><FontAwesomeIcon
+                                        icon={faGraduationCap}/>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button type="button" className="btn btn-danger"><FontAwesomeIcon icon={faCrown}/>
+                                    </button>
+                                </td>
+                            </>
+                        ) : id !== userData?.id && status === StatusUser.TEACHER ? (
+                            <>
+                                <td>
+                                    <button type="button" className="btn btn-primary"><FontAwesomeIcon icon={faUser}/>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button type="button" className="btn btn-danger"><FontAwesomeIcon icon={faCrown}/>
+                                    </button>
+                                </td>
+                            </>
+                        ) : id !== userData?.id && status === StatusUser.ADMIN ? (
+                            <>
+                                <td>
+                                    <button type="button" className="btn btn-primary"><FontAwesomeIcon icon={faUser}/>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button type="button" className="btn btn-warning"><FontAwesomeIcon
+                                        icon={faGraduationCap}/>
+                                    </button>
+                                </td>
+                            </>
+                        ) : (
+                            <td colspan={2}><span
+                                className="badge bg-success">Aktualnie zalogowany</span></td>
+                        )}
                     </tr>
                 ))}
                 </tbody>
