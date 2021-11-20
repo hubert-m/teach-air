@@ -7,10 +7,6 @@ import {StatusUser} from "../constants/StatusUser";
 
 function Header({history, userData, userToken}) {
 
-    console.log(userData?.status);
-    console.log(StatusUser.ADMIN);
-    console.log(userData?.status === StatusUser.ADMIN);
-
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
             <Container>

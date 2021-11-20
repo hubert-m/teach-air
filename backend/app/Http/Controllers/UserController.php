@@ -115,4 +115,35 @@ class UserController extends Controller
         $sex = Sex::all();
         return response()->json($sex);
     }
+
+    public function sex_add(Request $request)
+    {
+        $this->validate($this->request, [
+            'sex' => 'required',
+        ]);
+
+        $sex = Sex::where('value', '=', $this->request->value)->first();
+        if($sex) {
+            return response()->json([
+                'error' => 'Sex is already in database'
+            ], 404);
+        }
+
+        try {
+            $sex = new Sex;
+            $sex->value = $request->sex;
+
+            $sex->save();
+
+            return response()->json([
+                'success' => 'Sex created successfully',
+                'sex' => $sex
+            ], 201);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

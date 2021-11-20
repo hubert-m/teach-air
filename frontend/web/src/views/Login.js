@@ -39,7 +39,9 @@ function Login({setUserToken}) {
                     <input type="password" id="password" className="form-control fadeIn third" name="password"
                            placeholder="Hasło" value={password}
                            onChange={e => setPassword(e.target.value)}/>
-                    <button className="fadeIn fourth" onClick={() => login()}>Zaloguj</button>
+                    <button className="fadeIn fourth" style={{margin: '15px auto 25px auto'}}
+                            onClick={() => login()}>Zaloguj
+                    </button>
                     <div id="formFooter">
                         <Link to={Routes.FORGET_PASSWORD}>Zapomniałeś hasła?</Link>
                     </div>

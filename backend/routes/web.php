@@ -41,6 +41,8 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
             $router->get('/users/{id}', 'UserController@show');
             //$router->put('/users/{id}', 'UserController@update');
             //$router->delete('/users/{id}', 'UserController@destroy');
+
+            $router->post('/users/sex_add', 'UserController@sex_add');
         }
     );
 

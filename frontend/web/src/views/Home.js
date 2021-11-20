@@ -4,12 +4,14 @@ import Routes from "../constants/Routes";
 import {StatusUserName} from "../constants/StatusUser";
 
 function Home({userToken, userData}) {
-    console.log(userData);
     return (
         <>
             <div className="jumbotron">
                 <h1 className="display-4">Teach Air</h1>
-                <p className="lead">Aplikacja wspomagająca wprowadzenie kursów i szkoleń online</p>
+                <p className="lead">Aplikacja wspomagająca prowadzenie szkoleń i kursów online<br/>
+                    zrealizowana w języku <span className="badge bg-primary">PHP</span> z wykorzystaniem bazy
+                    danych <span className="badge bg-primary">MySQL</span></p>
+
                 <hr className="my-4"/>
                 {userToken ? (
                     <>

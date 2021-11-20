@@ -111,6 +111,42 @@ const getSexList = () => {
     });
 };
 
+const addSex = (data) => {
+    return new Promise((resolve, reject) => {
+
+        let error = null;
+        if (!data.sex)
+            error = "Musisz wypełnić wszystkie pola";
+
+        if (error) {
+            reject(error);
+            return;
+        }
+
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.post(Settings.API + ApiEndpoints.SEX_ADD, data, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+}
+
+const getAllUsers = () => {
+    return new Promise((resolve, reject) => {
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.get(Settings.API + ApiEndpoints.ALL_USERS, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+};
+
 
 export {
     getMe,
@@ -119,5 +155,7 @@ export {
     logout,
     register,
     getSexList,
+    addSex,
+    getAllUsers
     // getUserData,
 };

@@ -37,7 +37,6 @@ function Register({setUserToken}) {
             ...prevState,
             ...result,
         }))
-        console.log(sexList);
     }
 
     const handleRegister = (event) => {
@@ -99,7 +98,9 @@ function Register({setUserToken}) {
                             </select>
                         </div>
                     </div>
-                    <button className="fadeIn fourth" onClick={() => handleRegister()}>Zarejestruj</button>
+                    <button className="fadeIn fourth" style={{margin: '15px auto 25px auto'}}
+                            onClick={() => handleRegister()}>Zarejestruj
+                    </button>
                     <div id="formFooter">
                         Masz już konto?<br/>
                         <Link to={Routes.LOGIN}>Zaloguj się</Link>
