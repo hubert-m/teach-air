@@ -7,15 +7,20 @@ import Home from "../views/Home";
 import Login from "../views/Login";
 import Logout from "../views/Logout";
 import PageNotFound from "../views/PageNotFound";
-import GlobalSettings from "../views/GlobalSettings";
+import GlobalSettingsHome from "../views/GlobalSettings/GlobalSettingsHome";
+import Users from "../views/GlobalSettings/Users";
+import Sex from "../views/GlobalSettings/Sex";
 import RequireAuthAdmin from "./requireAuthAdmin";
+import ScrollToTop from "../helpers/ScrollToTop";
 
 const routes = [
     {path: '/', Component: Home},
     {path: Routes.LOGIN, Component: Login},
     {path: Routes.LOGOUT, Component: Logout, IsAuth: true},
     {path: Routes.REGISTER, Component: Register},
-    {path: Routes.GLOBAL_SETTINGS, Component: GlobalSettings, IsAdmin: true},
+    {path: Routes.GLOBAL_SETTINGS, Component: GlobalSettingsHome, IsAdmin: true},
+    {path: Routes.GLOBAL_SETTINGS_USERS, Component: Users, IsAdmin: true},
+    {path: Routes.GLOBAL_SETTINGS_SEX, Component: Sex, IsAdmin: true},
     {path: '*', Component: PageNotFound},
 ]
 
@@ -32,12 +37,12 @@ const Router = ({userToken, setUserToken, userData, setUserData}) => {
                                 <Component userToken={userToken} setUserToken={setUserToken} userData={userData}
                                            setUserData={setUserData}/>
                             ) : IsAdmin ? RequireAuthAdmin(
-                                    <Component userToken={userToken} setUserToken={setUserToken} userData={userData}
-                                               setUserData={setUserData}/>, userData?.status
-                                ) : (
-                                    <Component userToken={userToken} setUserToken={setUserToken} userData={userData}
-                                               setUserData={setUserData}/>
-                                )
+                                <Component userToken={userToken} setUserToken={setUserToken} userData={userData}
+                                           setUserData={setUserData}/>, userData?.status
+                            ) : (
+                                <Component userToken={userToken} setUserToken={setUserToken} userData={userData}
+                                           setUserData={setUserData}/>
+                            )
                             }
                         </div>
                     </Route>
@@ -50,7 +55,9 @@ const Router = ({userToken, setUserToken, userData, setUserData}) => {
     return (
         <React.Fragment>
             <div className="container content-page">
-                <Element/>
+                <ScrollToTop>
+                    <Element/>
+                </ScrollToTop>
             </div>
         </React.Fragment>
     );

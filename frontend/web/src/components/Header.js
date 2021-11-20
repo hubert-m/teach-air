@@ -8,7 +8,7 @@ import {StatusUser} from "../constants/StatusUser";
 function Header({history, userData, userToken}) {
 
     return (
-        <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+        <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top">
             <Container>
                 <Navbar.Brand as={NavLink} to={Routes.HOME}>{Settings.TITLE}</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
