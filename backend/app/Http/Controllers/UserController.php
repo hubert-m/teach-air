@@ -118,6 +118,12 @@ class UserController extends Controller
 
     public function sex_add(Request $request)
     {
+        if($this->request->auth->status !== 3) {
+            return response()->json([
+                'error' => 'No permissions'
+            ], 404);
+        }
+
         $this->validate($this->request, [
             'sex' => 'required',
         ]);
@@ -149,6 +155,12 @@ class UserController extends Controller
 
     public function set_status(Request $request, $id)
     {
+        if($this->request->auth->status !== 3) {
+            return response()->json([
+                'error' => 'No permissions'
+            ], 404);
+        }
+
         $user = User::find($id);
 
         if(!$user) {

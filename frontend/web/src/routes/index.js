@@ -12,12 +12,14 @@ import Users from "../views/GlobalSettings/Users";
 import Sex from "../views/GlobalSettings/Sex";
 import RequireAuthAdmin from "./requireAuthAdmin";
 import ScrollToTop from "../helpers/ScrollToTop";
+import MessagesList from "../views/Messages/MessagesList";
 
 const routes = [
     {path: '/', Component: Home},
     {path: Routes.LOGIN, Component: Login},
     {path: Routes.LOGOUT, Component: Logout, IsAuth: true},
     {path: Routes.REGISTER, Component: Register},
+    {path: Routes.MESSAGES_LIST, Component: MessagesList, IsAuth: true},
     {path: Routes.GLOBAL_SETTINGS, Component: GlobalSettingsHome, IsAdmin: true},
     {path: Routes.GLOBAL_SETTINGS_USERS, Component: Users, IsAdmin: true},
     {path: Routes.GLOBAL_SETTINGS_SEX, Component: Sex, IsAdmin: true},

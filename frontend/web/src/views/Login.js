@@ -62,7 +62,11 @@ function Login({setUserToken}) {
                 success
                 show={showSuccess}
                 title="Hurraaa :)"
-                onConfirm={() => setShowSuccess(false)}
+                onConfirm={() => {
+                    setShowSuccess(false);
+                    setUserToken(getToken());
+                    history.push(Routes.HOME);
+                }}
             >
                 Za chwile zostaniesz przekierowany na stronę główną
             </SweetAlert>

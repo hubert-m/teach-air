@@ -22,10 +22,13 @@ function Header({userData, userToken}) {
                             <>
                                 <Nav.Link as={NavLink} to={Routes.MAIN_COURSES}>Kursy</Nav.Link>
                                 <Nav.Link as={NavLink} to={Routes.MESSAGES_LIST}>Wiadomości</Nav.Link>
+                                {userData?.status === StatusUser.ADMIN && (
+                                    <NavDropdown title="Admin" id="collasible-nav-dropdown">
+                                        <NavDropdown.Item as={NavLink} to={Routes.GLOBAL_SETTINGS}>Ustawienia
+                                            Globalne</NavDropdown.Item>
+                                    </NavDropdown>
+                                )}
                                 <NavDropdown title="Konto" id="collasible-nav-dropdown">
-                                    {userData?.status === StatusUser.ADMIN && (
-                                        <NavDropdown.Item as={NavLink} to={Routes.GLOBAL_SETTINGS}>Ustawienia Globalne</NavDropdown.Item>
-                                    )}
                                     <NavDropdown.Item as={NavLink} to={Routes.SETTINGS}>Ustawienia</NavDropdown.Item>
                                     <NavDropdown.Item as={NavLink} to={Routes.LOGOUT}>Wyloguj</NavDropdown.Item>
                                 </NavDropdown>
