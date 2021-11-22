@@ -79,7 +79,7 @@ const register = (data) => {
             error = "Musisz wypełnić wszystkie pola";
         else if (!validateEmail(data.email))
             error = "Wprowadzony adres e-mail jest nieprawidłowy";
-        else if (data.password != data.passwordRepeat)
+        else if (data.password !== data.passwordRepeat)
             error = "Wprowadzone hasła nie są takie same";
 
 
@@ -147,6 +147,18 @@ const getAllUsers = () => {
     });
 };
 
+const setUserStatus = (id, status) => {
+    return new Promise((resolve, reject) => {
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        const data = {'status': status}
+        axios.put(Settings.API + ApiEndpoints.SET_USER_STATUS + id, data, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+};
+
 
 export {
     getMe,
@@ -156,6 +168,7 @@ export {
     register,
     getSexList,
     addSex,
-    getAllUsers
+    getAllUsers,
+    setUserStatus,
     // getUserData,
 };

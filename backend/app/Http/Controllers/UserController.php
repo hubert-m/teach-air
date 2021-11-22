@@ -146,4 +146,30 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    public function set_status(Request $request, $id)
+    {
+        $user = User::find($id);
+
+        if(!$user) {
+            return response()->json([
+                'error' => 'User does not exist.'
+            ], 404);
+        }
+
+        try {
+            $user->status = (int) $request->input('status') ?: $user->status;
+            $user->save();
+
+            return response()->json([
+                'success' => 'Status changed successfully',
+                'user' => $user
+            ], 201);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+    }
 }

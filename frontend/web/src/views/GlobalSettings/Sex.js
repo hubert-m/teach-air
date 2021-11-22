@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {addSex, getSexList} from "../../helpers/User";
 import SweetAlert from "react-bootstrap-sweetalert";
-import Container from "./Container";
-import {withRouter} from "react-router";
+import ContainerGlobalSettings from "./ContainerGlobalSettings";
 
 const Sex = () => {
     const [sexList, setSexList] = useState([]);
@@ -47,7 +46,7 @@ const Sex = () => {
     }
 
     return (
-        <Container>
+        <ContainerGlobalSettings>
             <div className="jumbotron">
                 <h1 className="display-7">Płeć</h1>
                 <hr className="my-4"/>
@@ -74,7 +73,7 @@ const Sex = () => {
                 </thead>
                 <tbody>
                 {sexList.map(({id, value}) => (
-                    <tr>
+                    <tr key={id}>
                         <th scope="row">{id}</th>
                         <td>{value}</td>
                     </tr>
@@ -101,10 +100,10 @@ const Sex = () => {
             >
                 Pomyślnie dodano nową płeć
             </SweetAlert>
-        </Container>
+        </ContainerGlobalSettings>
     )
 
 
 }
 
-export default withRouter(Sex);
+export default Sex;

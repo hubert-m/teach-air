@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
-import {getAllUsers} from "../../helpers/User";
-import Container from "./Container";
-import {withRouter} from "react-router";
+import {getAllUsers, setUserStatus} from "../../helpers/User";
+import ContainerGlobalSettings from "./ContainerGlobalSettings";
 import {StatusUser, StatusUserName} from "../../constants/StatusUser";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faGraduationCap, faCheckCircle, faCrown, faUser} from '@fortawesome/free-solid-svg-icons';
@@ -17,8 +16,19 @@ const Users = ({userData}) => {
         })
     }, [])
 
+    const handleChangeStatus = (id, status) => {
+        setUserStatus(id, status).then(() => {
+            getAllUsers().then(list => {
+                setUsersList(list);
+            }).catch(() => {
+            })
+        }).catch(() => {
+
+        })
+    }
+
     return (
-        <Container>
+        <ContainerGlobalSettings>
             <div className="jumbotron">
                 <h1 className="display-7">Użytkownicy</h1>
                 <hr className="my-4"/>
@@ -37,7 +47,7 @@ const Users = ({userData}) => {
                 </thead>
                 <tbody>
                 {usersList.map(({id, email, name, second_name, lastname, sex_id, phone, status}) => (
-                    <tr>
+                    <tr key={id}>
                         <th scope="row">{id}</th>
                         <td>{name} {second_name}</td>
                         <td>{lastname}</td>
@@ -60,65 +70,75 @@ const Users = ({userData}) => {
                                         </td>
                                     ) : (
                                         <td><span
-                                            className="badge bg-success">{StatusUserName[StatusUser.STUDENT]}</span>
+                                            className="badge bg-primary">{StatusUserName[StatusUser.STUDENT]}</span>
                                         </td>
                                     )
                         }
                         {id !== userData?.id && status === StatusUser.UNACTIVATED ? (
                             <>
-                                <td>
-                                    <button type="button" className="btn btn-success"><FontAwesomeIcon
+                                <td colSpan={2} style={{textAlign: 'center'}}>
+                                    <button type="button" className="btn btn-success"
+                                            onClick={() => handleChangeStatus(id, StatusUser.STUDENT)}><FontAwesomeIcon
                                         icon={faCheckCircle}/>
                                     </button>
                                 </td>
-                                <td>&nbsp;</td>
                             </>
                         ) : id !== userData?.id && status === StatusUser.STUDENT ? (
                             <>
-                                <td>
-                                    <button type="button" className="btn btn-warning"><FontAwesomeIcon
+                                <td style={{textAlign: 'center'}}>
+                                    <button type="button" className="btn btn-warning"
+                                            onClick={() => handleChangeStatus(id, StatusUser.TEACHER)}><FontAwesomeIcon
                                         icon={faGraduationCap}/>
                                     </button>
                                 </td>
-                                <td>
-                                    <button type="button" className="btn btn-danger"><FontAwesomeIcon icon={faCrown}/>
+                                <td style={{textAlign: 'center'}}>
+                                    <button type="button" className="btn btn-danger"
+                                            onClick={() => handleChangeStatus(id, StatusUser.ADMIN)}><FontAwesomeIcon
+                                        icon={faCrown}/>
                                     </button>
                                 </td>
                             </>
                         ) : id !== userData?.id && status === StatusUser.TEACHER ? (
                             <>
-                                <td>
-                                    <button type="button" className="btn btn-primary"><FontAwesomeIcon icon={faUser}/>
+                                <td style={{textAlign: 'center'}}>
+                                    <button type="button" className="btn btn-primary"
+                                            onClick={() => handleChangeStatus(id, StatusUser.STUDENT)}><FontAwesomeIcon
+                                        icon={faUser}/>
                                     </button>
                                 </td>
-                                <td>
-                                    <button type="button" className="btn btn-danger"><FontAwesomeIcon icon={faCrown}/>
+                                <td style={{textAlign: 'center'}}>
+                                    <button type="button" className="btn btn-danger"
+                                            onClick={() => handleChangeStatus(id, StatusUser.ADMIN)}><FontAwesomeIcon
+                                        icon={faCrown}/>
                                     </button>
                                 </td>
                             </>
                         ) : id !== userData?.id && status === StatusUser.ADMIN ? (
                             <>
-                                <td>
-                                    <button type="button" className="btn btn-primary"><FontAwesomeIcon icon={faUser}/>
+                                <td style={{textAlign: 'center'}}>
+                                    <button type="button" className="btn btn-primary"
+                                            onClick={() => handleChangeStatus(id, StatusUser.STUDENT)}><FontAwesomeIcon
+                                        icon={faUser}/>
                                     </button>
                                 </td>
-                                <td>
-                                    <button type="button" className="btn btn-warning"><FontAwesomeIcon
+                                <td style={{textAlign: 'center'}}>
+                                    <button type="button" className="btn btn-warning"
+                                            onClick={() => handleChangeStatus(id, StatusUser.TEACHER)}><FontAwesomeIcon
                                         icon={faGraduationCap}/>
                                     </button>
                                 </td>
                             </>
                         ) : (
-                            <td colspan={2}><span
+                            <td colSpan={2} style={{textAlign: 'center'}}><span
                                 className="badge bg-success">Aktualnie zalogowany</span></td>
                         )}
                     </tr>
                 ))}
                 </tbody>
             </table>
-        </Container>
+        </ContainerGlobalSettings>
     )
 
 }
 
-export default withRouter(Users);
+export default Users;

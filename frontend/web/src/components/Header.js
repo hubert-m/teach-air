@@ -1,11 +1,11 @@
 import React from 'react';
 import Routes from "../constants/Routes";
 import Settings from "../constants/Settings";
-import {Link, NavLink} from 'react-router-dom'
+import {NavLink} from 'react-router-dom'
 import {Navbar, Container, Nav, NavDropdown} from "react-bootstrap";
 import {StatusUser} from "../constants/StatusUser";
 
-function Header({history, userData, userToken}) {
+function Header({userData, userToken}) {
 
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top">

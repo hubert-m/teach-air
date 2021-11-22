@@ -1,9 +1,9 @@
 import React from "react";
 import Routes from "../../constants/Routes";
-import {Link, NavLink} from "react-router-dom";
-import {Nav, NavItem, Container as ContainerReactstrap, Tabs, Tab} from "react-bootstrap";
+import {NavLink} from "react-router-dom";
+import {Nav} from "react-bootstrap";
 
-function Container({children}) {
+function ContainerGlobalSettings({children}) {
     return (
         <>
             <div className="jumbotron" style={{marginBottom: '25px'}}>
@@ -26,4 +26,4 @@ function Container({children}) {
     )
 }
 
-export default Container
+export default ContainerGlobalSettings

@@ -1,11 +1,11 @@
 import React from "react";
-import Container from "./Container";
+import ContainerGlobalSettings from "./ContainerGlobalSettings";
 
 const GlobalSettingsHome = () => {
     return (
-        <Container>
+        <ContainerGlobalSettings>
             <h2 className="display-6">Kokpit</h2>
-        </Container>
+        </ContainerGlobalSettings>
     )
 }
 
