@@ -4,26 +4,33 @@ import ContainerGlobalSettings from "./ContainerGlobalSettings";
 import {StatusUser, StatusUserName} from "../../constants/StatusUser";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faGraduationCap, faCheckCircle, faCrown, faUser} from '@fortawesome/free-solid-svg-icons';
+import LoaderScreen from "../../components/LoaderScreen";
 
 const Users = ({userData}) => {
 
     const [usersList, setUsersList] = useState([]);
+    const [showLoader, setShowLoader] = useState(false);
 
-    useEffect(() => {
+    useEffect( () => {
+        setShowLoader(true);
         getAllUsers().then(list => {
             setUsersList(list);
         }).catch(() => {
+        }).finally(async () => {
+            await setShowLoader(false);
         })
     }, [])
 
     const handleChangeStatus = (id, status) => {
+        setShowLoader(true);
         setUserStatus(id, status).then(() => {
             getAllUsers().then(list => {
                 setUsersList(list);
             }).catch(() => {
+            }).finally(async () => {
+                await setShowLoader(false);
             })
         }).catch(() => {
-
         })
     }
 
@@ -136,6 +143,7 @@ const Users = ({userData}) => {
                 ))}
                 </tbody>
             </table>
+            {showLoader && <LoaderScreen/>}
         </ContainerGlobalSettings>
     )
 

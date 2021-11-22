@@ -2,20 +2,25 @@ import React, {useEffect, useState} from "react";
 import {addSex, getSexList} from "../../helpers/User";
 import SweetAlert from "react-bootstrap-sweetalert";
 import ContainerGlobalSettings from "./ContainerGlobalSettings";
+import LoaderScreen from "../../components/LoaderScreen";
 
 const Sex = () => {
     const [sexList, setSexList] = useState([]);
     const [showError, setShowError] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [showLoader, setShowLoader] = useState(false);
     const [data, setData] = useState({
         sex: '',
     });
 
     useEffect(() => {
+        setShowLoader(true);
         getSexList().then(list => {
             setSexList(list);
         }).catch(() => {
+        }).finally(async () => {
+            await setShowLoader(false);
         })
     }, [])
 
@@ -38,6 +43,8 @@ const Sex = () => {
             getSexList().then(list => {
                 setSexList(list);
             }).catch(() => {
+            }).finally(async () => {
+                await setShowLoader(false);
             })
         }).catch(errorMessage => {
             setErrorMessage(errorMessage);
@@ -100,6 +107,7 @@ const Sex = () => {
             >
                 Pomyślnie dodano nową płeć
             </SweetAlert>
+            {showLoader && <LoaderScreen/>}
         </ContainerGlobalSettings>
     )
 
