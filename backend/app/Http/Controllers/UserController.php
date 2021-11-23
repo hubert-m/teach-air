@@ -194,6 +194,7 @@ class UserController extends Controller
     public function search(Request $request)
     {
         $keyword = $request->input('keyword', '');
+        // $keyword = $request->keyword;
         if ($keyword != '') {
             /*
             $users = User::
@@ -216,9 +217,9 @@ class UserController extends Controller
                     */
 
                     $keywords = explode(" ", $keyword);
-                    foreach($keywords as $word) {
+                    foreach ($keywords as $word) {
                         $word = strtolower($word);
-                        $query->whereRaw("LOWER(CONCAT(`name`, `second_name`, `lastname`, `email`)) LIKE ?", "%$word%");
+                        $query->whereRaw("LOWER(CONCAT(COALESCE(`name`,''), COALESCE(`second_name`,''), COALESCE(`lastname`,''), COALESCE(`email`,''))) LIKE ?", "%$word%");
                     }
                 })
                 ->get();

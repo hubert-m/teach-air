@@ -159,6 +159,18 @@ const setUserStatus = (id, status) => {
     });
 };
 
+const getSearchUsers = (keyword) => {
+    return new Promise((resolve, reject) => {
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        const data = {"keyword": keyword};
+        axios.post(Settings.API + ApiEndpoints.SEARCH_USERS, data, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+};
+
 
 export {
     getMe,
@@ -170,5 +182,6 @@ export {
     addSex,
     getAllUsers,
     setUserStatus,
+    getSearchUsers,
     // getUserData,
 };

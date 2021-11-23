@@ -6,6 +6,7 @@ const ApiEndpoints = {
     SEX_LIST: '/users/sex_list/',
     SEX_ADD: '/users/sex_add/',
     SET_USER_STATUS: '/users/set_status/',
+    SEARCH_USERS: '/users/search/'
 }
 
 export default ApiEndpoints;

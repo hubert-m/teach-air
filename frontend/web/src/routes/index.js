@@ -13,6 +13,7 @@ import Sex from "../views/GlobalSettings/Sex";
 import RequireAuthAdmin from "./requireAuthAdmin";
 import ScrollToTop from "../helpers/ScrollToTop";
 import MessagesList from "../views/Messages/MessagesList";
+import MessagesConversation from "../views/Messages/MessagesConversation";
 
 const routes = [
     {path: '/', Component: Home},
@@ -20,6 +21,7 @@ const routes = [
     {path: Routes.LOGOUT, Component: Logout, IsAuth: true},
     {path: Routes.REGISTER, Component: Register},
     {path: Routes.MESSAGES_LIST, Component: MessagesList, IsAuth: true},
+    {path: Routes.MESSAGES_WITH_USER + ":id", Component: MessagesConversation, IsAuth: true},
     {path: Routes.GLOBAL_SETTINGS, Component: GlobalSettingsHome, IsAdmin: true},
     {path: Routes.GLOBAL_SETTINGS_USERS, Component: Users, IsAdmin: true},
     {path: Routes.GLOBAL_SETTINGS_SEX, Component: Sex, IsAdmin: true},

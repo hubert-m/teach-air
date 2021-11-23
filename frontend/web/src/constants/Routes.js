@@ -9,10 +9,10 @@ const Routes = {
     GLOBAL_SETTINGS_USERS: '/settings/users',
     GLOBAL_SETTINGS_SEX: '/settings/sex',
     MESSAGES_LIST: '/messages',
-    MESSAGES_WITH_USER: '/messages/:id',
+    MESSAGES_WITH_USER: '/messages/', // :id
     MAIN_COURSES: '/courses',
-    SUB_COURSES: '/courses/:id',
-    THREAD: '/thread/:id'
+    SUB_COURSES: '/courses/', // :id
+    THREAD: '/thread/' // :id
 }
 
 export default Routes;
