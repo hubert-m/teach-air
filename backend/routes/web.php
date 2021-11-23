@@ -38,12 +38,14 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
 
             $router->get('/users/me', ['uses' => 'UserController@me']);
             $router->get('/users', 'UserController@index');
-            $router->get('/users/{id}', 'UserController@show');
             //$router->put('/users/{id}', 'UserController@update');
             //$router->delete('/users/{id}', 'UserController@destroy');
 
             $router->post('/users/sex_add', 'UserController@sex_add');
+            $router->get('/users/search', 'UserController@search');
+
             $router->put('/users/set_status/{id}', 'UserController@set_status');
+            $router->get('/users/{id}', 'UserController@show');
         }
     );
 

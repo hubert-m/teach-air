@@ -29,7 +29,7 @@ class UserController extends Controller
     {
         $users = User::all();
 
-        foreach($users as $i => $user) {
+        foreach ($users as $i => $user) {
             $sex = Sex::where('id', '=', $user->sex_id)->first();
             $users[$i]->sex_id = $sex;
         }
@@ -48,7 +48,7 @@ class UserController extends Controller
         ]);
 
         $sex = Sex::find($request->sex_id);
-        if(!$sex) {
+        if (!$sex) {
             return response()->json([
                 'error' => 'Sex does not exist.'
             ], 404);
@@ -84,7 +84,7 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        if(!$user) {
+        if (!$user) {
             return response()->json([
                 'error' => 'User does not exist.'
             ], 404);
@@ -99,7 +99,7 @@ class UserController extends Controller
     /**
      * Authenticate a user and return the token if the provided credentials are correct.
      *
-     * @param  User $user
+     * @param User $user
      * @return mixed
      */
     public function me()
@@ -118,7 +118,7 @@ class UserController extends Controller
 
     public function sex_add(Request $request)
     {
-        if($this->request->auth->status !== 3) {
+        if ($this->request->auth->status !== 3) {
             return response()->json([
                 'error' => 'No permissions'
             ], 404);
@@ -129,7 +129,7 @@ class UserController extends Controller
         ]);
 
         $sex = Sex::where('value', '=', $this->request->sex)->first();
-        if($sex) {
+        if ($sex) {
             return response()->json([
                 'error' => 'Sex is already in database'
             ], 404);
@@ -155,22 +155,28 @@ class UserController extends Controller
 
     public function set_status(Request $request, $id)
     {
-        if($this->request->auth->status !== 3) {
+        if ($this->request->auth->status !== 3) {
             return response()->json([
                 'error' => 'No permissions'
             ], 404);
         }
 
+        if ($this->request->auth->id == $id) {
+            return response()->json([
+                'error' => 'You cannot change status of your account'
+            ], 404);
+        }
+
         $user = User::find($id);
 
-        if(!$user) {
+        if (!$user) {
             return response()->json([
                 'error' => 'User does not exist.'
             ], 404);
         }
 
         try {
-            $user->status = (int) $request->input('status') ?: $user->status;
+            $user->status = (int)$request->input('status') ?: $user->status;
             $user->save();
 
             return response()->json([
@@ -183,5 +189,44 @@ class UserController extends Controller
             ], 500);
         }
 
+    }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->input('keyword', '');
+        if ($keyword != '') {
+            /*
+            $users = User::
+            where("name", "LIKE","%$keyword%")
+                ->orWhere("lastname", "LIKE", "%$keyword%")
+                ->orWhere("email", "LIKE", "%$keyword%")
+                ->get();
+            */
+
+            $users = User::
+            where("id", "!=", $this->request->auth->id)
+                ->where(function ($query) use ($keyword) {
+                    /*
+                    $keywords = explode(" ", $keyword);
+                    foreach($keywords as $word) {
+                        $query->where('name', 'LIKE', "%$word%")
+                            ->orWhere('lastname', 'LIKE', "%$word%")
+                            ->orWhere('email', 'LIKE', "%$word%");
+                    }
+                    */
+
+                    $keywords = explode(" ", $keyword);
+                    foreach($keywords as $word) {
+                        $word = strtolower($word);
+                        $query->whereRaw("LOWER(CONCAT(`name`, `second_name`, `lastname`, `email`)) LIKE ?", "%$word%");
+                    }
+                })
+                ->get();
+
+        } else {
+            $users = User::all();
+        }
+
+        return response()->json($users);
     }
 }
