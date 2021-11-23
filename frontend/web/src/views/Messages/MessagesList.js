@@ -6,11 +6,13 @@ import Routes from "../../constants/Routes";
 import {useHistory} from "react-router";
 import {size, isNull} from "lodash";
 import {StatusUser, StatusUserName} from "../../constants/StatusUser";
+import LoaderScreen from "../../components/LoaderScreen";
 
 const MessagesList = () => {
     const history = useHistory();
     const [loadOptions, setLoadOptions] = useState([]);
     const [lengthKeywordWhenOneRecord, setLengthKeywordWhenOneRecord] = useState(null);
+    const [showLoader, setShowLoader] = useState(false);
     const [data, setData] = useState({
         keyword: '',
     });
@@ -29,16 +31,17 @@ const MessagesList = () => {
                 setLengthKeywordWhenOneRecord(e.target.value.length);
             }
 
-            console.log(lengthKeywordWhenOneRecord);
-
             if(size(loadOptions) > 1) {
                 setLengthKeywordWhenOneRecord(null);
             }
 
             if(e.target.value.length < lengthKeywordWhenOneRecord || isNull(lengthKeywordWhenOneRecord)) {
+                setShowLoader(true);
                 getSearchUsers(e.target.value).then(list => {
                     setLoadOptions(list);
                 }).catch(() => {
+                }).finally(async () => {
+                    await setShowLoader(false);
                 })
             }
         }
@@ -103,6 +106,7 @@ const MessagesList = () => {
                 <hr className="my-4"/>
             </div>
             <p>Brak</p>
+            {showLoader && <LoaderScreen/>}
         </>
     )
 }
