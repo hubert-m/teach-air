@@ -106,11 +106,15 @@ class MessageController extends Controller
 
         $arr_id_users = array_unique($arr_id_users);
 
-        $users = User::where(function ($query) use ($arr_id_users) {
-            foreach ($arr_id_users as $user_id) {
-                $query->orWhere('id', '=', $user_id);
-            }
-        })->get();
+        if(count($arr_id_users) > 0) {
+            $users = User::where(function ($query) use ($arr_id_users) {
+                foreach ($arr_id_users as $user_id) {
+                    $query->orWhere('id', '=', $user_id);
+                }
+            })->get();
+        } else {
+            $users = array();
+        }
 
         // decore contact with last message between them
         foreach ($users as $i => $user) {
