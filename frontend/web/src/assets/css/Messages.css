@@ -1,0 +1,18 @@
+.message-my, .message-contact {
+    display: block;
+    margin: 10px 0;
+    font-size: 21px;
+}
+
+.message-my span.badge, .message-contact span.badge {
+    padding: 15px;
+}
+
+.message-my span.time, .message-contact span.time {
+    font-size: 9px;
+    margin: 0 5px;
+}
+
+.message-my {
+    text-align: right;
+}

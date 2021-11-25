@@ -171,6 +171,17 @@ const getSearchUsers = (keyword) => {
     });
 };
 
+const getUserById = (id) => {
+    return new Promise((resolve, reject) => {
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.get(Settings.API + ApiEndpoints.GET_USER_BY_ID + id, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+};
+
 
 export {
     getMe,
@@ -183,5 +194,6 @@ export {
     getAllUsers,
     setUserStatus,
     getSearchUsers,
+    getUserById,
     // getUserData,
 };

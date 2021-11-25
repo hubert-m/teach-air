@@ -108,9 +108,21 @@ class MessageController extends Controller
 
         $users = User::where(function ($query) use ($arr_id_users) {
             foreach ($arr_id_users as $user_id) {
-                $query->where('id', '=', $user_id);
+                $query->orWhere('id', '=', $user_id);
             }
         })->get();
+
+        // decore contact with last message between them
+        foreach ($users as $i => $user) {
+            $id = $user->id;
+            $last_message = Message::where(function ($query) use ($id) {
+                $query->where('sender_id', '=', $this->request->auth->id)->where('recipient_id', '=', $id);
+            })->orWhere(function ($query) use ($id) {
+                $query->where('sender_id', '=', $id)->where('recipient_id', '=', $this->request->auth->id);
+            })->latest()->first();
+
+            $users[$i]->lastMessage = $last_message;
+        }
 
          return response()->json($users);
     }
