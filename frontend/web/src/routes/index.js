@@ -14,6 +14,9 @@ import RequireAuthAdmin from "./requireAuthAdmin";
 import ScrollToTop from "../helpers/ScrollToTop";
 import MessagesList from "../views/Messages/MessagesList";
 import MessagesConversation from "../views/Messages/MessagesConversation";
+import Settings from "../views/Settings/Settings";
+import MainCourses from "../views/Courses/MainCourses";
+import SubCourses from "../views/Courses/SubCourses";
 
 const routes = [
     {path: '/', Component: Home},
@@ -25,6 +28,9 @@ const routes = [
     {path: Routes.GLOBAL_SETTINGS, Component: GlobalSettingsHome, IsAdmin: true},
     {path: Routes.GLOBAL_SETTINGS_USERS, Component: Users, IsAdmin: true},
     {path: Routes.GLOBAL_SETTINGS_SEX, Component: Sex, IsAdmin: true},
+    {path: Routes.SETTINGS, Component: Settings, IsAuth: true},
+    {path: Routes.MAIN_COURSES, Component: MainCourses, IsAuth: true},
+    {path: Routes.SUB_COURSES + ":id", Component: SubCourses, IsAuth: true},
     {path: '*', Component: PageNotFound},
 ]
 

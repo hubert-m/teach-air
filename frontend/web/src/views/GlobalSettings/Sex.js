@@ -3,6 +3,8 @@ import {addSex, getSexList} from "../../helpers/User";
 import SweetAlert from "react-bootstrap-sweetalert";
 import ContainerGlobalSettings from "./ContainerGlobalSettings";
 import LoaderScreen from "../../components/LoaderScreen";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faTrash} from "@fortawesome/free-solid-svg-icons";
 
 const Sex = () => {
     const [sexList, setSexList] = useState([]);
@@ -52,6 +54,10 @@ const Sex = () => {
         });
     }
 
+    const handleDeleteSex = (id) => {
+        // jeśli SweetAlert wewnątrz map, to jego uruchamianie tylko po id, bo inaczej wyświetlą się wszystkie
+    }
+
     return (
         <ContainerGlobalSettings>
             <div className="jumbotron">
@@ -76,6 +82,7 @@ const Sex = () => {
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Płeć</th>
+                    <th scope="col">&nbsp;</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -83,6 +90,12 @@ const Sex = () => {
                     <tr key={id}>
                         <th scope="row">{id}</th>
                         <td>{value}</td>
+                        <td>
+                            <button type="button" className="btn btn-danger"
+                                    onClick={() => handleDeleteSex(id)}><FontAwesomeIcon
+                                icon={faTrash}/>
+                            </button>
+                        </td>
                     </tr>
                 ))}
                 </tbody>
