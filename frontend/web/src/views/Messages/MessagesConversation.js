@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useParams} from "react-router";
 import {getUserById} from "../../helpers/User";
 import LoaderScreen from "../../components/LoaderScreen";
@@ -14,10 +14,15 @@ const MessagesConversation = ({userData}) => {
     const [showError, setShowError] = useState(false);
     const [showLoader, setShowLoader] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
+    const messagesEndRef = useRef(null)
     const [data, setData] = useState({
         message: '',
         recipient_id: id,
     });
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
 
     const funcUpdateMessage = () => {
         getMessages(id).then(list => {
@@ -81,6 +86,10 @@ const MessagesConversation = ({userData}) => {
         // updateMessages.start();
     }, [])
 
+    useEffect(() => {
+        scrollToBottom()
+    }, [messages]);
+
     const handleKeyPress = event => {
         if (event.key === 'Enter') {
             handleSendMessage();
@@ -93,29 +102,32 @@ const MessagesConversation = ({userData}) => {
                 <h1 className="display-7">Rozmowa z {contact?.name} {contact?.second_name} {contact?.lastname}</h1>
                 <hr className="my-4"/>
             </div>
-            {messages.map(({id, content, sender_id, created_at, is_read}) => (
-                <React.Fragment key={id}>
-                    {sender_id === userData?.id ? (
-                        <div className="message-my">
-                            <span className="time">{parseTimeStamp(created_at)}</span>
-                            <span className="badge bg-primary">{content}</span>
-                            {is_read === 1 && (
-                                <p className="is-read"><FontAwesome
-                                    className='super-crazy-colors'
-                                    name='check'
-                                    size='1x'
-                                    style={{textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)'}}
-                                />Wiadomość przeczytana</p>
-                            )}
-                        </div>
-                    ) : (
-                        <div className="message-contact">
-                            <span className="badge bg-secondary">{content}</span>
-                            <span className="time">{parseTimeStamp(created_at)}</span>
-                        </div>
-                    )}
-                </React.Fragment>
-            ))}
+            <div style={{maxHeight: 400, overflowY: 'auto', overflowX: 'hidden', whiteSpace: 'nowrap'}}>
+                {messages.map(({id, content, sender_id, created_at, is_read}) => (
+                    <React.Fragment key={id}>
+                        {sender_id === userData?.id ? (
+                            <div className="message-my">
+                                <span className="time">{parseTimeStamp(created_at)}</span>
+                                <span className="badge bg-primary">{content}</span>
+                                {is_read === 1 && (
+                                    <p className="is-read"><FontAwesome
+                                        className='super-crazy-colors'
+                                        name='check'
+                                        size='1x'
+                                        style={{textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)'}}
+                                    />Wiadomość przeczytana</p>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="message-contact">
+                                <span className="badge bg-secondary">{content}</span>
+                                <span className="time">{parseTimeStamp(created_at)}</span>
+                            </div>
+                        )}
+                    </React.Fragment>
+                ))}
+                <div ref={messagesEndRef} />
+            </div>
             <div className="row">
                 <div className="col-lg-6 offset-lg-3">
                     <textarea
@@ -129,7 +141,8 @@ const MessagesConversation = ({userData}) => {
                         onChange={handleOnChange}/>
                 </div>
                 <div className="col-lg-6 offset-lg-3">
-                    <button className="fourth" style={{marginTop: '20px'}} onClick={() => handleSendMessage()}>Wyślij
+                    <button className="fourth" style={{marginTop: '20px'}}
+                            onClick={() => handleSendMessage()}>Wyślij
                         wiadomość
                     </button>
                 </div>

@@ -86,7 +86,7 @@ class MessageController extends Controller
                 $query->where('sender_id', '=', $id)->where('recipient_id', '=', $this->request->auth->id);
             })->get();
 
-        foreach ($messages as $i => $message) {
+        foreach ($messages as $message) {
             if($message->is_read == 0 && $message->recipient_id == $this->request->auth->id) {
                 try {
                     $message->is_read = 1;
