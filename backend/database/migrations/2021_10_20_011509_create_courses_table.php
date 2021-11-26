@@ -30,7 +30,7 @@ class CreateCoursesTable extends Migration
             // jesli kasujemy kurs nadrzedny,
             // to kasowane są też wszystkie podrzedne
             $table->foreign('parent_id')->references('id')->on('courses')->onDelete('cascade');
-            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

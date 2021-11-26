@@ -26,9 +26,9 @@ class CreateMessagesTable extends Migration
         });
 
         Schema::table('messages', function($table) {
-            $table->foreign('sender_id')->references('id')->on('users');
-            $table->foreign('recipient_id')->references('id')->on('users');
-            $table->foreign('file_id')->references('id')->on('files');
+            $table->foreign('sender_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('recipient_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('file_id')->references('id')->on('files')->onDelete('cascade');
         });
     }
 

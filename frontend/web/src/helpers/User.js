@@ -136,10 +136,10 @@ const addSex = (data) => {
     });
 }
 
-const getAllUsers = () => {
+const deleteSex = (id) => {
     return new Promise((resolve, reject) => {
         const config = {headers: {token: localStorage.getItem("userToken")}};
-        axios.get(Settings.API + ApiEndpoints.ALL_USERS, config).then((response) => {
+        axios.delete(Settings.API + ApiEndpoints.DELETE_SEX + id, config).then((response) => {
             resolve(response.data);
         }).catch((error) => {
             reject(error);
@@ -159,7 +159,7 @@ const setUserStatus = (id, status) => {
     });
 };
 
-const getSearchUsers = (keyword) => {
+const getSearchUsers = (keyword = "") => {
     return new Promise((resolve, reject) => {
         const config = {headers: {token: localStorage.getItem("userToken")}};
         const data = {"keyword": keyword};
@@ -191,7 +191,7 @@ export {
     register,
     getSexList,
     addSex,
-    getAllUsers,
+    deleteSex,
     setUserStatus,
     getSearchUsers,
     getUserById,

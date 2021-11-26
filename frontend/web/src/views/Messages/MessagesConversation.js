@@ -76,8 +76,8 @@ const MessagesConversation = ({userData}) => {
                 <h1 className="display-7">Rozmowa z {contact?.name} {contact?.second_name} {contact?.lastname}</h1>
                 <hr className="my-4"/>
             </div>
-            {messages.map(({content, sender_id, created_at}) => (
-                <>
+            {messages.map(({id, content, sender_id, created_at}) => (
+                <React.Fragment key={id}>
                     {sender_id === userData?.id ? (
                         <div className="message-my">
                             <span className="time">{parseTimeStamp(created_at)}</span>
@@ -89,7 +89,7 @@ const MessagesConversation = ({userData}) => {
                             <span className="time">{parseTimeStamp(created_at)}</span>
                         </div>
                     )}
-                </>
+                </React.Fragment>
             ))}
             <div className="row">
                 <div className="col-lg-6 offset-lg-3">

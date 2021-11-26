@@ -28,7 +28,7 @@ class CreateThreadsTable extends Migration
         Schema::table('threads', function($table) {
             // jeśli skasowany zostanie kurs - to wszystkie wątki zawarte w nim również
             $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
-            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

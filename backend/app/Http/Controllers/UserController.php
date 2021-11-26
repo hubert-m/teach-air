@@ -25,18 +25,6 @@ class UserController extends Controller
         $this->request = $request;
     }
 
-    public function index()
-    {
-        $users = User::all();
-
-        foreach ($users as $i => $user) {
-            $sex = Sex::where('id', '=', $user->sex_id)->first();
-            $users[$i]->sex_id = $sex;
-        }
-
-        return response()->json($users);
-    }
-
     public function create(Request $request)
     {
         $this->validate($this->request, [
@@ -46,6 +34,13 @@ class UserController extends Controller
             'lastname' => 'required',
             'sex_id' => 'required|numeric'
         ]);
+
+        $user = User::where('email', '=', $request->email)->first();
+        if ($user) {
+            return response()->json([
+                'error' => 'Email is already in use'
+            ], 404);
+        }
 
         $sex = Sex::find($request->sex_id);
         if (!$sex) {
@@ -113,6 +108,10 @@ class UserController extends Controller
     public function sex_list()
     {
         $sex = Sex::all();
+        foreach ($sex as $i => $sex_tmp) {
+            $countUsers = count(User::where('sex_id', '=', $sex_tmp->id)->get());
+            $sex[$i]->count_users = $countUsers;
+        }
         return response()->json($sex);
     }
 
@@ -146,6 +145,30 @@ class UserController extends Controller
                 'sex' => $sex
             ], 201);
 
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function delete_sex($id)
+    {
+        $sex = Sex::find($id);
+
+        if(!$sex) {
+            return response()->json([
+                'error' => 'Sex does not exist.'
+            ], 404);
+        }
+
+        try {
+            $sex->delete();
+
+            return response()->json([
+                'success' => 'Sex removed successfully',
+                'course' => $sex
+            ], 202);
         } catch (\Throwable $e) {
             return response()->json([
                 'error' => $e->getMessage()
@@ -226,6 +249,11 @@ class UserController extends Controller
 
         } else {
             $users = User::all();
+        }
+
+        foreach ($users as $i => $user) {
+            $sex = Sex::where('id', '=', $user->sex_id)->first();
+            $users[$i]->sex_id = $sex;
         }
 
         return response()->json($users);

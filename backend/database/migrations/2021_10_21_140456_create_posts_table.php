@@ -25,9 +25,9 @@ class CreatePostsTable extends Migration
         });
 
         Schema::table('posts', function($table) {
-            $table->foreign('thread_id')->references('id')->on('threads');
-            $table->foreign('file_id')->references('id')->on('files');
-            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('thread_id')->references('id')->on('threads')->onDelete('cascade');
+            $table->foreign('file_id')->references('id')->on('files')->onDelete('cascade');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

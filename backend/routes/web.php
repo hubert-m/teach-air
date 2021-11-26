@@ -37,13 +37,13 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
             $router->delete('/courses/{id}', 'CourseController@destroy');
 
             $router->get('/users/me', ['uses' => 'UserController@me']);
-            $router->get('/users', 'UserController@index');
             //$router->put('/users/{id}', 'UserController@update');
             //$router->delete('/users/{id}', 'UserController@destroy');
 
             $router->post('/users/sex_add', 'UserController@sex_add');
-            $router->post('/users/search', 'UserController@search');
+            $router->delete('/users/delete_sex/{id}', 'UserController@delete_sex');
 
+            $router->post('/users/search', 'UserController@search');
             $router->put('/users/set_status/{id}', 'UserController@set_status');
             $router->get('/users/{id}', 'UserController@show');
 

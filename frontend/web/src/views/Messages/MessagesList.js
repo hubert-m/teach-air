@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {getAllUsers, getSearchUsers} from "../../helpers/User";
+import {getSearchUsers} from "../../helpers/User";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEnvelope} from "@fortawesome/free-solid-svg-icons";
 import Routes from "../../constants/Routes";

@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
-import {addSex, getSexList} from "../../helpers/User";
+import {addSex, deleteSex, getSexList} from "../../helpers/User";
 import SweetAlert from "react-bootstrap-sweetalert";
 import ContainerGlobalSettings from "./ContainerGlobalSettings";
 import LoaderScreen from "../../components/LoaderScreen";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTrash} from "@fortawesome/free-solid-svg-icons";
 
-const Sex = () => {
+const Sex = ({userData}) => {
     const [sexList, setSexList] = useState([]);
     const [showError, setShowError] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
@@ -15,6 +15,7 @@ const Sex = () => {
     const [data, setData] = useState({
         sex: '',
     });
+    const [showWarningDeleteMessage, setShowWarningMessage] = useState();
 
     useEffect(() => {
         setShowLoader(true);
@@ -45,8 +46,6 @@ const Sex = () => {
             getSexList().then(list => {
                 setSexList(list);
             }).catch(() => {
-            }).finally(async () => {
-                await setShowLoader(false);
             })
         }).catch(errorMessage => {
             setErrorMessage(errorMessage);
@@ -54,9 +53,37 @@ const Sex = () => {
         });
     }
 
-    const handleDeleteSex = (id) => {
-        // jeśli SweetAlert wewnątrz map, to jego uruchamianie tylko po id, bo inaczej wyświetlą się wszystkie
+    const handleDeleteSex = (id, count_users, forceDelete = false) => {
+        if (count_users === 0 || forceDelete) {
+            setShowWarningMessage({
+                id: id,
+                isWarning: false
+            })
+
+            setShowLoader(true);
+            deleteSex(id).then(() => {
+                getSexList().then(list => {
+                    setSexList(list);
+                }).catch(() => {
+                }).finally(async () => {
+                    await setShowLoader(false);
+                })
+            }).catch(() => {
+            });
+
+        } else {
+            setShowWarningMessage({
+                id: id,
+                isWarning: true
+            })
+        }
     }
+
+    const handleKeyPress = event => {
+        if (event.key === 'Enter') {
+            handleAddSex();
+        }
+    };
 
     return (
         <ContainerGlobalSettings>
@@ -68,6 +95,7 @@ const Sex = () => {
                 <div className="col-lg-6">
                     <input type="text" id="sex" className="form-control third" name="sex"
                            placeholder="Płeć" value={data.sex}
+                           onKeyPress={handleKeyPress}
                            onChange={handleOnChange}/>
                 </div>
                 <div className="col-lg-6">
@@ -82,19 +110,48 @@ const Sex = () => {
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Płeć</th>
+                    <th scope="col">Zarejestrowanych użytkowników</th>
                     <th scope="col">&nbsp;</th>
                 </tr>
                 </thead>
                 <tbody>
-                {sexList.map(({id, value}) => (
+                {sexList.map(({id, value, count_users}) => (
                     <tr key={id}>
                         <th scope="row">{id}</th>
                         <td>{value}</td>
+                        <td>{count_users}</td>
                         <td>
-                            <button type="button" className="btn btn-danger"
-                                    onClick={() => handleDeleteSex(id)}><FontAwesomeIcon
-                                icon={faTrash}/>
-                            </button>
+                            {userData?.sex_id?.id === id ? (
+                                <td><span className="badge bg-danger">To Twoja płeć</span>
+                                </td>
+                            ) : (
+                                <>
+                                    <button type="button" className="btn btn-danger"
+                                            onClick={() => handleDeleteSex(id, count_users)}><FontAwesomeIcon
+                                        icon={faTrash}/>
+                                    </button>
+                                    <SweetAlert
+                                        warning
+                                        showCancel
+                                        show={showWarningDeleteMessage?.id === id && showWarningDeleteMessage?.isWarning}
+                                        title="Czy na pewno?"
+                                        confirmBtnText="Tak, skasuj"
+                                        cancelBtnText="Nie, zostaw"
+                                        confirmBtnBsStyle="danger"
+                                        cancelBtnBsStyle="secondary"
+                                        onConfirm={() => handleDeleteSex(id, count_users, true)}
+                                        onCancel={() => setShowWarningMessage({
+                                            id: id,
+                                            isWarning: false
+                                        })}
+                                    >
+                                        {count_users} zarejestrowanych użytkowników posiada tą płeć. Skasowanie płci
+                                        spowoduje
+                                        skasowanie również tych użytkoników. Proces jest nieodwracalny. Chcesz usunąć
+                                        płeć {value} ?
+                                    </SweetAlert>
+                                </>
+                            )}
                         </td>
                     </tr>
                 ))}
