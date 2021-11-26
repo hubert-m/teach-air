@@ -154,11 +154,23 @@ class UserController extends Controller
 
     public function delete_sex($id)
     {
+        if ($this->request->auth->status !== 3) {
+            return response()->json([
+                'error' => 'No permissions'
+            ], 404);
+        }
+
         $sex = Sex::find($id);
 
         if(!$sex) {
             return response()->json([
                 'error' => 'Sex does not exist.'
+            ], 404);
+        }
+
+        if ($this->request->auth->sex_id == $id) {
+            return response()->json([
+                'error' => 'You cannot delete your sex'
             ], 404);
         }
 

@@ -16,3 +16,8 @@
 .message-my {
     text-align: right;
 }
+
+.is-read {
+    color: #555;
+    font-size: 11px;
+}

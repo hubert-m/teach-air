@@ -94,7 +94,7 @@ const Sex = ({userData}) => {
             <div className="row">
                 <div className="col-lg-6">
                     <input type="text" id="sex" className="form-control third" name="sex"
-                           placeholder="Płeć" value={data.sex}
+                           placeholder="Wprowadź nazwę płci" value={data.sex}
                            onKeyPress={handleKeyPress}
                            onChange={handleOnChange}/>
                 </div>
