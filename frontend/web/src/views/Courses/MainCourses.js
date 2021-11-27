@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
 import Select from "react-select";
-import {IconsOptions} from "../../constants/Icons";
+import {Icons, IconsOptions} from "../../constants/Icons";
 import {StatusUser} from "../../constants/StatusUser";
+import Routes from "../../constants/Routes";
+import {Link} from "react-router-dom";
 
 const MainCourses = ({userData}) => {
     const [data, setData] = useState({
@@ -58,8 +60,46 @@ const MainCourses = ({userData}) => {
                 </div>
             )}
             <div className="jumbotron" style={{marginTop: '50px'}}>
-                <h1 className="display-7">Lista głównych kursów</h1>
+                <h1 className="display-7">Główne kursy</h1>
                 <hr className="my-4"/>
+            </div>
+            <div className="row">
+                <div className="col-lg-4 col-md-6">
+                    <Link to={Routes.LOGIN} className="course-box fadeIn">
+                        <div className="course-box-ico">
+                            {Icons[2]}
+                        </div>
+                        <h3 className="course-box-name">Nazwa kursu</h3>
+                        <p className="course-box-description">Lorem ipsum opis kursu</p>
+                    </Link>
+                </div>
+                <div className="col-lg-4 col-md-6">
+                    <Link to={Routes.LOGIN} className="course-box fadeIn">
+                        <div className="course-box-ico">
+                            {Icons[2]}
+                        </div>
+                        <h3 className="course-box-name">Nazwa kursu</h3>
+                        <p className="course-box-description">Lorem ipsum opis kursu</p>
+                    </Link>
+                </div>
+                <div className="col-lg-4 col-md-6">
+                    <Link to={Routes.LOGIN} className="course-box fadeIn">
+                        <div className="course-box-ico">
+                            {Icons[2]}
+                        </div>
+                        <h3 className="course-box-name">Nazwa kursu</h3>
+                        <p className="course-box-description">Lorem ipsum opis kursu</p>
+                    </Link>
+                </div>
+                <div className="col-lg-4 col-md-6">
+                    <Link to={Routes.LOGIN} className="course-box fadeIn">
+                        <div className="course-box-ico">
+                            {Icons[2]}
+                        </div>
+                        <h3 className="course-box-name">Nazwa kursu</h3>
+                        <p className="course-box-description">Lorem ipsum opis kursu</p>
+                    </Link>
+                </div>
             </div>
         </>
     )
