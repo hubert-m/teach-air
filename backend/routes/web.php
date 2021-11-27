@@ -30,11 +30,8 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
         ['middleware' => 'jwt.auth'],
         function () use ($router) {
 
-            $router->get('/courses', 'CourseController@index');
-            $router->post('/courses', 'CourseController@create');
-            $router->get('/courses/{id}', 'CourseController@show');
-            $router->put('/courses/{id}', 'CourseController@update');
-            $router->delete('/courses/{id}', 'CourseController@destroy');
+            //$router->put('/courses/{id}', 'CourseController@update');
+            //$router->delete('/courses/{id}', 'CourseController@destroy');
 
             $router->get('/users/me', ['uses' => 'UserController@me']);
             //$router->put('/users/{id}', 'UserController@update');
@@ -51,6 +48,12 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
             $router->post('/messages/send_message', 'MessageController@send_message');
             $router->get('/messages/get_messages/{id}', 'MessageController@get_messages');
             $router->get('/messages/get_contact_list', 'MessageController@get_contact_list');
+
+            $router->post('/courses/get_courses_list', 'CourseController@get_courses_list');
+            $router->get('/courses/get_course/{id}', 'CourseController@get_course');
+            $router->post('/courses/create_course', 'CourseController@create_course');
+            $router->get('/courses/get_members_of_course/{id}', 'CourseController@get_members_of_course');
+            // add member of course
         }
     );
 

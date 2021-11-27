@@ -141,7 +141,7 @@ const MessagesConversation = ({userData}) => {
                         onChange={handleOnChange}/>
                 </div>
                 <div className="col-lg-6 offset-lg-3">
-                    <button className="fourth" style={{marginTop: '20px'}}
+                    <button style={{marginTop: '20px'}}
                             onClick={() => handleSendMessage()}>Wyślij
                         wiadomość
                     </button>

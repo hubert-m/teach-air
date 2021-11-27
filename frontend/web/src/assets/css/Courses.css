@@ -19,6 +19,14 @@
     color: #FFF;
 }
 
+.course-box:active  {
+    -moz-transform: scale(0.95);
+    -webkit-transform: scale(0.95);
+    -o-transform: scale(0.95);
+    -ms-transform: scale(0.95);
+    transform: scale(0.95);
+}
+
 .course-box-ico {
     background-color: var(--bs-primary);
     padding: 15px;

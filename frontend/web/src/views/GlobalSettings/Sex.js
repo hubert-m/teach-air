@@ -99,7 +99,7 @@ const Sex = ({userData}) => {
                            onChange={handleOnChange}/>
                 </div>
                 <div className="col-lg-6">
-                    <button className="fourth" style={{marginTop: '5px'}} onClick={() => handleAddSex()}>Dodaj płeć
+                    <button style={{marginTop: '5px'}} onClick={() => handleAddSex()}>Dodaj płeć
                     </button>
                 </div>
 

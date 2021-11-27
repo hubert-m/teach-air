@@ -14,6 +14,9 @@ const ApiEndpoints = {
     SEND_MESSAGE: '/messages/send_message/',
     GET_MESSAGES: '/messages/get_messages/', // :id
     GET_CONTACT_LIST: '/messages/get_contact_list/',
+
+    GET_COURSES_LIST: '/courses/get_courses_list',
+    ADD_COURSE: '/courses/create_course'
 }
 
 export default ApiEndpoints;
