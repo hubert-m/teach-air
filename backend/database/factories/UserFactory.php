@@ -30,7 +30,8 @@ class UserFactory extends Factory
             'name' => $this->faker->firstNameMale,
             'lastname' => $this->faker->lastName,
             'phone' => $this->faker->phoneNumber,
-            'sex_id' => 1
+            'sex_id' => 1,
+            'activate_token' => uniqid()
         ];
 
         $female = [
@@ -40,7 +41,8 @@ class UserFactory extends Factory
             'second_name' => $this->faker->firstNameFemale,
             'lastname' => $this->faker->lastName,
             'profile_image' => $this->faker->imageUrl,
-            'sex_id' => 2
+            'sex_id' => 2,
+            'activate_token' => uniqid()
         ];
 
         $result = [$male, $female];

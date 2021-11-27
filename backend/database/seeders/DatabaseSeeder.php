@@ -34,7 +34,8 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Hubert',
                 'lastname' => 'Machała',
                 'status' => 3,
-                'sex_id' => 1
+                'sex_id' => 1,
+                'activate_token' => uniqid()
             )
         );
 

@@ -22,7 +22,8 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password'),
             'name' => Str::random(10),
             'lastname' => Str::random(10),
-            'sex_id' => 1
+            'sex_id' => 1,
+            'activate_token' => uniqid()
         ]);
     }
 }

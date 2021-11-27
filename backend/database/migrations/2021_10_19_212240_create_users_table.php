@@ -31,7 +31,7 @@ class CreateUsersTable extends Migration
             $table->timestamp("last_change_pass")->default(DB::raw('CURRENT_TIMESTAMP')); // YYYY-MM-DD HH:mm:ss // dateTime i now() zwracało godzine wcześniejszy czas
             $table->boolean("show_email")->default(false);
             $table->bigInteger('sex_id')->unsigned(); // id płci z tabeli 'sex'
-            // dodać kolumnę z domyślnie generowanym ciągiem znaków - pole unikatowe do aktywacji konta - ciąg znaków przyklejony do linku wysylany na maila przy rejestracji i przy przypominaniu hasla
+            $table->string("activate_token", 100);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });

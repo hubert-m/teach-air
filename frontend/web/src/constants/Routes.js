@@ -5,6 +5,7 @@ const Routes = {
     FORGET_PASSWORD: '/forget-password',
     REGISTER: '/register',
     SETTINGS: '/account/settings',
+    USER_ACTIVATION: '/activation/', // :code (można traktować jak unique, nie trzeba przekazywać id usera)
     GLOBAL_SETTINGS: '/settings/home',
     GLOBAL_SETTINGS_USERS: '/settings/users',
     GLOBAL_SETTINGS_SEX: '/settings/sex',

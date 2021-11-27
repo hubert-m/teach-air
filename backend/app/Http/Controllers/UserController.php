@@ -61,6 +61,7 @@ class UserController extends Controller
             $user->hobby = $request->hobby;
             $user->description = $request->description;
             $user->sex_id = $request->sex_id;
+            $user->activate_token = uniqid();
 
             $user->save();
 
