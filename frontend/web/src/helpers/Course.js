@@ -44,7 +44,19 @@ const addCourse = (data) => {
     });
 }
 
+const getCourse = (id) => {
+    return new Promise((resolve, reject) => {
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.get(Settings.API + ApiEndpoints.GET_COURSE + id, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+
 export {
     getCoursesList,
-    addCourse
+    addCourse,
+    getCourse
 }

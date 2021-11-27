@@ -115,10 +115,26 @@ class CourseController extends Controller
             ], 404);
         }
 
-        // dopracowac, zwrocic tablice z id i nazwami kursow (tylko do nawigacji)
-        if ($course->parent_id > 0) {
-            $course->parent_course = $this->get_course($course->parent_id)->original;
-        }
+            $navigation = array();
+
+            if($course->parent_id != null) {
+                $order_num = 1;
+                $parent_id = $course->parent_id;
+                do {
+                    $course_tmp = Course::where('id', '=', $parent_id)->first();
+                    $parent_id = $course_tmp->parent_id;
+                    $array_to_push = [
+                        "id" => $course_tmp->id,
+                        "name" => $course_tmp->name,
+                        "order" => $order_num
+                    ];
+                    $order_num++;
+                    array_push($navigation, $array_to_push);
+                } while ($parent_id != null);
+            }
+
+            $course->navi = $navigation;
+
 
         if ($course->created_by == $this->request->auth->id) {
             $course->isMember = 1;

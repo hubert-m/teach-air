@@ -16,6 +16,7 @@ const ApiEndpoints = {
     GET_CONTACT_LIST: '/messages/get_contact_list/',
 
     GET_COURSES_LIST: '/courses/get_courses_list',
+    GET_COURSE: '/courses/get_course/', // :id
     ADD_COURSE: '/courses/create_course'
 }
 

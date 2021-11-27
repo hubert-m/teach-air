@@ -8,6 +8,7 @@ import {addCourse, getCoursesList} from "../../helpers/Course";
 import LoaderScreen from "../../components/LoaderScreen";
 import SweetAlert from "react-bootstrap-sweetalert";
 import {sortAsc, sortDesc} from "../../helpers/sort";
+import {Breadcrumb, BreadcrumbItem} from "react-bootstrap";
 
 const MainCourses = ({userData}) => {
     const [showLoader, setShowLoader] = useState(false);
@@ -76,32 +77,32 @@ const MainCourses = ({userData}) => {
 
     return (
         <>
+            <Breadcrumb>
+                <BreadcrumbItem active>Kursy</BreadcrumbItem>
+            </Breadcrumb>
             {userData?.status === StatusUser.ADMIN && (
-                <div className="jumbotron" style={{marginTop: '50px'}}>
-                    <h1 className="display-7">Dodaj główny kurs</h1>
-                    <hr className="my-4"/>
-                    <div className="row">
-                        <div className="col-lg-6">
-                            <input type="text" className="form-control third" name="name"
-                                   placeholder="Nazwa kursu" value={data.name}
-                                   style={{marginBottom: '38px'}}
-                                   onChange={handleOnChange}/>
+                <div className="row">
+                    <div className="col-lg-6">
+                        <input type="text" className="form-control third" name="name"
+                               placeholder="Nazwa kursu" value={data.name}
+                               style={{marginBottom: '38px'}}
+                               onChange={handleOnChange}/>
 
-                            <Select name="icon"
-                                    options={IconsOptions}
-                                    value={data.icon}
-                                    onChange={handleOnChangeSelect}
-                                    placeholder="Wybierz ikonę dla kursu *pole opcjonalne"
-                                    theme={(theme) => ({
-                                        ...theme,
-                                        borderRadius: 0,
-                                        colors: {
-                                            ...theme.colors,
-                                            neutral0: '#eee'
-                                        },
-                                    })}/>
-                        </div>
-                        <div className="col-lg-6">
+                        <Select name="icon"
+                                options={IconsOptions}
+                                value={data.icon}
+                                onChange={handleOnChangeSelect}
+                                placeholder="Wybierz ikonę dla kursu *pole opcjonalne"
+                                theme={(theme) => ({
+                                    ...theme,
+                                    borderRadius: 0,
+                                    colors: {
+                                        ...theme.colors,
+                                        neutral0: '#eee'
+                                    },
+                                })}/>
+                    </div>
+                    <div className="col-lg-6">
                         <textarea
                             className="form-control"
                             placeholder="Opis kursu *pole opcjonalne"
@@ -109,17 +110,16 @@ const MainCourses = ({userData}) => {
                             name="description"
                             value={data.description}
                             onChange={handleOnChange}/>
-                        </div>
-                        <div className="col-lg-6 offset-lg-3">
-                            <button style={{marginTop: '20px'}}
-                                    onClick={() => handleAddCourse()}>Dodaj kurs
-                            </button>
-                        </div>
+                    </div>
+                    <div className="col-lg-6 offset-lg-3">
+                        <button style={{marginTop: '20px'}}
+                                onClick={() => handleAddCourse()}>Dodaj kurs
+                        </button>
                     </div>
                 </div>
             )}
             <div className="jumbotron" style={{marginTop: '50px'}}>
-                <h1 className="display-7">Główne kursy</h1>
+                <h1 className="display-7">Kursy</h1>
                 <hr className="my-4"/>
             </div>
             <div className="row">
@@ -127,7 +127,7 @@ const MainCourses = ({userData}) => {
                     <div className="col-lg-4 col-md-6" key={id}>
                         <Link to={Routes.SUB_COURSES + id} className="course-box fadeIn">
                             <div className="course-box-ico">
-                                {icon ? Icons[parseInt(icon,10)] : Icons[1]}
+                                {icon ? Icons[parseInt(icon, 10)] : Icons[1]}
                             </div>
                             <h3 className="course-box-name">{name}</h3>
                             <p className="course-box-description">{description}</p>
