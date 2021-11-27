@@ -6,6 +6,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faGraduationCap, faCheckCircle, faCrown, faUser} from '@fortawesome/free-solid-svg-icons';
 import LoaderScreen from "../../components/LoaderScreen";
 import {isNull, size} from "lodash";
+import {sortDesc} from "../../helpers/sort";
 
 const Users = ({userData}) => {
 
@@ -19,6 +20,7 @@ const Users = ({userData}) => {
     useEffect( () => {
         setShowLoader(true);
         getSearchUsers().then(list => {
+            sortDesc(list, "id");
             setUsersList(list);
         }).catch(() => {
         }).finally(async () => {
@@ -30,6 +32,7 @@ const Users = ({userData}) => {
         setShowLoader(true);
         setUserStatus(id, status).then(() => {
             getSearchUsers(data?.keyword).then(list => {
+                sortDesc(list, "id");
                 setUsersList(list);
             }).catch(() => {
             }).finally(async () => {
@@ -60,6 +63,7 @@ const Users = ({userData}) => {
             if (e.target.value.length < lengthKeywordWhenOneRecord || isNull(lengthKeywordWhenOneRecord)) {
                 setShowLoader(true);
                 getSearchUsers(e.target.value).then(list => {
+                    sortDesc(list, "id");
                     setUsersList(list);
                 }).catch(() => {
                 }).finally(async () => {
@@ -69,6 +73,7 @@ const Users = ({userData}) => {
         } else if (e.target.value.length === 0) {
             setShowLoader(true);
             getSearchUsers().then(list => {
+                sortDesc(list, "id");
                 setUsersList(list);
             }).catch(() => {
             }).finally(async () => {

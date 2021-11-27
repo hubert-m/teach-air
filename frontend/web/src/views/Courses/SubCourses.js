@@ -7,6 +7,7 @@ import LoaderScreen from "../../components/LoaderScreen";
 import {addCourse, getCoursesList} from "../../helpers/Course";
 import Select from "react-select";
 import SweetAlert from "react-bootstrap-sweetalert";
+import {sortAsc} from "../../helpers/sort";
 
 const SubCourses = () => {
     let {id} = useParams();
@@ -19,12 +20,12 @@ const SubCourses = () => {
         name: '',
         description: '',
         icon: null,
-        parent_id: id,
     });
 
     useEffect(() => {
         setShowLoader(true);
         getCoursesList(id).then(list => {
+            sortAsc(list, "name");
             setCourses(list);
         }).catch(() => {
         }).finally(async () => {
@@ -49,19 +50,23 @@ const SubCourses = () => {
     }
 
     const handleAddCourse = () => {
-        addCourse(data).then(() => {
+        const payload = {
+            ...data,
+            parent_id: id
+        }
+        addCourse(payload).then(() => {
 
             setData((prevState) => ({
                 ...prevState,
                 name: '',
                 description: '',
                 icon: null,
-                parent_id: id,
             }))
 
             setShowSuccess(true);
 
             getCoursesList(id).then(list => {
+                sortAsc(list, "name");
                 setCourses(list);
             }).catch(() => {
             })

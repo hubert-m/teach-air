@@ -8,6 +8,7 @@ import {size, isNull, isEmpty} from "lodash";
 import {StatusUser, StatusUserName} from "../../constants/StatusUser";
 import LoaderScreen from "../../components/LoaderScreen";
 import {getContacts} from "../../helpers/Message";
+import {sortDesc} from "../../helpers/sort";
 
 const MessagesList = () => {
     const history = useHistory();
@@ -52,6 +53,7 @@ const MessagesList = () => {
     useEffect(() => {
         setShowLoader(true);
         getContacts().then(list => {
+            sortDesc(list, "lastMessage", "id");
             setContacts(list);
         }).catch(() => {
         }).finally(async () => {
@@ -137,7 +139,7 @@ const MessagesList = () => {
                     </thead>
                     <tbody>
                     {contacts.map(({id, email, name, second_name, lastname, status, lastMessage}) => (
-                        <tr key={id}>
+                        <tr key={id} style={ lastMessage?.sender_id === id && lastMessage?.is_read === 0 ? { backgroundColor: '#ffffb3' } : null }>
                             <th scope="row">{id}</th>
                             <td>{name} {second_name}</td>
                             <td>{lastname}</td>

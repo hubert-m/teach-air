@@ -5,6 +5,7 @@ import ContainerGlobalSettings from "./ContainerGlobalSettings";
 import LoaderScreen from "../../components/LoaderScreen";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTrash} from "@fortawesome/free-solid-svg-icons";
+import {sortDesc} from "../../helpers/sort";
 
 const Sex = ({userData}) => {
     const [sexList, setSexList] = useState([]);
@@ -20,6 +21,7 @@ const Sex = ({userData}) => {
     useEffect(() => {
         setShowLoader(true);
         getSexList().then(list => {
+            sortDesc(list, "id");
             setSexList(list);
         }).catch(() => {
         }).finally(async () => {
@@ -44,6 +46,7 @@ const Sex = ({userData}) => {
             }))
             setShowSuccess(true);
             getSexList().then(list => {
+                sortDesc(list, "id");
                 setSexList(list);
             }).catch(() => {
             })
@@ -63,6 +66,7 @@ const Sex = ({userData}) => {
             setShowLoader(true);
             deleteSex(id).then(() => {
                 getSexList().then(list => {
+                    sortDesc(list, "id");
                     setSexList(list);
                 }).catch(() => {
                 }).finally(async () => {

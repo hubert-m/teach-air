@@ -94,7 +94,7 @@ class CourseController extends Controller
             } else {
 
                 $member_tmp = Courses_member::where('course_id', '=', $course->id)->where('user_id', '=', $this->request->auth->id)->first();
-                if($member_tmp) {
+                if ($member_tmp) {
                     $course->isMember = 1;
                 } else {
                     $course->isMember = 0;
@@ -124,7 +124,7 @@ class CourseController extends Controller
             $course->isMember = 1;
         } else {
             $member_tmp = Courses_member::where('course_id', '=', $id)->where('user_id', '=', $this->request->auth->id)->first();
-            if($member_tmp) {
+            if ($member_tmp) {
                 $course->isMember = 1;
             } else {
                 $course->isMember = 0;
@@ -146,7 +146,7 @@ class CourseController extends Controller
 
         $membersId = Courses_member::where('course_id', '=', $id)->get();
 
-        if(count($membersId) > 0) {
+        if (count($membersId) > 0) {
             $users = User::where(function ($query) use ($membersId) {
                 foreach ($membersId as $member) {
                     $query->orWhere('id', '=', $member->user_id);
@@ -173,15 +173,32 @@ class CourseController extends Controller
             'name' => 'required'
         ]);
 
-        if($this->request->parent_id == 0) {
+        if ($this->request->parent_id == 0) {
             $this->request->parent_id = null;
         }
 
-        if($this->request->parent_id == null && $this->request->auth->status != 3) {
+        if ($this->request->parent_id == null && $this->request->auth->status != 3) {
             return response()->json([
                 'error' => 'You arent admin. You cannot create course with parent_id = 0'
             ], 404);
         }
+
+        if ($this->request->auth->status != 3 && $this->request->auth->status != 2) {
+            return response()->json([
+                'error' => 'You cannot create course. No permision'
+            ], 404);
+        }
+
+        if ($this->request->auth->status == 2) {
+            $membersId = Courses_member::where('course_id', '=', $this->request->parent_id)
+                ->where('user_id', '=', $this->request->auth->id)->first();
+            if (!$membersId) {
+                return response()->json([
+                    'error' => 'You are a teacher, but you arent a member of this course so you dont have access to this course'
+                ], 404);
+            }
+        }
+
 
         try {
             $course = new Course;

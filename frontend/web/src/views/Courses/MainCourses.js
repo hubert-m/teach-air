@@ -7,6 +7,7 @@ import {Link} from "react-router-dom";
 import {addCourse, getCoursesList} from "../../helpers/Course";
 import LoaderScreen from "../../components/LoaderScreen";
 import SweetAlert from "react-bootstrap-sweetalert";
+import {sortAsc, sortDesc} from "../../helpers/sort";
 
 const MainCourses = ({userData}) => {
     const [showLoader, setShowLoader] = useState(false);
@@ -24,6 +25,7 @@ const MainCourses = ({userData}) => {
     useEffect(() => {
         setShowLoader(true);
         getCoursesList().then(list => {
+            sortAsc(list, "name");
             setCourses(list);
         }).catch(() => {
         }).finally(async () => {
@@ -61,6 +63,7 @@ const MainCourses = ({userData}) => {
             setShowSuccess(true);
 
             getCoursesList().then(list => {
+                sortAsc(list, "name");
                 setCourses(list);
             }).catch(() => {
             })
