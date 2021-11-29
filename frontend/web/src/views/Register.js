@@ -3,10 +3,10 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import Routes from "../constants/Routes";
 import {useHistory} from "react-router";
 import {Link} from "react-router-dom";
-import {authenticate, getSexList, getToken, register} from "../helpers/User";
+import {getSexList, register} from "../helpers/User";
 
 
-function Register({setUserToken}) {
+const Register = () => {
     const history = useHistory();
 
     const [data, setData] = useState({

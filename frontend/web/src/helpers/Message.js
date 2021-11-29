@@ -1,7 +1,6 @@
 import axios from "axios";
 import Settings from "../constants/Settings";
 import ApiEndpoints from "../constants/ApiEndpoints";
-import validateEmail from "./validateEmail";
 
 const getContacts = () => {
     return new Promise((resolve, reject) => {
