@@ -53,7 +53,7 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
             $router->get('/courses/get_course/{id}', 'CourseController@get_course');
             $router->post('/courses/create_course', 'CourseController@create_course');
             $router->get('/courses/get_members_of_course/{id}', 'CourseController@get_members_of_course');
-            // add member of course
+            $router->post('/courses/add_member', 'CourseController@add_member');
         }
     );
 

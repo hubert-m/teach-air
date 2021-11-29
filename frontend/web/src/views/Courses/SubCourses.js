@@ -2,15 +2,19 @@ import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router";
 import {Link} from "react-router-dom";
 import Routes from "../../constants/Routes";
-import {Icons} from "../../constants/Icons";
 import LoaderScreen from "../../components/LoaderScreen";
 import {getCourse, getCoursesList} from "../../helpers/Course";
 import {sortAsc, sortDesc} from "../../helpers/sort";
 import {Breadcrumb, BreadcrumbItem} from "react-bootstrap";
 import FormAddCourse from "./components/FormAddCourse";
 import TitleOfCourse from "./components/TitleOfCourse";
+import ListOfCourses from "./components/ListOfCourses";
+import FormAddMember from "./components/FormAddMember";
+import FormAddThread from "./components/FormAddThread";
+import ListOfThreads from "./components/ListOfThreads";
+import {StatusUser} from "../../constants/StatusUser";
 
-const SubCourses = () => {
+const SubCourses = ({userData}) => {
     let {id} = useParams();
     const [showLoader, setShowLoader] = useState(false);
     const [courses, setCourses] = useState([]);
@@ -36,40 +40,38 @@ const SubCourses = () => {
         <>
             <Breadcrumb>
                 <BreadcrumbItem><Link to={Routes.MAIN_COURSES}>Kursy</Link></BreadcrumbItem>
-                {course?.navi?.map(({id, name}) => (
-                    <BreadcrumbItem><Link to={Routes.SUB_COURSES + id}>{name}</Link></BreadcrumbItem>
+                {course?.navi?.map(({id, name}, key) => (
+                    <BreadcrumbItem key={key}><Link to={Routes.SUB_COURSES + id}>{name}</Link></BreadcrumbItem>
                 ))}
                 <BreadcrumbItem active>{course?.name}</BreadcrumbItem>
             </Breadcrumb>
-            <TitleOfCourse title={course?.name}/>
-            <FormAddCourse setCourses={setCourses} parent_id={id}/>
+            <TitleOfCourse title={course?.name} description={course?.description}/>
 
-            <div className="row">
-                {courses.map(({id, name, description, ico}) => (
-                    <div className="col-lg-4 col-md-6" key={id}>
-                        <Link to={Routes.SUB_COURSES + id} className="course-box fadeIn">
-                            <div className="course-box-ico">
-                                {ico ? Icons[ico] : Icons[1]}
-                            </div>
-                            <h3 className="course-box-name">{name}</h3>
-                            <p className="course-box-description">{description}</p>
-                        </Link>
-                    </div>
-                ))}
-            </div>
-            <div className="jumbotron" style={{marginTop: '50px'}}>
-                <p>Formularz dodawania członków do kursu dla admina / wykładowcy który jest
-                    członkiem tego kursu</p>
-                <hr className="my-4"/>
-            </div>
-            <div className="jumbotron" style={{marginTop: '50px'}}>
-                <p>Formularz dodawania wątków dla wszystkich, którzy są członkami tego kursu</p>
-                <hr className="my-4"/>
-            </div>
-            <div className="jumbotron" style={{marginTop: '50px'}}>
-                <p>Lista wątków</p>
-                <hr className="my-4"/>
-            </div>
+            {course?.isMember === 0 && (
+                <div className="alert alert-warning" role="alert">
+                    Nie jesteś członkiem tego kursu, więc nie masz uprawnień do tworzenia kolejnych kategorii i pisania
+                    wiątków<br/>
+                    Skontaktuj się z wykładowcą lub administratorem (prawy górny róg -> Wiadomości)
+                </div>
+            )}
+
+            {course?.isMember === 1 && ((userData?.status === StatusUser.ADMIN || userData?.status === StatusUser.TEACHER) && (
+                <FormAddCourse setCourses={setCourses} parent_id={id}/>
+            ))}
+
+            <ListOfCourses courses={courses}/>
+
+            {course?.isMember === 1 && ((userData?.status === StatusUser.ADMIN || userData?.status === StatusUser.TEACHER) && (
+                <FormAddMember courseId={id}/>
+            ))}
+
+            {course?.isMember === 1 && (
+                <>
+                    <ListOfThreads/>
+                    <FormAddThread/>
+                </>
+            )}
+
             {showLoader && <LoaderScreen/>}
         </>
     )

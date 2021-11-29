@@ -17,7 +17,8 @@ const ApiEndpoints = {
 
     GET_COURSES_LIST: '/courses/get_courses_list',
     GET_COURSE: '/courses/get_course/', // :id
-    ADD_COURSE: '/courses/create_course'
+    ADD_COURSE: '/courses/create_course',
+    ADD_MEMBER: '/courses/add_member'
 }
 
 export default ApiEndpoints;

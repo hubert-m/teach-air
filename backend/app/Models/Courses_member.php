@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Courses_member extends Model
 {
     protected $table = 'courses_members';
+    public $timestamps = false;
     /**
      * The attributes that are mass assignable.
      *
