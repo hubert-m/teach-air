@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
+use App\Models\Courses_member;
 use App\Models\Sex;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -163,7 +165,7 @@ class UserController extends Controller
 
         $sex = Sex::find($id);
 
-        if(!$sex) {
+        if (!$sex) {
             return response()->json([
                 'error' => 'Sex does not exist.'
             ], 404);
@@ -229,40 +231,58 @@ class UserController extends Controller
 
     public function search(Request $request)
     {
+        $id_auth_user = $this->request->auth->id;
         $keyword = $request->input('keyword', '');
-        // $keyword = $request->keyword;
-        if ($keyword != '') {
-            /*
-            $users = User::
-            where("name", "LIKE","%$keyword%")
-                ->orWhere("lastname", "LIKE", "%$keyword%")
-                ->orWhere("email", "LIKE", "%$keyword%")
-                ->get();
-            */
+        $status = $request->input('status', '');
+        $withoutMembersOfCourseId = $request->input('without_members_of_course_id', '');
 
-            $users = User::
-            where("id", "!=", $this->request->auth->id)
-                ->where(function ($query) use ($keyword) {
-                    /*
-                    $keywords = explode(" ", $keyword);
-                    foreach($keywords as $word) {
-                        $query->where('name', 'LIKE', "%$word%")
-                            ->orWhere('lastname', 'LIKE', "%$word%")
-                            ->orWhere('email', 'LIKE', "%$word%");
+        $users = User::
+        where(function ($query) use ($id_auth_user, $keyword) {
+            if ($keyword != "") {
+                $query->where('id', '!=', $id_auth_user);
+            }
+        })
+            ->where(function ($query) use ($keyword) {
+                $keywords = explode(" ", $keyword);
+                foreach ($keywords as $word) {
+                    $word = strtolower($word);
+                    $query->whereRaw("LOWER(CONCAT(COALESCE(`name`,''), COALESCE(`second_name`,''), COALESCE(`lastname`,''), COALESCE(`email`,''))) LIKE ?", "%$word%");
+                }
+            })
+            ->where(function ($query) use ($status) {
+                if ($status != "") {
+                    $query->where('status', '=', $status);
+                }
+            })
+            ->where(function ($query) use ($withoutMembersOfCourseId) {
+                if ($withoutMembersOfCourseId != "") {
+                    $course = Course::where('id', '=', $withoutMembersOfCourseId)->first();
+                    $query->where('id', '!=', $course->created_by);
+
+                    $courseMembers = Courses_member::where('course_id', '=', $withoutMembersOfCourseId)->get();
+                    foreach ($courseMembers as $member) {
+                        $query->where('id', '!=', $member->user_id);
                     }
-                    */
 
-                    $keywords = explode(" ", $keyword);
-                    foreach ($keywords as $word) {
-                        $word = strtolower($word);
-                        $query->whereRaw("LOWER(CONCAT(COALESCE(`name`,''), COALESCE(`second_name`,''), COALESCE(`lastname`,''), COALESCE(`email`,''))) LIKE ?", "%$word%");
+                    if ($course->parent_id != null) {
+                        $parent_id = $course->parent_id;
+                        do {
+                            $course_tmp = Course::where('id', '=', $parent_id)->first();
+                            $query->where('id', '!=', $course_tmp->created_by);
+
+                            $courseMembers_tmp = Courses_member::where('course_id', '=', $parent_id)->get();
+                            foreach ($courseMembers_tmp as $member_tmp) {
+                                $query->where('id', '!=', $member_tmp->user_id);
+                            }
+
+                            $parent_id = $course_tmp->parent_id;
+                        } while ($parent_id != null);
                     }
-                })
-                ->get();
 
-        } else {
-            $users = User::all();
-        }
+                }
+            })
+            ->get();
+
 
         foreach ($users as $i => $user) {
             $sex = Sex::where('id', '=', $user->sex_id)->first();

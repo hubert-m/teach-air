@@ -127,44 +127,43 @@ class CourseController extends Controller
             }
         }
 
-            $navigation = array();
+        $navigation = array();
 
-            if($course->parent_id != null) {
-                $order_num = 1;
-                $parent_id = $course->parent_id;
-                do {
-                    $course_tmp = Course::where('id', '=', $parent_id)->first();
+        if ($course->parent_id != null) {
+            $order_num = 1;
+            $parent_id = $course->parent_id;
+            do {
+                $course_tmp = Course::where('id', '=', $parent_id)->first();
 
-                    // dziedziczenie uprawnień z kursów nadrzędnych (jeśli user okaże się któregoś członkiem to zwróci 1
-                    if($course->isMember == 0) {
-                        if($course_tmp->created_by == $this->request->auth->id) {
-                            // jeśli jest autorem ktróegoś z kursów
+                // dziedziczenie uprawnień z kursów nadrzędnych (jeśli user okaże się któregoś członkiem to zwróci 1
+                if ($course->isMember == 0) {
+                    if ($course_tmp->created_by == $this->request->auth->id) {
+                        // jeśli jest autorem ktróegoś z kursów
+                        $course->isMember = 1;
+                    } else {
+                        // jeśli jest członkiem któregoś z kursów
+                        $course_member_tmp = Courses_member::where('course_id', '=', $parent_id)
+                            ->where('user_id', '=', $this->request->auth->id)->first();
+
+                        if ($course_member_tmp) {
                             $course->isMember = 1;
-                        } else {
-                            // jeśli jest członkiem któregoś z kursów
-                            $course_member_tmp = Courses_member::where('course_id', '=', $parent_id)
-                                ->where('user_id', '=', $this->request->auth->id)->first();
-
-                            if($course_member_tmp) {
-                                $course->isMember = 1;
-                            }
                         }
                     }
+                }
 
 
+                $parent_id = $course_tmp->parent_id;
+                $array_to_push = [
+                    "id" => $course_tmp->id,
+                    "name" => $course_tmp->name,
+                    "order" => $order_num
+                ];
+                $order_num++;
+                array_push($navigation, $array_to_push);
+            } while ($parent_id != null);
+        }
 
-                    $parent_id = $course_tmp->parent_id;
-                    $array_to_push = [
-                        "id" => $course_tmp->id,
-                        "name" => $course_tmp->name,
-                        "order" => $order_num
-                    ];
-                    $order_num++;
-                    array_push($navigation, $array_to_push);
-                } while ($parent_id != null);
-            }
-
-            $course->navi = $navigation;
+        $course->navi = $navigation;
 
         return response()->json($course);
     }
@@ -172,6 +171,7 @@ class CourseController extends Controller
     public function get_members_of_course($id)
     {
         $course = Course::where('id', '=', $id)->first();
+        $parent_id = $course->parent_id;
 
         if (!$course) {
             return response()->json([
@@ -181,74 +181,43 @@ class CourseController extends Controller
 
         $membersId = Courses_member::where('course_id', '=', $id)->get();
 
-        if (count($membersId) > 0) {
-            $users = User::where(function ($query) use ($membersId) {
-                foreach ($membersId as $member) {
-                    $query->orWhere('id', '=', $member->user_id);
-                }
-            })->get();
-        } else {
-            $users = array();
-        }
+        // pobieranie wszystkich czlonkow
+        $users = User::where(function ($query) use ($membersId) {
+            foreach ($membersId as $member) {
+                $query->orWhere('id', '=', $member->user_id);
+            }
+        })
+            ->orWhere('id', '=', $course->created_by)
+            ->orWhere(function ($query) use ($parent_id) {
+                if ($parent_id != null) {
+                    do {
+                        $course_tmp = Course::where('id', '=', $parent_id)->first();
+                        $query->orWhere('id', '=', $course_tmp->created_by);
 
-        // tutaj dodać jeszcze członków kursów nadrzędnych TODO
-
-        if($course->parent_id != null) {
-            $parent_id = $course->parent_id;
-            do {
-                $course_tmp = Course::where('id', '=', $parent_id)->first();
-                $membersId_tmp = Courses_member::where('course_id', '=', $parent_id)->get();
-
-                if($course_tmp->created_by != $course->created_by) {
-                    $admin_of_course_tmp = User::where('id', '=', $course_tmp->created_by)->first();
-                    $admin_of_course_tmp->is_admin_of_one_of_parent = 1;
-                    array_push($users, $admin_of_course_tmp);
-                }
-
-                if (count($membersId_tmp) > 0) {
-                    $users_tmp = User::where(function ($query) use ($membersId_tmp) {
+                        $membersId_tmp = Courses_member::where('course_id', '=', $parent_id)->get();
                         foreach ($membersId_tmp as $member_tmp) {
                             $query->orWhere('id', '=', $member_tmp->user_id);
                         }
-                    })->get();
-                } else {
-                    $users_tmp = array();
+
+                        $parent_id = $course_tmp->parent_id;
+                    } while ($parent_id != null);
                 }
+            })
+            ->get();
 
+        // dopisywanie wartosci do poszczegolnych userow
 
-                foreach ($users_tmp as $i => $user_tmp) {
-                    // oznacza usera, że jest czlonkiem jednego z nadrzednych kursow, a nie bierzacego
-                    $users_tmp[$i]->is_member_of_one_of_parent = 1;
-                }
-
-                if(gettype($users_tmp) == "object") {
-                    $users_tmp = $users_tmp->toArray();
-                }
-
-                if(gettype($users) == "object") {
-                    $users = $users->toArray();
-                }
-
-                $users = array_merge($users, $users_tmp);
-
-
-                $parent_id = $course_tmp->parent_id;
-            } while ($parent_id != null);
-        }
-
-        /*
-         * Problem z wpisaniem elementow do obiektów w tablicy (może nie będzie potrzebne) TODO
         foreach ($users as $i => $user) {
-            $users[$i]->is_author = 0;
-        }
-        */
+            $isMember = Courses_member::where('user_id', '=', $user->id)->where('course_id', '=', $course->id)->first();
 
-        $user_author = User::where('id', '=', $course->created_by)->first();
-        $user_author->is_author = 1;
-        if(gettype($users) == "object") {
-            $users = $users->toArray();
+            if(!$isMember) {
+                if ($user->id == $course->created_by) {
+                    $users[$i]->is_author = 1;
+                } else {
+                    $users[$i]->is_author_or_member_of_one_of_parent = 1;
+                }
+            }
         }
-        array_push($users, $user_author);
 
         return response()->json($users);
     }
@@ -308,7 +277,8 @@ class CourseController extends Controller
         }
     }
 
-    public function add_member() {
+    public function add_member()
+    {
         if ($this->request->auth->status != 3 && $this->request->auth->status != 2) {
             return response()->json([
                 'error' => 'You cannot add members to courses. No permision'
@@ -331,7 +301,7 @@ class CourseController extends Controller
             ], 404);
         }
 
-        if($user->status == 3) {
+        if ($user->status == 3) {
             return response()->json([
                 'error' => 'User is admin. You dont need to add him'
             ], 404);
@@ -349,20 +319,20 @@ class CourseController extends Controller
 
         $isMemberOrAuthorOfParentCourses = false;
 
-        if($course->parent_id != null) {
+        if ($course->parent_id != null) {
             $parent_id = $course->parent_id;
             do {
                 $course_tmp = Course::where('id', '=', $parent_id)->first();
 
-                if(!$isMemberOrAuthorOfParentCourses) {
-                    if($course_tmp->created_by == $this->request->user_id) {
+                if (!$isMemberOrAuthorOfParentCourses) {
+                    if ($course_tmp->created_by == $this->request->user_id) {
                         $isMemberOrAuthorOfParentCourses = true;
                     } else {
                         // jeśli jest członkiem któregoś z kursów
                         $course_member_tmp = Courses_member::where('course_id', '=', $parent_id)
                             ->where('user_id', '=', $this->request->user_id)->first();
 
-                        if($course_member_tmp) {
+                        if ($course_member_tmp) {
                             $isMemberOrAuthorOfParentCourses = true;
                         }
                     }
