@@ -9,7 +9,11 @@ const getCoursesList = (id = 0) => {
         axios.post(Settings.API + ApiEndpoints.GET_COURSES_LIST, data, config).then((response) => {
             resolve(response.data);
         }).catch((error) => {
-            reject(error);
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
         });
     });
 }
@@ -50,7 +54,42 @@ const getCourse = (id) => {
         axios.get(Settings.API + ApiEndpoints.GET_COURSE + id, config).then((response) => {
             resolve(response.data);
         }).catch((error) => {
-            reject(error);
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+}
+
+const getMembersOfCourse = (id) => {
+    return new Promise((resolve, reject) => {
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.get(Settings.API + ApiEndpoints.GET_MEMBERS_OF_COURSE + id, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+}
+
+const addMember = (course_id, user_id) => {
+    return new Promise((resolve, reject) => {
+        const data = {course_id, user_id}
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.post(Settings.API + ApiEndpoints.ADD_MEMBER, data, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
         });
     });
 }
@@ -58,5 +97,7 @@ const getCourse = (id) => {
 export {
     getCoursesList,
     addCourse,
-    getCourse
+    getCourse,
+    getMembersOfCourse,
+    addMember
 }

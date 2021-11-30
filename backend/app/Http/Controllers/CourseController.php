@@ -129,38 +129,35 @@ class CourseController extends Controller
 
         $navigation = array();
 
-        if ($course->parent_id != null) {
-            $order_num = 1;
-            $parent_id = $course->parent_id;
-            do {
-                $course_tmp = Course::where('id', '=', $parent_id)->first();
+        $order_num = 1;
+        $parent_id = $course->parent_id;
+        while ($parent_id != null) {
+            $course_tmp = Course::where('id', '=', $parent_id)->first();
 
-                // dziedziczenie uprawnień z kursów nadrzędnych (jeśli user okaże się któregoś członkiem to zwróci 1
-                if ($course->isMember == 0) {
-                    if ($course_tmp->created_by == $this->request->auth->id) {
-                        // jeśli jest autorem ktróegoś z kursów
+            // dziedziczenie uprawnień z kursów nadrzędnych (jeśli user okaże się któregoś członkiem to zwróci 1
+            if ($course->isMember == 0) {
+                if ($course_tmp->created_by == $this->request->auth->id) {
+                    // jeśli jest autorem ktróegoś z kursów
+                    $course->isMember = 1;
+                } else {
+                    // jeśli jest członkiem któregoś z kursów
+                    $course_member_tmp = Courses_member::where('course_id', '=', $parent_id)
+                        ->where('user_id', '=', $this->request->auth->id)->first();
+
+                    if ($course_member_tmp) {
                         $course->isMember = 1;
-                    } else {
-                        // jeśli jest członkiem któregoś z kursów
-                        $course_member_tmp = Courses_member::where('course_id', '=', $parent_id)
-                            ->where('user_id', '=', $this->request->auth->id)->first();
-
-                        if ($course_member_tmp) {
-                            $course->isMember = 1;
-                        }
                     }
                 }
+            }
 
-
-                $parent_id = $course_tmp->parent_id;
-                $array_to_push = [
-                    "id" => $course_tmp->id,
-                    "name" => $course_tmp->name,
-                    "order" => $order_num
-                ];
-                $order_num++;
-                array_push($navigation, $array_to_push);
-            } while ($parent_id != null);
+            $array_to_push = [
+                "id" => $course_tmp->id,
+                "name" => $course_tmp->name,
+                "order" => $order_num
+            ];
+            $order_num++;
+            array_push($navigation, $array_to_push);
+            $parent_id = $course_tmp->parent_id;
         }
 
         $course->navi = $navigation;
@@ -189,18 +186,16 @@ class CourseController extends Controller
         })
             ->orWhere('id', '=', $course->created_by)
             ->orWhere(function ($query) use ($parent_id) {
-                if ($parent_id != null) {
-                    do {
-                        $course_tmp = Course::where('id', '=', $parent_id)->first();
-                        $query->orWhere('id', '=', $course_tmp->created_by);
+                while ($parent_id != null) {
+                    $course_tmp = Course::where('id', '=', $parent_id)->first();
+                    $query->orWhere('id', '=', $course_tmp->created_by);
 
-                        $membersId_tmp = Courses_member::where('course_id', '=', $parent_id)->get();
-                        foreach ($membersId_tmp as $member_tmp) {
-                            $query->orWhere('id', '=', $member_tmp->user_id);
-                        }
+                    $membersId_tmp = Courses_member::where('course_id', '=', $parent_id)->get();
+                    foreach ($membersId_tmp as $member_tmp) {
+                        $query->orWhere('id', '=', $member_tmp->user_id);
+                    }
 
-                        $parent_id = $course_tmp->parent_id;
-                    } while ($parent_id != null);
+                    $parent_id = $course_tmp->parent_id;
                 }
             })
             ->get();
@@ -210,7 +205,7 @@ class CourseController extends Controller
         foreach ($users as $i => $user) {
             $isMember = Courses_member::where('user_id', '=', $user->id)->where('course_id', '=', $course->id)->first();
 
-            if(!$isMember) {
+            if (!$isMember) {
                 if ($user->id == $course->created_by) {
                     $users[$i]->is_author = 1;
                 } else {
@@ -319,27 +314,25 @@ class CourseController extends Controller
 
         $isMemberOrAuthorOfParentCourses = false;
 
-        if ($course->parent_id != null) {
-            $parent_id = $course->parent_id;
-            do {
-                $course_tmp = Course::where('id', '=', $parent_id)->first();
+        $parent_id = $course->parent_id;
+        while ($parent_id != null) {
+            $course_tmp = Course::where('id', '=', $parent_id)->first();
 
-                if (!$isMemberOrAuthorOfParentCourses) {
-                    if ($course_tmp->created_by == $this->request->user_id) {
+            if (!$isMemberOrAuthorOfParentCourses) {
+                if ($course_tmp->created_by == $this->request->user_id) {
+                    $isMemberOrAuthorOfParentCourses = true;
+                } else {
+                    // jeśli jest członkiem któregoś z kursów
+                    $course_member_tmp = Courses_member::where('course_id', '=', $parent_id)
+                        ->where('user_id', '=', $this->request->user_id)->first();
+
+                    if ($course_member_tmp) {
                         $isMemberOrAuthorOfParentCourses = true;
-                    } else {
-                        // jeśli jest członkiem któregoś z kursów
-                        $course_member_tmp = Courses_member::where('course_id', '=', $parent_id)
-                            ->where('user_id', '=', $this->request->user_id)->first();
-
-                        if ($course_member_tmp) {
-                            $isMemberOrAuthorOfParentCourses = true;
-                        }
                     }
                 }
+            }
 
-                $parent_id = $course_tmp->parent_id;
-            } while ($parent_id != null);
+            $parent_id = $course_tmp->parent_id;
         }
 
         if ($isMemberOrAuthorOfParentCourses) {

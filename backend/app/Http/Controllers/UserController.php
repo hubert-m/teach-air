@@ -264,21 +264,18 @@ class UserController extends Controller
                         $query->where('id', '!=', $member->user_id);
                     }
 
-                    if ($course->parent_id != null) {
-                        $parent_id = $course->parent_id;
-                        do {
-                            $course_tmp = Course::where('id', '=', $parent_id)->first();
-                            $query->where('id', '!=', $course_tmp->created_by);
+                    $parent_id = $course->parent_id;
+                    while ($parent_id != null) {
+                        $course_tmp = Course::where('id', '=', $parent_id)->first();
+                        $query->where('id', '!=', $course_tmp->created_by);
 
-                            $courseMembers_tmp = Courses_member::where('course_id', '=', $parent_id)->get();
-                            foreach ($courseMembers_tmp as $member_tmp) {
-                                $query->where('id', '!=', $member_tmp->user_id);
-                            }
+                        $courseMembers_tmp = Courses_member::where('course_id', '=', $parent_id)->get();
+                        foreach ($courseMembers_tmp as $member_tmp) {
+                            $query->where('id', '!=', $member_tmp->user_id);
+                        }
 
-                            $parent_id = $course_tmp->parent_id;
-                        } while ($parent_id != null);
+                        $parent_id = $course_tmp->parent_id;
                     }
-
                 }
             })
             ->get();
