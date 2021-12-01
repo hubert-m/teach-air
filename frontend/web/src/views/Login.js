@@ -13,15 +13,16 @@ function Login({setUserToken}) {
     const [showError, setShowError] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [containerOfSetTimeout, setContainerOfSetTimeout] = useState();
 
     const login = (event) => {
         // event.preventDefault();
         authenticate({email, password}).then(() => {
             setShowSuccess(true);
-            setTimeout(() => {
+            setContainerOfSetTimeout(setTimeout(() => {
                 setUserToken(getToken());
                 history.push(Routes.HOME);
-            }, 4000)
+            }, 4000));
         }).catch(errorMessage => {
             setErrorMessage(errorMessage);
             setShowError(true);
@@ -64,6 +65,7 @@ function Login({setUserToken}) {
                 title="Hurraaa :)"
                 onConfirm={() => {
                     setShowSuccess(false);
+                    clearTimeout(containerOfSetTimeout);
                     setUserToken(getToken());
                     history.push(Routes.HOME);
                 }}
