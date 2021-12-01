@@ -358,4 +358,34 @@ class CourseController extends Controller
             ], 500);
         }
     }
+
+    public function delete_member()
+    {
+        if ($this->request->auth->status !== 3 && $this->request->auth->status !== 2) {
+            return response()->json([
+                'error' => 'No permissions'
+            ], 404);
+        }
+
+        $member = Courses_member::where('course_id', '=', $this->request->course_id)->where('user_id', '=', $this->request->user_id)->first();
+
+        if (!$member) {
+            return response()->json([
+                'error' => 'This user isnt a member of this course.'
+            ], 404);
+        }
+
+        try {
+            $member->delete();
+
+            return response()->json([
+                'success' => 'Member removed successfully',
+                'member' => $member
+            ], 202);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

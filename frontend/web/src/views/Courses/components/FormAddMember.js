@@ -6,7 +6,7 @@ import {StatusUser, StatusUserName} from "../../../constants/StatusUser";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTrash, faUserPlus} from "@fortawesome/free-solid-svg-icons";
 import {sortDesc} from "../../../helpers/sort";
-import {addMember, getMembersOfCourse} from "../../../helpers/Course";
+import {addMember, deleteMember, getMembersOfCourse} from "../../../helpers/Course";
 import SweetAlert from "react-bootstrap-sweetalert";
 
 const FormAddMember = ({courseId}) => {
@@ -66,9 +66,9 @@ const FormAddMember = ({courseId}) => {
         }
     }
 
-    const handleAddMember = (course_id, user_id) => {
+    const handleAddMember = (user_id) => {
         setShowLoader(true);
-        addMember(course_id, user_id).then(() => {
+        addMember(courseId, user_id).then(() => {
             getMembersOfCourse(courseId).then(list => {
                 sortDesc(list, "id");
                 setMembers(list);
@@ -96,7 +96,25 @@ const FormAddMember = ({courseId}) => {
     }
 
     const handleDeleteMember = (user_id) => {
-
+        setShowLoader(true);
+        deleteMember(courseId, user_id).then(() => {
+            getMembersOfCourse(courseId).then(list => {
+                sortDesc(list, "id");
+                setMembers(list);
+                const payload = { target: { value:  data?.keyword, name: "keyword" }}
+                handleOnChange(payload);
+            }).catch((e) => {
+                setErrorMessage(e);
+                setShowLoader(false);
+                setShowError(true);
+            }).finally(async () => {
+                await setShowLoader(false);
+            })
+        }).catch((e) => {
+            setErrorMessage(e);
+            setShowLoader(false);
+            setShowError(true);
+        })
     }
 
     return (
@@ -152,7 +170,7 @@ const FormAddMember = ({courseId}) => {
                             <td>
                                 <td style={{textAlign: 'center'}}>
                                     <button type="button" className="btn btn-success"
-                                            onClick={() => handleAddMember(courseId, id)}><FontAwesomeIcon
+                                            onClick={() => handleAddMember(id)}><FontAwesomeIcon
                                         icon={faUserPlus}/>
                                     </button>
                                 </td>

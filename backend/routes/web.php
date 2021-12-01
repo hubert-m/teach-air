@@ -54,6 +54,7 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
             $router->post('/courses/create_course', 'CourseController@create_course');
             $router->get('/courses/get_members_of_course/{id}', 'CourseController@get_members_of_course');
             $router->post('/courses/add_member', 'CourseController@add_member');
+            $router->post('/courses/delete_member', 'CourseController@delete_member');
         }
     );
 

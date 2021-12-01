@@ -19,6 +19,7 @@ const ApiEndpoints = {
     GET_COURSE: '/courses/get_course/', // :id
     ADD_COURSE: '/courses/create_course',
     ADD_MEMBER: '/courses/add_member',
+    DELETE_MEMBER: '/courses/delete_member',
     GET_MEMBERS_OF_COURSE: '/courses/get_members_of_course/' // :id
 }
 
