@@ -74,7 +74,7 @@ button:active  {
     transform: scale(0.95);
 }
 
-input[type=email], input[type=password], input[type=text], textarea {
+input[type=email], input[type=password], input[type=text], textarea, select {
     background-color: #f6f6f6;
     border: none;
     color: #0d0d0d;
@@ -94,12 +94,12 @@ input[type=email], input[type=password], input[type=text], textarea {
     border-radius: 5px 5px 5px 5px;
 }
 
-input[type=email]:focus, input[type=password]:focus, input[type=text]:focus, textarea:focus {
+input[type=email]:focus, input[type=password]:focus, input[type=text]:focus, textarea:focus, select:focus {
     background-color: #fff;
     border-bottom: 2px solid #5fbae9;
 }
 
-input[type=email]::placeholder, input[type=password]::placeholder, input[type=text]::placeholder, textarea::placeholder {
+input[type=email]::placeholder, input[type=password]::placeholder, input[type=text]::placeholder, textarea::placeholder, select::placeholder {
     color: #cccccc;
 }
 

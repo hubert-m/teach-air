@@ -81,12 +81,12 @@ const MessagesList = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {loadOptions.map(({id, email, name, second_name, lastname, status}) => (
+                    {loadOptions.map(({id, email, name, second_name, lastname, status, show_email}) => (
                         <tr key={id}>
                             <th scope="row">{id}</th>
                             <td>{name} {second_name}</td>
                             <td>{lastname}</td>
-                            <td>{email}</td>
+                            <td>{show_email ? email : "(ukryty)"}</td>
                             {status === StatusUser.ADMIN ?
                                 (
                                     <td><span className="badge bg-danger">{StatusUserName[StatusUser.ADMIN]}</span>
@@ -138,12 +138,12 @@ const MessagesList = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {contacts.map(({id, email, name, second_name, lastname, status, lastMessage}) => (
+                    {contacts.map(({id, email, name, second_name, lastname, status, lastMessage, show_email}) => (
                         <tr key={id} style={ lastMessage?.sender_id === id && lastMessage?.is_read === 0 ? { backgroundColor: '#ffffb3' } : null }>
                             <th scope="row">{id}</th>
                             <td>{name} {second_name}</td>
                             <td>{lastname}</td>
-                            <td>{email}</td>
+                            <td>{show_email ? email : "(ukryty)"}</td>
                             {status === StatusUser.ADMIN ?
                                 (
                                     <td><span className="badge bg-danger">{StatusUserName[StatusUser.ADMIN]}</span>
