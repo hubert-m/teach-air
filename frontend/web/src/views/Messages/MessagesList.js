@@ -9,6 +9,7 @@ import {StatusUser, StatusUserName} from "../../constants/StatusUser";
 import LoaderScreen from "../../components/LoaderScreen";
 import {getContacts} from "../../helpers/Message";
 import {sortDesc} from "../../helpers/sort";
+import { Twemoji } from 'react-emoji-render';
 
 const MessagesList = () => {
     const history = useHistory();
@@ -172,7 +173,7 @@ const MessagesList = () => {
                                     <span
                                         className="badge bg-secondary" style={{marginRight: '5px'}}>Ty:</span>
                                 )}
-                                {lastMessage?.content}
+                                <Twemoji text={lastMessage?.content} />
                             </td>
                             <td style={{textAlign: 'center'}}>
                                 <button type="button" className="btn btn-info" style={{color: "#FFF"}}

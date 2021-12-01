@@ -5,7 +5,8 @@ import LoaderScreen from "../../components/LoaderScreen";
 import {getMessages, sendMessage} from "../../helpers/Message";
 import parseTimeStamp from "../../helpers/parseTimeStamp";
 import SweetAlert from "react-bootstrap-sweetalert";
-import FontAwesome from 'react-fontawesome'
+import FontAwesome from 'react-fontawesome';
+import { Twemoji } from 'react-emoji-render';
 
 const MessagesConversation = ({userData}) => {
     let {id} = useParams();
@@ -108,7 +109,7 @@ const MessagesConversation = ({userData}) => {
                         {sender_id === userData?.id ? (
                             <div className="message-my">
                                 <span className="time">{parseTimeStamp(created_at)}</span>
-                                <span className="badge bg-primary">{content}</span>
+                                <span className="badge bg-primary"><Twemoji text={content} /></span>
                                 {is_read === 1 && (
                                     <p className="is-read"><FontAwesome
                                         className='super-crazy-colors'
@@ -120,7 +121,7 @@ const MessagesConversation = ({userData}) => {
                             </div>
                         ) : (
                             <div className="message-contact">
-                                <span className="badge bg-secondary">{content}</span>
+                                <span className="badge bg-secondary"><Twemoji text={content} /></span>
                                 <span className="time">{parseTimeStamp(created_at)}</span>
                             </div>
                         )}
