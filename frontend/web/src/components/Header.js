@@ -4,13 +4,14 @@ import Settings from "../constants/Settings";
 import {NavLink} from 'react-router-dom'
 import {Navbar, Container, Nav, NavDropdown} from "react-bootstrap";
 import {StatusUser} from "../constants/StatusUser";
+import {Twemoji} from "react-emoji-render";
 
 function Header({userData, userToken}) {
 
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top">
             <Container>
-                <Navbar.Brand as={NavLink} to={Routes.HOME}>{Settings.TITLE}</Navbar.Brand>
+                <Navbar.Brand as={NavLink} to={Routes.HOME}><Twemoji text={":airplane:"} /> {Settings.TITLE}</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Courses_member;
+use App\Models\Favourite_course;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -86,21 +87,44 @@ class CourseController extends Controller
     public function get_courses_list()
     {
         $parent_id = $this->request->parent_id ?: null;
-        $courses = Course::where('parent_id', '=', $parent_id)->get();
+        $only_favourites = (bool)$this->request->only_favourites;
 
-        foreach ($courses as $i => $course) {
-            if ($course->created_by == $this->request->auth->id) {
-                $courses[$i]->isMember = 1;
+        if($only_favourites) {
+            $favouritesCoursesId = Favourite_course::where('user_id', '=', $this->request->auth->id)->get();
+            if(count($favouritesCoursesId) != 0) {
+                $courses = Course::where(function ($query) use ($favouritesCoursesId) {
+                    foreach ($favouritesCoursesId as $favouriteCourse) {
+                        $query->orWhere('id', '=', $favouriteCourse->course_id);
+                    }
+                })->get();
             } else {
+                $courses = array();
+            }
+        } else {
+            $courses = Course::where('parent_id', '=', $parent_id)->get();
+        }
 
-                $member_tmp = Courses_member::where('course_id', '=', $course->id)->where('user_id', '=', $this->request->auth->id)->first();
-                if ($member_tmp) {
-                    $course->isMember = 1;
+            foreach ($courses as $i => $course) {
+                if ($course->created_by == $this->request->auth->id) {
+                    $courses[$i]->isMember = 1;
                 } else {
-                    $course->isMember = 0;
+
+                    $member_tmp = Courses_member::where('course_id', '=', $course->id)->where('user_id', '=', $this->request->auth->id)->first();
+                    if ($member_tmp) {
+                        $course->isMember = 1;
+                    } else {
+                        $course->isMember = 0;
+                    }
+                }
+
+                $isFavouriteCourse = Favourite_course::where('course_id', '=', $course->id)->where('user_id', '=', $this->request->auth->id)->first();
+                if($isFavouriteCourse) {
+                    $course->isFavourite = 1;
+                } else {
+                    $course->isFavourite = 0;
                 }
             }
-        }
+
 
         return response()->json($courses);
     }
@@ -161,6 +185,15 @@ class CourseController extends Controller
         }
 
         $course->navi = $navigation;
+
+        $isCourseFavourite = Favourite_course::where('course_id', '=', $course->id)
+            ->where('user_id', '=', $this->request->auth->id)->first();
+
+        if($isCourseFavourite) {
+            $course->isFavourite = 1;
+        } else {
+            $course->isFavourite = 0;
+        }
 
         return response()->json($course);
     }
@@ -386,6 +419,85 @@ class CourseController extends Controller
             return response()->json([
                 'error' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function change_favourite_course()
+    {
+        $course = Course::where('id', '=', $this->request->course_id)->first();
+
+        if (!$course) {
+            return response()->json([
+                'error' => 'Course does not exist.'
+            ], 400);
+        }
+
+        $isMemberOfCourse = false;
+
+        $course_member = Courses_member::where('course_id', '=', $this->request->course_id)
+            ->where('user_id', '=', $this->request->auth->id)->first();
+
+        if ($course_member || $this->request->auth->id == $course->created_by) {
+            $isMemberOfCourse = true;
+        } else {
+            $parent_id = $course->parent_id;
+            while ($parent_id != null && !$isMemberOfCourse) {
+                $course_tmp = Course::where('id', '=', $parent_id)->first();
+                if ($this->request->auth->id == $course_tmp->created_by) {
+                    $isMemberOfCourse = true;
+                } else {
+                    // jeśli jest członkiem któregoś z kursów
+                    $course_member_tmp = Courses_member::where('course_id', '=', $parent_id)
+                        ->where('user_id', '=', $this->request->auth->id)->first();
+
+                    if ($course_member_tmp) {
+                        $isMemberOfCourse = true;
+                    }
+                }
+                $parent_id = $course_tmp->parent_id;
+            }
+        }
+
+        if(!$isMemberOfCourse) {
+            return response()->json([
+                'error' => 'You arent member of this course so you cannot add this to favourite.'
+            ], 400);
+        }
+
+
+        $favouriteCourse = Favourite_course::where('course_id', '=', $this->request->course_id)
+            ->where('user_id', '=', $this->request->auth->id)->first();
+
+        if ($favouriteCourse) {
+            try {
+                $favouriteCourse->delete();
+
+                return response()->json([
+                    'success' => 'Course removed from favourity successfully',
+                    'favourite_course' => $favouriteCourse
+                ], 202);
+            } catch (\Throwable $e) {
+                return response()->json([
+                    'error' => $e->getMessage()
+                ], 500);
+            }
+        } else {
+            try {
+                $favouriteCourse = new Favourite_course();
+                $favouriteCourse->course_id = $course->id;
+                $favouriteCourse->user_id = $this->request->auth->id;
+                $favouriteCourse->save();
+
+                return response()->json([
+                    'success' => 'Course added to favourity successfully',
+                    'favourite_course' => $favouriteCourse
+                ], 201);
+
+            } catch (\Throwable $e) {
+                return response()->json([
+                    'error' => $e->getMessage()
+                ], 500);
+            }
         }
     }
 }

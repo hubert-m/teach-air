@@ -20,7 +20,8 @@ const ApiEndpoints = {
     ADD_COURSE: '/courses/create_course',
     ADD_MEMBER: '/courses/add_member',
     DELETE_MEMBER: '/courses/delete_member',
-    GET_MEMBERS_OF_COURSE: '/courses/get_members_of_course/' // :id
+    GET_MEMBERS_OF_COURSE: '/courses/get_members_of_course/', // :id
+    CHANGE_FAVOURITE_COURSE: '/courses/change_favourite_course'
 }
 
 export default ApiEndpoints;

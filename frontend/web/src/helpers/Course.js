@@ -2,10 +2,10 @@ import axios from "axios";
 import Settings from "../constants/Settings";
 import ApiEndpoints from "../constants/ApiEndpoints";
 
-const getCoursesList = (id = 0) => {
+const getCoursesList = (id = 0, only_favourites = false) => {
     return new Promise((resolve, reject) => {
         const config = {headers: {token: localStorage.getItem("userToken")}};
-        const data = {parent_id: id}
+        const data = {parent_id: id, only_favourites: only_favourites}
         axios.post(Settings.API + ApiEndpoints.GET_COURSES_LIST, data, config).then((response) => {
             resolve(response.data);
         }).catch((error) => {
@@ -110,11 +110,28 @@ const deleteMember = (course_id, user_id) => {
     });
 }
 
+const changeFavouriteCourse = (course_id) => {
+    return new Promise((resolve, reject) => {
+        const data = {course_id}
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.post(Settings.API + ApiEndpoints.CHANGE_FAVOURITE_COURSE, data, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+}
+
 export {
     getCoursesList,
     addCourse,
     getCourse,
     getMembersOfCourse,
     addMember,
-    deleteMember
+    deleteMember,
+    changeFavouriteCourse
 }

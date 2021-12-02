@@ -13,6 +13,7 @@ import FormAddMember from "./components/FormAddMember";
 import FormAddThread from "./components/FormAddThread";
 import ListOfThreads from "./components/ListOfThreads";
 import {StatusUser} from "../../constants/StatusUser";
+import SweetAlert from "react-bootstrap-sweetalert";
 
 const SubCourses = ({userData}) => {
     let {id} = useParams();
@@ -36,6 +37,33 @@ const SubCourses = ({userData}) => {
         })
     }, [id])
 
+    const updateListCourses = () => {
+        setShowLoader(true);
+        getCourse(id).then(obj => {
+            sortDesc(obj?.navi, "order");
+            setCourse(obj);
+            getCoursesList(id).then(list => {
+                sortAsc(list, "name");
+                setCourses(list);
+            }).catch(() => {
+            }).finally(async () => {
+                await setShowLoader(false);
+            })
+        }).catch(() => {
+        })
+    }
+
+    const updateCourse = () => {
+        setShowLoader(true);
+        getCourse(id).then(obj => {
+            sortDesc(obj?.navi, "order");
+            setCourse(obj);
+        }).catch(() => {
+        }).finally(async () => {
+            await setShowLoader(false);
+        })
+    }
+
     return (
         <>
             <Breadcrumb>
@@ -45,7 +73,7 @@ const SubCourses = ({userData}) => {
                 ))}
                 <BreadcrumbItem active>{course?.name}</BreadcrumbItem>
             </Breadcrumb>
-            <TitleOfCourse title={course?.name} description={course?.description}/>
+            <TitleOfCourse title={course?.name} description={course?.description} course={course} updateCourse={updateCourse}/>
 
             {course?.isMember === 0 && (
                 <div className="alert alert-warning" role="alert">
@@ -59,7 +87,7 @@ const SubCourses = ({userData}) => {
                 <FormAddCourse setCourses={setCourses} parent_id={id}/>
             ))}
 
-            <ListOfCourses courses={courses}/>
+            <ListOfCourses courses={courses} updateListCourses={updateListCourses}/>
 
             {course?.isMember === 1 && ((userData?.status === StatusUser.ADMIN || userData?.status === StatusUser.TEACHER) && (
                 <FormAddMember courseId={id}/>

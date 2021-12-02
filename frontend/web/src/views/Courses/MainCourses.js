@@ -23,6 +23,17 @@ const MainCourses = ({userData}) => {
         })
     }, [])
 
+    const updateListCourses = () => {
+        setShowLoader(true);
+        getCoursesList().then(list => {
+            sortAsc(list, "name");
+            setCourses(list);
+        }).catch(() => {
+        }).finally(async () => {
+            await setShowLoader(false);
+        })
+    }
+
     const breadcrumbs = [
         {link: null, name: "Kursy"},
     ]
@@ -32,7 +43,7 @@ const MainCourses = ({userData}) => {
             <BreadcrumbList breadcrumbs={breadcrumbs} />
             {userData?.status === StatusUser.ADMIN && <FormAddCourse setCourses={setCourses} parent_id={null} /> }
             <TitleOfCourse title="Kursy" />
-            <ListOfCourses courses={courses} />
+            <ListOfCourses courses={courses} updateListCourses={updateListCourses} />
             {showLoader && <LoaderScreen/>}
         </>
     )
