@@ -33,7 +33,7 @@ class CourseController extends Controller
         if (!$course) {
             return response()->json([
                 'error' => 'Course does not exist.'
-            ], 404);
+            ], 400);
         }
 
         $this->validate($this->request, [
@@ -67,7 +67,7 @@ class CourseController extends Controller
         if (!$course) {
             return response()->json([
                 'error' => 'Course does not exist.'
-            ], 404);
+            ], 400);
         }
 
         try {
@@ -136,7 +136,7 @@ class CourseController extends Controller
         if (!$course) {
             return response()->json([
                 'error' => 'Course does not exist.'
-            ], 404);
+            ], 400);
         }
 
 
@@ -206,7 +206,7 @@ class CourseController extends Controller
         if (!$course) {
             return response()->json([
                 'error' => 'Course does not exist.'
-            ], 404);
+            ], 400);
         }
 
         $membersId = Courses_member::where('course_id', '=', $id)->get();
@@ -263,13 +263,13 @@ class CourseController extends Controller
         if ($this->request->parent_id == null && $this->request->auth->status != 3) {
             return response()->json([
                 'error' => 'You arent admin. You cannot create course with parent_id = 0'
-            ], 404);
+            ], 400);
         }
 
         if ($this->request->auth->status != 3 && $this->request->auth->status != 2) {
             return response()->json([
                 'error' => 'You cannot create course. No permision'
-            ], 404);
+            ], 400);
         }
 
         if ($this->request->auth->status == 2) {
@@ -278,7 +278,7 @@ class CourseController extends Controller
             if (!$membersId) {
                 return response()->json([
                     'error' => 'You are a teacher, but you arent a member of this course so you dont have access to this course'
-                ], 404);
+                ], 400);
             }
         }
 
@@ -310,7 +310,7 @@ class CourseController extends Controller
         if ($this->request->auth->status != 3 && $this->request->auth->status != 2) {
             return response()->json([
                 'error' => 'You cannot add members to courses. No permision'
-            ], 404);
+            ], 400);
         }
 
         $course = Course::where('id', '=', $this->request->course_id)->first();
@@ -318,7 +318,7 @@ class CourseController extends Controller
         if (!$course) {
             return response()->json([
                 'error' => 'Course does not exist.'
-            ], 404);
+            ], 400);
         }
 
         $user = User::where('id', '=', $this->request->user_id)->first();
@@ -326,13 +326,13 @@ class CourseController extends Controller
         if (!$user) {
             return response()->json([
                 'error' => 'User does not exist.'
-            ], 404);
+            ], 400);
         }
 
         if ($user->status == 3) {
             return response()->json([
                 'error' => 'User is admin. You dont need to add him'
-            ], 404);
+            ], 400);
         }
 
         $course_member = Courses_member::where('course_id', '=', $this->request->course_id)
@@ -341,7 +341,7 @@ class CourseController extends Controller
         if ($course_member) {
             return response()->json([
                 'error' => 'User is already member of this course.'
-            ], 404);
+            ], 400);
         }
 
 
@@ -371,7 +371,7 @@ class CourseController extends Controller
         if ($isMemberOrAuthorOfParentCourses) {
             return response()->json([
                 'error' => 'User is already member of one of parent courses.'
-            ], 404);
+            ], 400);
         }
 
         try {
@@ -397,7 +397,7 @@ class CourseController extends Controller
         if ($this->request->auth->status !== 3 && $this->request->auth->status !== 2) {
             return response()->json([
                 'error' => 'No permissions'
-            ], 404);
+            ], 400);
         }
 
         $member = Courses_member::where('course_id', '=', $this->request->course_id)->where('user_id', '=', $this->request->user_id)->first();
@@ -405,7 +405,7 @@ class CourseController extends Controller
         if (!$member) {
             return response()->json([
                 'error' => 'This user isnt a member of this course.'
-            ], 404);
+            ], 400);
         }
 
         try {

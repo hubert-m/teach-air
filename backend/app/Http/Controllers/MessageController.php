@@ -34,14 +34,14 @@ class MessageController extends Controller
         if ($this->request->auth->id == $request->recipient_id) {
             return response()->json([
                 'error' => 'You cannot send message to yourself'
-            ], 404);
+            ], 400);
         }
 
         $user = User::find($request->recipient_id);
         if (!$user) {
             return response()->json([
                 'error' => 'User does not exist.'
-            ], 404);
+            ], 400);
         }
 
         try {
@@ -70,13 +70,13 @@ class MessageController extends Controller
         if (!$user) {
             return response()->json([
                 'error' => 'User does not exist.'
-            ], 404);
+            ], 400);
         }
 
         if ($this->request->auth->id == $id) {
             return response()->json([
                 'error' => 'You cannot get messages with yourself'
-            ], 404);
+            ], 400);
         }
 
 

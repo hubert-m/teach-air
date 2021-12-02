@@ -41,14 +41,14 @@ class UserController extends Controller
         if ($user) {
             return response()->json([
                 'error' => 'Email is already in use'
-            ], 404);
+            ], 400);
         }
 
         $sex = Sex::find($request->sex_id);
         if (!$sex) {
             return response()->json([
                 'error' => 'Sex does not exist.'
-            ], 404);
+            ], 400);
         }
 
         try {
@@ -85,7 +85,7 @@ class UserController extends Controller
         if (!$user) {
             return response()->json([
                 'error' => 'User does not exist.'
-            ], 404);
+            ], 400);
         }
 
         $sex = Sex::where('id', '=', $user->sex_id)->first();
@@ -123,7 +123,7 @@ class UserController extends Controller
         if ($this->request->auth->status !== 3) {
             return response()->json([
                 'error' => 'No permissions'
-            ], 404);
+            ], 400);
         }
 
         $this->validate($this->request, [
@@ -134,7 +134,7 @@ class UserController extends Controller
         if ($sex) {
             return response()->json([
                 'error' => 'Sex is already in database'
-            ], 404);
+            ], 400);
         }
 
         try {
@@ -160,7 +160,7 @@ class UserController extends Controller
         if ($this->request->auth->status !== 3) {
             return response()->json([
                 'error' => 'No permissions'
-            ], 404);
+            ], 400);
         }
 
         $sex = Sex::find($id);
@@ -168,13 +168,13 @@ class UserController extends Controller
         if (!$sex) {
             return response()->json([
                 'error' => 'Sex does not exist.'
-            ], 404);
+            ], 400);
         }
 
         if ($this->request->auth->sex_id == $id) {
             return response()->json([
                 'error' => 'You cannot delete your sex'
-            ], 404);
+            ], 400);
         }
 
         try {
@@ -196,13 +196,13 @@ class UserController extends Controller
         if ($this->request->auth->status !== 3) {
             return response()->json([
                 'error' => 'No permissions'
-            ], 404);
+            ], 400);
         }
 
         if ($this->request->auth->id == $id) {
             return response()->json([
                 'error' => 'You cannot change status of your account'
-            ], 404);
+            ], 400);
         }
 
         $user = User::find($id);
@@ -210,7 +210,7 @@ class UserController extends Controller
         if (!$user) {
             return response()->json([
                 'error' => 'User does not exist.'
-            ], 404);
+            ], 400);
         }
 
         try {
