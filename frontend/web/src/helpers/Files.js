@@ -7,8 +7,6 @@ const uploadFile = (file, onUploadProgress) => {
         let formData = new FormData();
         formData.append("file", file);
 
-        console.log(formData);
-
         const config = {
             headers: {
                 token: localStorage.getItem("userToken"),
@@ -32,6 +30,8 @@ const uploadFile = (file, onUploadProgress) => {
 const getFiles = () => {
     return new Promise((resolve, reject) => {
 
+        const data = {};
+
         const config = {
             headers: {
                 token: localStorage.getItem("userToken"),
@@ -39,7 +39,7 @@ const getFiles = () => {
             }
         };
 
-        axios.get(Settings.API + ApiEndpoints.GET_FILES, config).then((response) => {
+        axios.post(Settings.API + ApiEndpoints.GET_FILES, data, config).then((response) => {
             resolve(response.data);
         }).catch((error) => {
             let message = "Nie udało się połączyć z serwerem";

@@ -3,13 +3,19 @@ import {getFiles, uploadFile} from "../../helpers/Files";
 import Dropzone from "react-dropzone";
 import SweetAlert from "react-bootstrap-sweetalert";
 import LoaderScreen from "../../components/LoaderScreen";
+import {getContacts} from "../../helpers/Message";
+import {sortDesc} from "../../helpers/sort";
+import {isEmpty} from "lodash";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faTrash} from "@fortawesome/free-solid-svg-icons";
 
 const HostingFiles = () => {
+    const [showLoader, setShowLoader] = useState(false);
 
     const [selectedFiles, setSelectedFiles] = useState(undefined);
     const [currentFile, setCurrentFile] = useState(undefined);
     const [progress, setProgress] = useState(0);
-    const [fileInfos, setFileInfos] = useState([]);
+    const [myFiles, setMyFiles] = useState([]);
 
     const [showError, setShowError] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
@@ -17,7 +23,7 @@ const HostingFiles = () => {
     const [successMessage, setSuccessMessage] = useState(null);
 
     const onDrop = (files) => {
-        if(files.length > 0) {
+        if (files.length > 0) {
             setSelectedFiles(files);
         }
     }
@@ -28,17 +34,25 @@ const HostingFiles = () => {
 
         uploadFile(selectedFiles[0], (event) => {
             setProgress(Math.round((100 * event.loaded) / event.total));
-        }).then((response) => {
-            setSuccessMessage("Pomyślnie udało się wgrać plik :) \n "+response?.data?.file);
-            console.log(response?.data?.file);
+        }).then(() => {
+
+            setShowLoader(true);
+            getFiles().then(list => {
+                sortDesc(list, "id");
+                setMyFiles(list);
+            }).catch(() => {
+            }).finally(async () => {
+                await setShowLoader(false);
+            })
+
+            setSuccessMessage("Pomyślnie udało się wgrać plik :)");
             setShowSuccess(true);
-            // return getFiles();
-        }).then((files) => {
-            setFileInfos(files.data);
-        }).catch(() => {
+
+        }).catch((err) => {
+            setErrorMessage(err);
+            setShowError(true);
+        }).finally(() => {
             setProgress(0);
-            //setErrorMessage("Nie udało się wgrać pliku");
-            //setShowError(true);
             setCurrentFile(undefined);
         })
 
@@ -46,12 +60,19 @@ const HostingFiles = () => {
     }
 
     useEffect(() => {
-        /*
-        getFiles().then(res => {
-            setFileInfos(res);
+        setShowLoader(true);
+        getFiles().then(list => {
+            sortDesc(list, "id");
+            setMyFiles(list);
+        }).catch(() => {
+        }).finally(async () => {
+            await setShowLoader(false);
         })
-         */
-    },[]);
+    }, []);
+
+    const handleDeleteFile = () => {
+
+    }
 
 
     return (
@@ -69,16 +90,16 @@ const HostingFiles = () => {
                             aria-valuenow={progress}
                             aria-valuemin="0"
                             aria-valuemax="100"
-                            style={{ width: progress + "%" }}
+                            style={{width: progress + "%"}}
                         >
                             {progress}%
                         </div>
                     </div>
                 )}
                 <Dropzone onDrop={onDrop} multiple={false}>
-                    {({ getRootProps, getInputProps }) => (
+                    {({getRootProps, getInputProps}) => (
                         <section>
-                            <div {...getRootProps({ className: "dropzone" })}>
+                            <div {...getRootProps({className: "dropzone"})}>
                                 <input {...getInputProps()} />
                                 {selectedFiles && selectedFiles[0].name ? (
                                     <div className="selected-file">
@@ -106,18 +127,40 @@ const HostingFiles = () => {
                     <h1 className="display-7">Lista plików</h1>
                     <hr className="my-4"/>
                 </div>
-                {fileInfos.length > 0 && (
-                    <div className="card">
-                        <div className="card-header">Lista plików</div>
-                        <ul className="list-group list-group-flush">
-                            {fileInfos.map((file, index) => (
-                                <li className="list-group-item" key={index}>
-                                    <a href={file.url}>{file.name}</a>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+
+
+                {isEmpty(myFiles) ? (
+                    <p>Brak</p>
+                ) : (
+                    <table className="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nazwa pliku</th>
+                            <th scope="col">Rozszerzenie</th>
+                            <th scope="col">Rozmiar</th>
+                            <th scope="col">&nbsp;</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {myFiles?.map(({id, name, url, extension, size}) => (
+                            <tr key={id}>
+                                <td>{id}</td>
+                                <td><a href={url}>{name}.{extension}</a></td>
+                                <td>{extension}</td>
+                                <td>{Math.ceil(size/1024)}KB</td>
+                                <td>
+                                    <button type="button" className="btn btn-danger"
+                                            onClick={() => handleDeleteFile()}><FontAwesomeIcon
+                                        icon={faTrash}/>
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
                 )}
+
             </div>
 
 
@@ -139,6 +182,8 @@ const HostingFiles = () => {
             >
                 {successMessage}
             </SweetAlert>
+
+            {showLoader && <LoaderScreen/>}
         </>
     )
 }

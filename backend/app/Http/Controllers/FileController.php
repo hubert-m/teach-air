@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\File;
 use Illuminate\Http\Request;
 
 class FileController extends Controller
@@ -28,20 +29,43 @@ class FileController extends Controller
 
         if ($request->hasFile('file')) {
             $original_filename = $request->file('file')->getClientOriginalName();
+            $original_filename_without_ex = pathinfo($original_filename, PATHINFO_FILENAME);
+            $size = $request->file('file')->getSize();
             $original_filename_arr = explode('.', $original_filename);
             $file_ext = end($original_filename_arr);
-            $destination_path = './upload/';
-            $image = 'U-' . time() . '.' . $file_ext;
+            $destination_path = './upload/'.$request->auth->id."/";
+            $new_name = 'U-' . time() . '.' . $file_ext;
 
-            if ($request->file('file')->move($destination_path, $image)) {
-                $user->file = '/upload/' . $image;
-                return $this->responseRequestSuccess($user);
+            if ($request->file('file')->move($destination_path, $new_name)) {
+                $isExist = File::where('name', '=', $original_filename_without_ex)->get();
+                // TODO poprawic
+                if($isExist) {
+                    $original_filename_without_ex .= "-" . (count($isExist) + 1);
+                }
+
+                try {
+                    $file = new File();
+                    $file->name = $original_filename_without_ex;
+                    $file->url = $request->getSchemeAndHttpHost()."/upload/".$request->auth->id."/".$new_name;
+                    $file->extension = $file_ext;
+                    $file->size = $size;
+                    $file->created_by = $request->auth->id;
+                    $file->save();
+                } catch (\Throwable $e) {
+                    return $this->responseRequestError($e->getMessage(), 500);
+                }
+                return $this->responseRequestSuccess($file);
             } else {
-                return $this->responseRequestError('Cannot upload file');
+                return $this->responseRequestError('Cannot upload file', 400);
             }
         } else {
-            return $this->responseRequestError('File not found');
+            return $this->responseRequestError('File not found', 400);
         }
+    }
+
+    public function get_files() {
+        $files = File::where('created_by', '=', $this->request->auth->sex_id)->get();
+        return response()->json($files);
     }
 
     protected function responseRequestSuccess($ret)
@@ -53,7 +77,7 @@ class FileController extends Controller
 
     protected function responseRequestError($message = 'Bad request', $statusCode = 200)
     {
-        return response()->json(['status' => 'error', 'message' => $message], $statusCode)
+        return response()->json(['status' => 'error', 'error' => $message], $statusCode)
             ->header('Access-Control-Allow-Origin', '*')
             ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     }
