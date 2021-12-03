@@ -56,6 +56,8 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
             $router->post('/courses/add_member', 'CourseController@add_member');
             $router->post('/courses/delete_member', 'CourseController@delete_member');
             $router->post('/courses/change_favourite_course', 'CourseController@change_favourite_course');
+
+            $router->post('/files/upload', 'FileController@upload');
         }
     );
 
