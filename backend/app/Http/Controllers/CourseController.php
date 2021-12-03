@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
-use App\Models\Courses_member;
+use App\Models\Course_member;
 use App\Models\Favourite_course;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -109,7 +109,7 @@ class CourseController extends Controller
                     $courses[$i]->isMember = 1;
                 } else {
 
-                    $member_tmp = Courses_member::where('course_id', '=', $course->id)->where('user_id', '=', $this->request->auth->id)->first();
+                    $member_tmp = Course_member::where('course_id', '=', $course->id)->where('user_id', '=', $this->request->auth->id)->first();
                     if ($member_tmp) {
                         $course->isMember = 1;
                     } else {
@@ -143,7 +143,7 @@ class CourseController extends Controller
         if ($course->created_by == $this->request->auth->id) {
             $course->isMember = 1;
         } else {
-            $member_tmp = Courses_member::where('course_id', '=', $id)->where('user_id', '=', $this->request->auth->id)->first();
+            $member_tmp = Course_member::where('course_id', '=', $id)->where('user_id', '=', $this->request->auth->id)->first();
             if ($member_tmp) {
                 $course->isMember = 1;
             } else {
@@ -165,7 +165,7 @@ class CourseController extends Controller
                     $course->isMember = 1;
                 } else {
                     // jeśli jest członkiem któregoś z kursów
-                    $course_member_tmp = Courses_member::where('course_id', '=', $parent_id)
+                    $course_member_tmp = Course_member::where('course_id', '=', $parent_id)
                         ->where('user_id', '=', $this->request->auth->id)->first();
 
                     if ($course_member_tmp) {
@@ -209,7 +209,7 @@ class CourseController extends Controller
             ], 400);
         }
 
-        $membersId = Courses_member::where('course_id', '=', $id)->get();
+        $membersId = Course_member::where('course_id', '=', $id)->get();
 
         // pobieranie wszystkich czlonkow
         $users = User::where(function ($query) use ($membersId) {
@@ -223,7 +223,7 @@ class CourseController extends Controller
                     $course_tmp = Course::where('id', '=', $parent_id)->first();
                     $query->orWhere('id', '=', $course_tmp->created_by);
 
-                    $membersId_tmp = Courses_member::where('course_id', '=', $parent_id)->get();
+                    $membersId_tmp = Course_member::where('course_id', '=', $parent_id)->get();
                     foreach ($membersId_tmp as $member_tmp) {
                         $query->orWhere('id', '=', $member_tmp->user_id);
                     }
@@ -236,7 +236,7 @@ class CourseController extends Controller
         // dopisywanie wartosci do poszczegolnych userow
 
         foreach ($users as $i => $user) {
-            $isMember = Courses_member::where('user_id', '=', $user->id)->where('course_id', '=', $course->id)->first();
+            $isMember = Course_member::where('user_id', '=', $user->id)->where('course_id', '=', $course->id)->first();
 
             if (!$isMember) {
                 if ($user->id == $course->created_by) {
@@ -273,7 +273,7 @@ class CourseController extends Controller
         }
 
         if ($this->request->auth->status == 2) {
-            $membersId = Courses_member::where('course_id', '=', $this->request->parent_id)
+            $membersId = Course_member::where('course_id', '=', $this->request->parent_id)
                 ->where('user_id', '=', $this->request->auth->id)->first();
             if (!$membersId) {
                 return response()->json([
@@ -335,7 +335,7 @@ class CourseController extends Controller
             ], 400);
         }
 
-        $course_member = Courses_member::where('course_id', '=', $this->request->course_id)
+        $course_member = Course_member::where('course_id', '=', $this->request->course_id)
             ->where('user_id', '=', $this->request->user_id)->first();
 
         if ($course_member) {
@@ -356,7 +356,7 @@ class CourseController extends Controller
                     $isMemberOrAuthorOfParentCourses = true;
                 } else {
                     // jeśli jest członkiem któregoś z kursów
-                    $course_member_tmp = Courses_member::where('course_id', '=', $parent_id)
+                    $course_member_tmp = Course_member::where('course_id', '=', $parent_id)
                         ->where('user_id', '=', $this->request->user_id)->first();
 
                     if ($course_member_tmp) {
@@ -376,14 +376,14 @@ class CourseController extends Controller
 
         try {
 
-            $courses_member = new Courses_member;
-            $courses_member->course_id = $this->request->course_id;
-            $courses_member->user_id = $this->request->user_id;
-            $courses_member->save();
+            $course_member = new Course_member;
+            $course_member->course_id = $this->request->course_id;
+            $course_member->user_id = $this->request->user_id;
+            $course_member->save();
 
             return response()->json([
                 'success' => 'Member created successfully',
-                'courses_member' => $courses_member
+                'course_member' => $course_member
             ], 201);
         } catch (\Throwable $e) {
             return response()->json([
@@ -400,7 +400,7 @@ class CourseController extends Controller
             ], 400);
         }
 
-        $member = Courses_member::where('course_id', '=', $this->request->course_id)->where('user_id', '=', $this->request->user_id)->first();
+        $member = Course_member::where('course_id', '=', $this->request->course_id)->where('user_id', '=', $this->request->user_id)->first();
 
         if (!$member) {
             return response()->json([
@@ -434,7 +434,7 @@ class CourseController extends Controller
 
         $isMemberOfCourse = false;
 
-        $course_member = Courses_member::where('course_id', '=', $this->request->course_id)
+        $course_member = Course_member::where('course_id', '=', $this->request->course_id)
             ->where('user_id', '=', $this->request->auth->id)->first();
 
         if ($course_member || $this->request->auth->id == $course->created_by) {
@@ -447,7 +447,7 @@ class CourseController extends Controller
                     $isMemberOfCourse = true;
                 } else {
                     // jeśli jest członkiem któregoś z kursów
-                    $course_member_tmp = Courses_member::where('course_id', '=', $parent_id)
+                    $course_member_tmp = Course_member::where('course_id', '=', $parent_id)
                         ->where('user_id', '=', $this->request->auth->id)->first();
 
                     if ($course_member_tmp) {

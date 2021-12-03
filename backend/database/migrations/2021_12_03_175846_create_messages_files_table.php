@@ -19,7 +19,7 @@ class CreateMessagesFilesTable extends Migration
             $table->bigInteger('file_id')->unsigned()->index();
         });
 
-        Schema::table('message_files', function($table) {
+        Schema::table('messages_files', function($table) {
             $table->foreign('message_id')->references('id')->on('messages')->onDelete('cascade');
             $table->foreign('file_id')->references('id')->on('files')->onDelete('cascade');
         });

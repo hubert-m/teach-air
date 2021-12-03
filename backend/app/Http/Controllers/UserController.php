@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
-use App\Models\Courses_member;
+use App\Models\Course_member;
 use App\Models\Sex;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -259,7 +259,7 @@ class UserController extends Controller
                     $course = Course::where('id', '=', $withoutMembersOfCourseId)->first();
                     $query->where('id', '!=', $course->created_by);
 
-                    $courseMembers = Courses_member::where('course_id', '=', $withoutMembersOfCourseId)->get();
+                    $courseMembers = Course_member::where('course_id', '=', $withoutMembersOfCourseId)->get();
                     foreach ($courseMembers as $member) {
                         $query->where('id', '!=', $member->user_id);
                     }
@@ -269,7 +269,7 @@ class UserController extends Controller
                         $course_tmp = Course::where('id', '=', $parent_id)->first();
                         $query->where('id', '!=', $course_tmp->created_by);
 
-                        $courseMembers_tmp = Courses_member::where('course_id', '=', $parent_id)->get();
+                        $courseMembers_tmp = Course_member::where('course_id', '=', $parent_id)->get();
                         foreach ($courseMembers_tmp as $member_tmp) {
                             $query->where('id', '!=', $member_tmp->user_id);
                         }

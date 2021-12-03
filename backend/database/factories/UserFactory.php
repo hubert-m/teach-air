@@ -40,7 +40,7 @@ class UserFactory extends Factory
             'name' => $this->faker->firstNameFemale,
             'second_name' => $this->faker->firstNameFemale,
             'lastname' => $this->faker->lastName,
-            'profile_image' => $this->faker->imageUrl,
+            // 'profile_image' => $this->faker->imageUrl,
             'sex_id' => 2,
             'activate_token' => uniqid()
         ];
