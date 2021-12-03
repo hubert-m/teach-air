@@ -18,7 +18,6 @@ class CreatePostsTable extends Migration
             $table->id();
             $table->bigInteger('thread_id')->unsigned()->index();
             $table->text("content");
-            $table->bigInteger('file_id')->unsigned()->index()->nullable();
             $table->bigInteger('created_by')->unsigned()->index();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
@@ -26,7 +25,6 @@ class CreatePostsTable extends Migration
 
         Schema::table('posts', function($table) {
             $table->foreign('thread_id')->references('id')->on('threads')->onDelete('cascade');
-            $table->foreign('file_id')->references('id')->on('files')->onDelete('cascade');
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
         });
     }
