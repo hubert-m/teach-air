@@ -236,6 +236,15 @@ class UserController extends Controller
         $status = $request->input('status', '');
         $withoutMembersOfCourseId = $request->input('without_members_of_course_id', '');
 
+        if ($withoutMembersOfCourseId != "") {
+            $course = Course::where('id', '=', $withoutMembersOfCourseId)->first();
+            if (!$course) {
+                return response()->json([
+                    'error' => 'Course does not exist.'
+                ], 400);
+            }
+        }
+
         $users = User::
         where(function ($query) use ($id_auth_user, $keyword) {
             if ($keyword != "") {

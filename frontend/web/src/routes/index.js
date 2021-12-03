@@ -18,6 +18,7 @@ import Settings from "../views/Settings/Settings";
 import MainCourses from "../views/Courses/MainCourses";
 import SubCourses from "../views/Courses/SubCourses";
 import Activation from "../views/User/Activation";
+import HostingFiles from "../views/Hosting/HostingFiles";
 
 const routes = [
     {path: '/', Component: Home},
@@ -33,6 +34,7 @@ const routes = [
     {path: Routes.USER_ACTIVATION + ":code", Component: Activation},
     {path: Routes.MAIN_COURSES, Component: MainCourses, IsAuth: true},
     {path: Routes.SUB_COURSES + ":id", Component: SubCourses, IsAuth: true},
+    {path: Routes.HOSTING_FILES, Component: HostingFiles, IsAuth: true},
     {path: '*', Component: PageNotFound},
 ]
 

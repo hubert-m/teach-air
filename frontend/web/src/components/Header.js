@@ -23,6 +23,7 @@ function Header({userData, userToken}) {
                             <>
                                 <Nav.Link as={NavLink} to={Routes.MAIN_COURSES}>Kursy</Nav.Link>
                                 <Nav.Link as={NavLink} to={Routes.MESSAGES_LIST}>Wiadomości</Nav.Link>
+                                <Nav.Link as={NavLink} to={Routes.HOSTING_FILES}>Hosting plików</Nav.Link>
                                 {userData?.status === StatusUser.ADMIN && (
                                     <NavDropdown title="Admin" id="collasible-nav-dropdown">
                                         <NavDropdown.Item as={NavLink} to={Routes.GLOBAL_SETTINGS}>Ustawienia

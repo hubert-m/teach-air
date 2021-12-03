@@ -13,7 +13,8 @@ const Routes = {
     MESSAGES_WITH_USER: '/messages/', // :id
     MAIN_COURSES: '/courses',
     SUB_COURSES: '/courses/', // :id
-    THREAD: '/thread/' // :id
+    THREAD: '/thread/', // :id
+    HOSTING_FILES: '/files'
 }
 
 export default Routes;
