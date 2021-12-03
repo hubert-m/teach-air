@@ -12,7 +12,27 @@
     z-index: 9999;
 }
 
+.loader-screen div {
+    width: 31%;
+    text-align: center;
+    margin: 0 auto;
+}
+
 .loader-screen div h2 {
     color: #FFF;
     text-align: center;
+    font-size: 28px;
+    margin-top: 25px;
+}
+
+@media only screen and (max-width: 900px) {
+    .loader-screen div {
+        width: 45%;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .loader-screen div h2 {
+        font-size: 21px;
+    }
 }

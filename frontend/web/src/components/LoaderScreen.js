@@ -2,8 +2,8 @@ import Loader from "react-loader-spinner";
 
 const LoaderScreen = () => {
     return (
-        <div className="loader-screen">
-            <div>
+        <div className="loader-screen fadeIn">
+            <div className="fadeInDown">
                 <Loader
                     type="Bars"
                     color="#00BFFF"
