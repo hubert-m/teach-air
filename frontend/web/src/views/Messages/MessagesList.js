@@ -10,6 +10,7 @@ import LoaderScreen from "../../components/LoaderScreen";
 import {getContacts} from "../../helpers/Message";
 import {sortDesc} from "../../helpers/sort";
 import { Twemoji } from 'react-emoji-render';
+import {DefaultAvatarSrc} from "../../constants/DefaultAvatar";
 
 const MessagesList = () => {
     const history = useHistory();
@@ -74,6 +75,7 @@ const MessagesList = () => {
                     <thead>
                     <tr>
                         <th scope="col">#</th>
+                        <th scope="col">&nbsp;</th>
                         <th scope="col">Imię</th>
                         <th scope="col">Nazwisko</th>
                         <th scope="col">Email</th>
@@ -82,9 +84,16 @@ const MessagesList = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {loadOptions.map(({id, email, name, second_name, lastname, status, show_email}) => (
+                    {loadOptions.map(({id, email, name, second_name, lastname, status, show_email, profile_image, sex_id}) => (
                         <tr key={id}>
                             <th scope="row">{id}</th>
+                            <td>
+                                <div className="message-avatar">
+                                    <img
+                                        src={profile_image || DefaultAvatarSrc[sex_id?.id] || DefaultAvatarSrc[0]}
+                                        alt=""/>
+                                </div>
+                            </td>
                             <td>{name} {second_name}</td>
                             <td>{lastname}</td>
                             <td>{show_email ? email : "(ukryty)"}</td>
@@ -130,6 +139,7 @@ const MessagesList = () => {
                     <thead>
                     <tr>
                         <th scope="col">#</th>
+                        <th scope="col">&nbsp;</th>
                         <th scope="col">Imię</th>
                         <th scope="col">Nazwisko</th>
                         <th scope="col">Email</th>
@@ -139,9 +149,16 @@ const MessagesList = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {contacts.map(({id, email, name, second_name, lastname, status, lastMessage, show_email}) => (
+                    {contacts.map(({id, email, name, second_name, lastname, status, lastMessage, show_email, profile_image, sex_id}) => (
                         <tr key={id} style={ lastMessage?.sender_id === id && lastMessage?.is_read === 0 ? { backgroundColor: '#ffffb3' } : null }>
                             <th scope="row">{id}</th>
+                            <td>
+                                <div className="message-avatar">
+                                    <img
+                                        src={profile_image || DefaultAvatarSrc[sex_id] || DefaultAvatarSrc[0]}
+                                        alt=""/>
+                                </div>
+                            </td>
                             <td>{name} {second_name}</td>
                             <td>{lastname}</td>
                             <td>{show_email ? email : "(ukryty)"}</td>

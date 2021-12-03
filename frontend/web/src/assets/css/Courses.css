@@ -66,3 +66,7 @@
     font-size: 61px;
     color: red;
 }
+
+.course-box-name, .course-box-description {
+    text-align: center;
+}

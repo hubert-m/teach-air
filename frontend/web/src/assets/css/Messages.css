@@ -12,6 +12,7 @@
     white-space: pre-line;
     max-width: 75%;
     width: auto;
+    vertical-align: middle;
 }
 
 .message-my span.time, .message-contact span.time {
@@ -34,4 +35,62 @@
 .is-read {
     color: #555;
     font-size: 11px;
+}
+
+.message-avatar {
+    height: 40px;
+    width: 40px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: flex-end;
+    overflow: hidden;
+    border-radius: 25px;
+    align-self: center;
+    justify-self: center;
+    vertical-align: middle;
+}
+
+.message-avatar img {
+    flex-shrink: 0;
+    object-fit: cover;
+    object-position: center center!important;
+    min-width: 100%;
+    min-height: 100%;
+    max-width: 40px;
+}
+
+.message-avatar-my {
+    margin-left: 10px;
+}
+
+.message-avatar-contact {
+    margin-right: 10px;
+}
+
+.message-avatar-big {
+    height: 75px;
+    width: 75px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: flex-end;
+    overflow: hidden;
+    border-radius: 25px;
+    align-self: center;
+    justify-self: center;
+    vertical-align: middle;
+}
+
+.message-avatar-big img {
+    flex-shrink: 0;
+    object-fit: cover;
+    object-position: center center!important;
+    min-width: 100%;
+    min-height: 100%;
+    max-width: 75px;
+}
+
+.title-of-message {
+    display: inline-block;
+    vertical-align: middle;
+    padding-left: 15px;
 }

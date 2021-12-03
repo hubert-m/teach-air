@@ -1,3 +1,13 @@
+# Materiały
+
+## Avatary - licencja [CC0 License](https://www.svgrepo.com/page/licensing)
+
+`Domyślny avatar kobiety` - [SVGrepo - 169986](https://www.svgrepo.com/svg/169986/avatar)
+
+`Domyślny avatar mężczyzny` - [SVGrepo - 170303](https://www.svgrepo.com/svg/170303/avatar)
+
+`Domyślny avatar inne` - [SVGrepo - 169336](https://www.svgrepo.com/svg/169336/avatar)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
