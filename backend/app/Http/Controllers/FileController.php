@@ -34,14 +34,36 @@ class FileController extends Controller
             $original_filename_arr = explode('.', $original_filename);
             $file_ext = end($original_filename_arr);
             $destination_path = './upload/'.$request->auth->id."/";
-            $new_name = 'U-' . time() . '.' . $file_ext;
+            // $new_name = 'U-' . time() . '.' . $file_ext;
+
+            $i = 0;
+            $isExist = File::where('name', '=', $original_filename_without_ex)->where('created_by', '=', $request->auth->id)->first();
+            while($isExist) {
+                $i++;
+                $original_filename_without_ex_tmp = $original_filename_without_ex . "-" . $i;
+                $isExist = File::where('name', '=', $original_filename_without_ex_tmp)->where('created_by', '=', $request->auth->id)->first();
+            }
+
+            if($i>0) {
+                $original_filename_without_ex .= "-" . $i;
+            }
+
+            $new_name = $original_filename_without_ex . '.' . $file_ext;
 
             if ($request->file('file')->move($destination_path, $new_name)) {
+
+
+                /*
                 $isExist = File::where('name', '=', $original_filename_without_ex)->get();
                 // TODO poprawic
                 if($isExist) {
                     $original_filename_without_ex .= "-" . (count($isExist) + 1);
                 }
+                */
+
+
+
+
 
                 try {
                     $file = new File();
