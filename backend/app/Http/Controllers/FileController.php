@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\File;
+use App\Models\Message_file;
+use App\Models\Post_file;
 use Illuminate\Http\Request;
 
 class FileController extends Controller
@@ -24,12 +26,9 @@ class FileController extends Controller
     }
 
     public function upload(Request $request) {
-        $response = null;
-        $user = (object) ['file' => ""];
-
         if ($request->hasFile('file')) {
             $original_filename = $request->file('file')->getClientOriginalName();
-            $original_filename_without_ex = pathinfo($original_filename, PATHINFO_FILENAME);
+            $original_filename_without_ex = $request->fileName ?: pathinfo($original_filename, PATHINFO_FILENAME);
             $size = $request->file('file')->getSize();
             $original_filename_arr = explode('.', $original_filename);
             $file_ext = end($original_filename_arr);
@@ -51,20 +50,6 @@ class FileController extends Controller
             $new_name = $original_filename_without_ex . '.' . $file_ext;
 
             if ($request->file('file')->move($destination_path, $new_name)) {
-
-
-                /*
-                $isExist = File::where('name', '=', $original_filename_without_ex)->get();
-                // TODO poprawic
-                if($isExist) {
-                    $original_filename_without_ex .= "-" . (count($isExist) + 1);
-                }
-                */
-
-
-
-
-
                 try {
                     $file = new File();
                     $file->name = $original_filename_without_ex;
@@ -87,6 +72,13 @@ class FileController extends Controller
 
     public function get_files() {
         $files = File::where('created_by', '=', $this->request->auth->sex_id)->get();
+        foreach ($files as $i => $file) {
+            $countMessages = count(Message_file::where('file_id', '=', $file->id)->get());
+            $files[$i]->usedInMessages = $countMessages;
+
+            $countPosts = count(Post_file::where('file_id', '=', $file->id)->get());
+            $files[$i]->usedInPosts = $countPosts;
+        }
         return response()->json($files);
     }
 

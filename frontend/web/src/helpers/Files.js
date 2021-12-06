@@ -2,10 +2,11 @@ import axios from "axios";
 import Settings from "../constants/Settings";
 import ApiEndpoints from "../constants/ApiEndpoints";
 
-const uploadFile = (file, onUploadProgress) => {
+const uploadFile = (file, fileName, onUploadProgress) => {
     return new Promise((resolve, reject) => {
         let formData = new FormData();
         formData.append("file", file);
+        formData.append("fileName", fileName);
 
         const config = {
             headers: {

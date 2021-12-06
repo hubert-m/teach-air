@@ -3,11 +3,13 @@ import {getFiles, uploadFile} from "../../helpers/Files";
 import Dropzone from "react-dropzone";
 import SweetAlert from "react-bootstrap-sweetalert";
 import LoaderScreen from "../../components/LoaderScreen";
-import {getContacts} from "../../helpers/Message";
 import {sortDesc} from "../../helpers/sort";
 import {isEmpty} from "lodash";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTrash} from "@fortawesome/free-solid-svg-icons";
+import {cutExtensionFromFile, getOnlyExtensionFromFile} from "../../helpers/fileNames";
+import SimpleReactLightbox from 'simple-react-lightbox'
+import {SRLWrapper} from "simple-react-lightbox";
 
 const HostingFiles = () => {
     const [showLoader, setShowLoader] = useState(false);
@@ -22,9 +24,17 @@ const HostingFiles = () => {
     const [showSuccess, setShowSuccess] = useState(false);
     const [successMessage, setSuccessMessage] = useState(null);
 
+    const [data, setData] = useState({
+        fileName: '',
+    });
+
     const onDrop = (files) => {
         if (files.length > 0) {
             setSelectedFiles(files);
+            console.log(files.name);
+            setData({
+                fileName: cutExtensionFromFile(files[0].name)
+            })
         }
     }
 
@@ -32,17 +42,14 @@ const HostingFiles = () => {
         setProgress(0);
         setCurrentFile(selectedFiles[0]);
 
-        uploadFile(selectedFiles[0], (event) => {
+        uploadFile(selectedFiles[0], data?.fileName, (event) => {
             setProgress(Math.round((100 * event.loaded) / event.total));
         }).then(() => {
 
-            setShowLoader(true);
             getFiles().then(list => {
                 sortDesc(list, "id");
                 setMyFiles(list);
             }).catch(() => {
-            }).finally(async () => {
-                await setShowLoader(false);
             })
 
             setSuccessMessage("Pomyślnie udało się wgrać plik :)");
@@ -69,6 +76,15 @@ const HostingFiles = () => {
             await setShowLoader(false);
         })
     }, []);
+
+    const handleOnChange = (e) => {
+        const result = {};
+        result[e.target.name] = e.target.value;
+        setData((prevState) => ({
+            ...prevState,
+            ...result,
+        }))
+    }
 
     const handleDeleteFile = () => {
 
@@ -103,12 +119,24 @@ const HostingFiles = () => {
                                 <input {...getInputProps()} />
                                 {selectedFiles && selectedFiles[0].name ? (
                                     <div className="selected-file">
-                                        {selectedFiles && selectedFiles[0].name}
+                                        {selectedFiles && selectedFiles[0].name && (
+                                            <>
+                                                {data?.fileName}.{getOnlyExtensionFromFile(selectedFiles[0].name)}
+                                            </>
+                                        )}
                                     </div>
                                 ) : (
                                     "Przeciągnij i upuść plik tutaj, lub kliknij i wybierz plik"
                                 )}
                             </div>
+                            {selectedFiles && selectedFiles[0].name && (
+                                <div>
+                                    <label htmlFor="fileName">Zmień nazwę pliku, jeśli chcesz:</label>
+                                    <input type="text" className="form-control" name="fileName"
+                                           placeholder="Nazwa pliku" value={data.fileName}
+                                           onChange={handleOnChange}/>
+                                </div>
+                            )}
                             <aside className="selected-file-wrapper">
                                 <button
                                     className="btn btn-success"
@@ -137,18 +165,36 @@ const HostingFiles = () => {
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Nazwa pliku</th>
+                            <th scope="col">Użyć w postach</th>
+                            <th scope="col">Użyć w wiadomościach</th>
                             <th scope="col">Rozszerzenie</th>
                             <th scope="col">Rozmiar</th>
                             <th scope="col">&nbsp;</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {myFiles?.map(({id, name, url, extension, size}) => (
+                        {myFiles?.map(({id, name, url, extension, size, usedInMessages, usedInPosts}) => (
                             <tr key={id}>
                                 <td>{id}</td>
-                                <td><a href={url}>{name}.{extension}</a></td>
+                                <td>
+                                    {extension === "jpg" ? (
+                                        <>
+                                            <SimpleReactLightbox>
+                                                <SRLWrapper>
+                                                    <a href={url}><img src={url}
+                                                                       style={{maxWidth: '50px', height: 'auto'}} alt=""/></a>
+                                                </SRLWrapper>
+                                            </SimpleReactLightbox>
+                                            {name}.{extension}
+                                        </>
+                                    ) : (
+                                        <a href={url}>{name}.{extension}</a>
+                                    )}
+                                </td>
+                                <td>{usedInPosts}</td>
+                                <td>{usedInMessages}</td>
                                 <td>{extension}</td>
-                                <td>{Math.ceil(size/1024)}KB</td>
+                                <td>{Math.ceil(size / 1024)}KB</td>
                                 <td>
                                     <button type="button" className="btn btn-danger"
                                             onClick={() => handleDeleteFile()}><FontAwesomeIcon

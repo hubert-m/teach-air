@@ -147,7 +147,6 @@ const MessagesList = () => {
                     <table className="table">
                         <thead>
                         <tr>
-                            <th scope="col">#</th>
                             <th scope="col">&nbsp;</th>
                             <th scope="col">Imię</th>
                             <th scope="col">Nazwisko</th>
@@ -172,7 +171,6 @@ const MessagesList = () => {
                                        }) => (
                             <tr key={id}
                                 style={lastMessage?.sender_id === id && lastMessage?.is_read === 0 ? {backgroundColor: '#ffffb3'} : null}>
-                                <th scope="row">{id}</th>
                                 <td>
                                     <div className="message-avatar">
                                         <img
