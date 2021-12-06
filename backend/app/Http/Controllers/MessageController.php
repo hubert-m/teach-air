@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\File;
 use App\Models\Message;
+use App\Models\Message_file;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -49,8 +51,24 @@ class MessageController extends Controller
             $message->sender_id = $this->request->auth->id;
             $message->recipient_id = intval($request->recipient_id);
             $message->content = $request->message;
-
             $message->save();
+
+
+            $files = $request->post("files");
+
+            foreach ($files as $file) {
+                try {
+                    $fileMessage = new Message_file;
+                    $fileMessage->message_id = $message->id;
+                    $fileMessage->file_id = $file["id"];
+                    $fileMessage->save();
+
+                } catch (\Throwable $e) {
+                    return response()->json([
+                        'error' => $e->getMessage()
+                    ], 500);
+                }
+            }
 
             return response()->json([
                 'success' => 'Message send successfully',
@@ -83,22 +101,37 @@ class MessageController extends Controller
         $messages = Message::where(function ($query) use ($id) {
             $query->where('sender_id', '=', $this->request->auth->id)->where('recipient_id', '=', $id);
         })->orWhere(function ($query) use ($id) {
-                $query->where('sender_id', '=', $id)->where('recipient_id', '=', $this->request->auth->id);
-            })->get();
+            $query->where('sender_id', '=', $id)->where('recipient_id', '=', $this->request->auth->id);
+        })->get();
 
-        foreach ($messages as $message) {
-            if($message->is_read == 0 && $message->recipient_id == $this->request->auth->id) {
+        foreach ($messages as $i => $message) {
+            if ($message->is_read == 0 && $message->recipient_id == $this->request->auth->id) {
                 try {
                     $message->is_read = 1;
                     $message->save();
-                } catch (\Throwable $e) {}
+                } catch (\Throwable $e) {
+                }
             }
+
+            $filesMessage = Message_file::where('message_id', '=', $message->id)->get();
+            if(count($filesMessage) > 0) {
+                $files = File::where(function ($query) use ($filesMessage) {
+                    foreach ($filesMessage as $idFile) {
+                        $query->orWhere('id', '=', $idFile->file_id);
+                    }
+                })->get();
+            } else {
+                $files = array();
+            }
+
+            $messages[$i]->files = $files;
         }
 
         return response()->json($messages);
     }
 
-    public function get_contact_list() {
+    public function get_contact_list()
+    {
 
         $arr_id_users = array();
 
@@ -106,16 +139,16 @@ class MessageController extends Controller
             ->orWhere('recipient_id', '=', $this->request->auth->id)->get();
 
         foreach ($messages as $message) {
-            if($message->sender_id == $this->request->auth->id) {
+            if ($message->sender_id == $this->request->auth->id) {
                 array_push($arr_id_users, $message->recipient_id);
-            } else if($message->recipient_id == $this->request->auth->id) {
+            } else if ($message->recipient_id == $this->request->auth->id) {
                 array_push($arr_id_users, $message->sender_id);
             }
         }
 
         $arr_id_users = array_unique($arr_id_users);
 
-        if(count($arr_id_users) > 0) {
+        if (count($arr_id_users) > 0) {
             $users = User::where(function ($query) use ($arr_id_users) {
                 foreach ($arr_id_users as $user_id) {
                     $query->orWhere('id', '=', $user_id);
@@ -137,7 +170,7 @@ class MessageController extends Controller
             $users[$i]->lastMessage = $last_message;
         }
 
-         return response()->json($users);
+        return response()->json($users);
     }
 
 

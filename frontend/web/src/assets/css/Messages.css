@@ -94,3 +94,49 @@
     vertical-align: middle;
     padding-left: 15px;
 }
+
+.added-file {
+    border: 1px solid var(--bs-primary);
+    margin: 5px;
+    border-radius: 25px;
+    padding: 10px;
+    transition: .2s;
+    cursor: pointer;
+    line-height: 25px;
+    display: inline-block;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-line;
+}
+
+.added-file:hover {
+    background-color: var(--bs-primary);
+    color: #FFF;
+}
+
+.files-under-message-container {
+    margin-bottom: 20px;
+    display: block;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-line;
+}
+
+.file-under-message {
+    font-size: 11px;
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid var(--bs-primary);
+    text-decoration: none;
+    color: #444;
+    transition: .3s;
+    display: inline-block;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-line;
+}
+
+.file-under-message:hover {
+    background-color: var(--bs-primary);
+    color: #FFF;
+}

@@ -71,7 +71,7 @@ class FileController extends Controller
     }
 
     public function get_files() {
-        $files = File::where('created_by', '=', $this->request->auth->sex_id)->get();
+        $files = File::where('created_by', '=', $this->request->auth->id)->get();
         foreach ($files as $i => $file) {
             $countMessages = count(Message_file::where('file_id', '=', $file->id)->get());
             $files[$i]->usedInMessages = $countMessages;

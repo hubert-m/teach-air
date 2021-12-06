@@ -163,7 +163,6 @@ const HostingFiles = () => {
                     <table className="table">
                         <thead>
                         <tr>
-                            <th scope="col">#</th>
                             <th scope="col">Nazwa pliku</th>
                             <th scope="col">Użyć w postach</th>
                             <th scope="col">Użyć w wiadomościach</th>
@@ -175,7 +174,6 @@ const HostingFiles = () => {
                         <tbody>
                         {myFiles?.map(({id, name, url, extension, size, usedInMessages, usedInPosts}) => (
                             <tr key={id}>
-                                <td>{id}</td>
                                 <td>
                                     {extension === "jpg" ? (
                                         <>

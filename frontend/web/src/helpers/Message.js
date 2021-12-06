@@ -34,6 +34,7 @@ const sendMessage = (data) => {
             reject(error);
             return;
         }
+        console.log(data);
         const config = {headers: {token: localStorage.getItem("userToken")}};
         axios.post(Settings.API + ApiEndpoints.SEND_MESSAGE, data, config).then((response) => {
             resolve(response.data);
