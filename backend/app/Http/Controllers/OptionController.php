@@ -23,7 +23,8 @@ class OptionController extends Controller
         $this->request = $request;
     }
 
-    public function get_options() {
+    public function get_options()
+    {
 
         if ($this->request->auth->status != 3) {
             return response()->json([
@@ -33,5 +34,28 @@ class OptionController extends Controller
 
         $options = Option::all();
         return response()->json($options);
+    }
+
+    public function update_options()
+    {
+        $options = $this->request->input();
+
+        foreach ($options as $option_name => $option_value) {
+            $option = Option::where('option_name', '=', $option_name)->first();
+            if ($option) {
+                try {
+                    $option->option_value = $option_value;
+                    $option->save();
+                } catch (\Throwable $e) {
+                    return response()->json([
+                        'error' => $e->getMessage()
+                    ], 500);
+                }
+            }
+        }
+
+        return response()->json([
+            'success' => 'Options updated successfully'
+        ], 201);
     }
 }

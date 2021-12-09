@@ -62,6 +62,7 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
             $router->delete('/files/delete_file/{id}', 'FileController@delete_file');
 
             $router->get('/options/get_options', 'OptionController@get_options');
+            $router->post('/options/update_options', 'OptionController@update_options');
         }
     );
 

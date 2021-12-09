@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\File;
 use App\Models\Message_file;
+use App\Models\Option;
 use App\Models\Post_file;
 use Illuminate\Http\Request;
 
@@ -25,25 +26,46 @@ class FileController extends Controller
         $this->request = $request;
     }
 
-    public function upload(Request $request) {
+    public function upload(Request $request)
+    {
         if ($request->hasFile('file')) {
+            $settings_file_extensions = explode(',', Option::where('option_name', '=', 'file_extensions')->first()->option_value);
+            $settings_max_file_size = intval(Option::where('option_name', '=', 'max_file_size')->first()->option_value) * 1024; // zamieniamy na int i * 1024 zeby miec Bajty zamiast kilobajtow
             $original_filename = $request->file('file')->getClientOriginalName();
             $original_filename_without_ex = $request->fileName ?: pathinfo($original_filename, PATHINFO_FILENAME);
             $size = $request->file('file')->getSize();
             $original_filename_arr = explode('.', $original_filename);
             $file_ext = end($original_filename_arr);
-            $destination_path = './upload/'.$request->auth->id."/";
+            $destination_path = './upload/' . $request->auth->id . "/";
             // $new_name = 'U-' . time() . '.' . $file_ext;
+
+            $allow_extension = false;
+
+            foreach ($settings_file_extensions as $extension) {
+                if ($extension == $file_ext) {
+                    $allow_extension = true;
+                }
+            }
+
+            if (!$allow_extension) {
+                return $this->responseRequestError('Extension ' . $file_ext . ' is not allowed', 400);
+            }
+
+            if ($settings_max_file_size < $size) {
+                return $this->responseRequestError('File is too big. Max size is ' . $settings_max_file_size . 'B = '
+                    . ($settings_max_file_size/1024).'KB = '
+                    . ($settings_max_file_size/1024/1024).'MB = ', 400);
+            }
 
             $i = 0;
             $isExist = File::where('name', '=', $original_filename_without_ex)->where('created_by', '=', $request->auth->id)->first();
-            while($isExist) {
+            while ($isExist) {
                 $i++;
                 $original_filename_without_ex_tmp = $original_filename_without_ex . "-" . $i;
                 $isExist = File::where('name', '=', $original_filename_without_ex_tmp)->where('created_by', '=', $request->auth->id)->first();
             }
 
-            if($i>0) {
+            if ($i > 0) {
                 $original_filename_without_ex .= "-" . $i;
             }
 
@@ -53,7 +75,7 @@ class FileController extends Controller
                 try {
                     $file = new File();
                     $file->name = $original_filename_without_ex;
-                    $file->url = $request->getSchemeAndHttpHost()."/upload/".$request->auth->id."/".$new_name;
+                    $file->url = $request->getSchemeAndHttpHost() . "/upload/" . $request->auth->id . "/" . $new_name;
                     $file->extension = $file_ext;
                     $file->size = $size;
                     $file->created_by = $request->auth->id;
@@ -70,7 +92,8 @@ class FileController extends Controller
         }
     }
 
-    public function get_files() {
+    public function get_files()
+    {
         $files = File::where('created_by', '=', $this->request->auth->id)->get();
         foreach ($files as $i => $file) {
             $countMessages = count(Message_file::where('file_id', '=', $file->id)->get());
@@ -102,7 +125,7 @@ class FileController extends Controller
         $countMessages = count(Message_file::where('file_id', '=', $file->id)->get());
         $countPosts = count(Post_file::where('file_id', '=', $file->id)->get());
 
-        if($countMessages > 0 || $countMessages > 0) {
+        if ($countMessages > 0 || $countMessages > 0) {
             return response()->json([
                 'error' => 'You cannot delete this file. Its used in message or post'
             ], 400);
