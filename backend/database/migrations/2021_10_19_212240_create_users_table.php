@@ -27,8 +27,8 @@ class CreateUsersTable extends Migration
             $table->string("facebook", 100)->nullable();
             $table->text("hobby")->nullable();
             $table->text("description")->nullable();
-            $table->tinyInteger("status")->default(0); // 0 - niepotwierdzony email ; 1 - student ; 2 - wykladowca ; 3 - admin
-            $table->timestamp("last_change_pass")->default(DB::raw('CURRENT_TIMESTAMP')); // YYYY-MM-DD HH:mm:ss // dateTime i now() zwracało godzine wcześniejszy czas
+            $table->tinyInteger("status")->default(1); // 0 - niepotwierdzony email ; 1 - student ; 2 - wykladowca ; 3 - admin
+            $table->timestamp("last_change_pass")->default(DB::raw('DATE_ADD(NOW(), INTERVAL 1 HOUR)')); // YYYY-MM-DD HH:mm:ss // dateTime i now() zwracało godzine wcześniejszy czas
             $table->boolean("show_email")->default(true);
             $table->bigInteger('sex_id')->unsigned()->index(); // id płci z tabeli 'sex'
             $table->string("activate_token", 100);
