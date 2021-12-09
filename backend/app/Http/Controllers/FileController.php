@@ -52,7 +52,7 @@ class FileController extends Controller
             }
 
             if ($settings_max_file_size < $size) {
-                return $this->responseRequestError('File is too big. Max size is ' . $settings_max_file_size . 'B = '
+                return $this->responseRequestError('File is too large. Max size is ' . $settings_max_file_size . 'B = '
                     . ($settings_max_file_size/1024).'KB = '
                     . ($settings_max_file_size/1024/1024).'MB = ', 400);
             }
