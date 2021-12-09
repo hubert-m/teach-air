@@ -19,10 +19,11 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix'=>'api/v1'], function() use($router){
 
-    // generuje token na podstawie adresu email i hasla
+    // generuje token na podstawie adresu email i hasla - nie wymaga podania tokenu, bo go jeszcze nie ma
     $router->post('/auth/verify', ['uses' => 'AuthController@verify']);
     // rejestracja nowego użytkownika - nie wymaga tokenu
     $router->post('/users', 'UserController@create');
+    // lista płci potrzebna przy rejestracji - nie wymaga tokenu
     $router->get('/users/sex_list', 'UserController@sex_list');
 
     // Protected routes
@@ -59,6 +60,8 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
             $router->post('/files/upload', 'FileController@upload');
             $router->post('/files/get_files', 'FileController@get_files');
             $router->delete('/files/delete_file/{id}', 'FileController@delete_file');
+
+            $router->get('/options/get_options', 'OptionController@get_options');
         }
     );
 

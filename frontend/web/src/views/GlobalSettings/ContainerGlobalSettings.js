@@ -19,6 +19,9 @@ function ContainerGlobalSettings({children}) {
                     <Nav.Item>
                         <Nav.Link as={NavLink} to={Routes.GLOBAL_SETTINGS_SEX}>Płeć</Nav.Link>
                     </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link as={NavLink} to={Routes.GLOBAL_SETTINGS_SITE_OPTIONS}>Opcje</Nav.Link>
+                    </Nav.Item>
                 </Nav>
             </div>
             {children}

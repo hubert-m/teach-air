@@ -19,6 +19,7 @@ import MainCourses from "../views/Courses/MainCourses";
 import SubCourses from "../views/Courses/SubCourses";
 import Activation from "../views/User/Activation";
 import HostingFiles from "../views/Hosting/HostingFiles";
+import Options from "../views/GlobalSettings/Options";
 
 const routes = [
     {path: '/', Component: Home},
@@ -30,6 +31,7 @@ const routes = [
     {path: Routes.GLOBAL_SETTINGS, Component: GlobalSettingsHome, IsAdmin: true},
     {path: Routes.GLOBAL_SETTINGS_USERS, Component: Users, IsAdmin: true},
     {path: Routes.GLOBAL_SETTINGS_SEX, Component: Sex, IsAdmin: true},
+    {path: Routes.GLOBAL_SETTINGS_SITE_OPTIONS, Component: Options, IsAdmin: true},
     {path: Routes.SETTINGS, Component: Settings, IsAuth: true},
     {path: Routes.USER_ACTIVATION + ":code", Component: Activation},
     {path: Routes.MAIN_COURSES, Component: MainCourses, IsAuth: true},

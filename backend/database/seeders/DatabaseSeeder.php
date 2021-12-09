@@ -71,5 +71,19 @@ class DatabaseSeeder extends Seeder
                 'created_by' => 1
             )
         );
+
+        DB::table('options')->insert(
+            array(
+                'option_name' => 'max_file_size',
+                'option_value' => '10240'
+            )
+        );
+
+        DB::table('options')->insert(
+            array(
+                'option_name' => 'file_extensions',
+                'option_value' => 'jpg,jpeg,png,doc,docx,zip,rar'
+            )
+        );
     }
 }

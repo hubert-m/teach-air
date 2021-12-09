@@ -25,7 +25,9 @@ const ApiEndpoints = {
 
     UPLOAD_FILE: '/files/upload',
     GET_FILES: '/files/get_files',
-    DELETE_FILE: '/files/delete_file/' // :id
+    DELETE_FILE: '/files/delete_file/', // :id
+
+    GET_OPTIONS: '/options/get_options'
 }
 
 export default ApiEndpoints;

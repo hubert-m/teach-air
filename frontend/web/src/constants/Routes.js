@@ -9,6 +9,7 @@ const Routes = {
     GLOBAL_SETTINGS: '/settings/home',
     GLOBAL_SETTINGS_USERS: '/settings/users',
     GLOBAL_SETTINGS_SEX: '/settings/sex',
+    GLOBAL_SETTINGS_SITE_OPTIONS: '/settings/options',
     MESSAGES_LIST: '/messages',
     MESSAGES_WITH_USER: '/messages/', // :id
     MAIN_COURSES: '/courses',
