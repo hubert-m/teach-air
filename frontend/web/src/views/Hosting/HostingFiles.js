@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {getFiles, uploadFile} from "../../helpers/Files";
+import {deleteFile, getFiles, uploadFile} from "../../helpers/Files";
 import Dropzone from "react-dropzone";
 import SweetAlert from "react-bootstrap-sweetalert";
 import LoaderScreen from "../../components/LoaderScreen";
@@ -10,6 +10,7 @@ import {faTrash} from "@fortawesome/free-solid-svg-icons";
 import {cutExtensionFromFile, getOnlyExtensionFromFile} from "../../helpers/fileNames";
 import SimpleReactLightbox from 'simple-react-lightbox'
 import {SRLWrapper} from "simple-react-lightbox";
+import {deleteSex, getSexList} from "../../helpers/User";
 
 const HostingFiles = () => {
     const [showLoader, setShowLoader] = useState(false);
@@ -86,8 +87,20 @@ const HostingFiles = () => {
         }))
     }
 
-    const handleDeleteFile = () => {
-
+    const handleDeleteFile = (id) => {
+        setShowLoader(true);
+        deleteFile(id).then(() => {
+            getFiles().then(list => {
+                sortDesc(list, "id");
+                setMyFiles(list);
+            }).catch(() => {
+            })
+        }).catch((err) => {
+            setErrorMessage(err);
+            setShowError(true);
+        }).finally(async () => {
+            await setShowLoader(false);
+        });
     }
 
 
@@ -180,7 +193,8 @@ const HostingFiles = () => {
                                             <SimpleReactLightbox>
                                                 <SRLWrapper>
                                                     <a href={url}><img src={url}
-                                                                       style={{maxWidth: '50px', height: 'auto'}} alt=""/></a>
+                                                                       style={{maxWidth: '50px', height: 'auto'}}
+                                                                       alt=""/></a>
                                                 </SRLWrapper>
                                             </SimpleReactLightbox>
                                             {name}.{extension}
@@ -194,10 +208,12 @@ const HostingFiles = () => {
                                 <td>{extension}</td>
                                 <td>{Math.ceil(size / 1024)}KB</td>
                                 <td>
-                                    <button type="button" className="btn btn-danger"
-                                            onClick={() => handleDeleteFile()}><FontAwesomeIcon
-                                        icon={faTrash}/>
-                                    </button>
+                                    {usedInMessages === 0 && usedInPosts === 0 && (
+                                        <button type="button" className="btn btn-danger"
+                                                onClick={() => handleDeleteFile(id)}><FontAwesomeIcon
+                                            icon={faTrash}/>
+                                        </button>
+                                    )}
                                 </td>
                             </tr>
                         ))}

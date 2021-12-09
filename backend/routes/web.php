@@ -44,7 +44,6 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
             $router->put('/users/set_status/{id}', 'UserController@set_status');
             $router->get('/users/{id}', 'UserController@show');
 
-
             $router->post('/messages/send_message', 'MessageController@send_message');
             $router->get('/messages/get_messages/{id}', 'MessageController@get_messages');
             $router->get('/messages/get_contact_list', 'MessageController@get_contact_list');
@@ -59,6 +58,7 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
 
             $router->post('/files/upload', 'FileController@upload');
             $router->post('/files/get_files', 'FileController@get_files');
+            $router->delete('/files/delete_file/{id}', 'FileController@delete_file');
         }
     );
 

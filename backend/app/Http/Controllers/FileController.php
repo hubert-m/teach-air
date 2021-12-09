@@ -82,6 +82,46 @@ class FileController extends Controller
         return response()->json($files);
     }
 
+
+    public function delete_file($id)
+    {
+        $file = File::find($id);
+
+        if (!$file) {
+            return response()->json([
+                'error' => 'File does not exist.'
+            ], 400);
+        }
+
+        if ($this->request->auth->id != $file->created_by) {
+            return response()->json([
+                'error' => 'You cannot delete this file. Its not yours'
+            ], 400);
+        }
+
+        $countMessages = count(Message_file::where('file_id', '=', $file->id)->get());
+        $countPosts = count(Post_file::where('file_id', '=', $file->id)->get());
+
+        if($countMessages > 0 || $countMessages > 0) {
+            return response()->json([
+                'error' => 'You cannot delete this file. Its used in message or post'
+            ], 400);
+        }
+
+        try {
+            $file->delete();
+
+            return response()->json([
+                'success' => 'File removed successfully',
+                'file' => $file
+            ], 202);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     protected function responseRequestSuccess($ret)
     {
         return response()->json(['status' => 'success', 'data' => $ret], 200)
