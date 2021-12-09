@@ -17,6 +17,7 @@ import {
 import {isEmpty} from "lodash";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faMinus} from "@fortawesome/free-solid-svg-icons";
+import UploadFile from "../Hosting/components/UploadFile";
 
 const MessagesConversation = ({userData}) => {
     let {id} = useParams();
@@ -247,16 +248,15 @@ const MessagesConversation = ({userData}) => {
             >
                 <ModalHeader>Pliki</ModalHeader>
                 <ModalBody>
-                    {isEmpty(listOfFiles) ? (
-                        <p>Brak</p>
-                    ) : (
-                        <table className="table">
+                    <UploadFile setMyFiles={setListOfFiles} />
+                    {!isEmpty(listOfFiles) && (
+                        <table className="table" style={{ marginTop: '25px' }}>
                             <thead>
                             <tr>
                                 <th scope="col">Nazwa pliku</th>
                                 <th scope="col">Rozszerzenie</th>
                                 <th scope="col">Rozmiar</th>
-                                <th scope="col">&nbsp;</th>
+                                <th scope="col">Dołącz</th>
                             </tr>
                             </thead>
                             <tbody>

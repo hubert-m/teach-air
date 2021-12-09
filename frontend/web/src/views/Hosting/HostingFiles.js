@@ -1,13 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {deleteFile, getFiles} from "../../helpers/Files";
-import SweetAlert from "react-bootstrap-sweetalert";
+import {getFiles} from "../../helpers/Files";
 import LoaderScreen from "../../components/LoaderScreen";
 import {sortDesc} from "../../helpers/sort";
 import {isEmpty} from "lodash";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faTrash} from "@fortawesome/free-solid-svg-icons";
-import SimpleReactLightbox from 'simple-react-lightbox'
-import {SRLWrapper} from "simple-react-lightbox";
 import UploadFile from "./components/UploadFile";
 import ListOfFiles from "./components/ListOfFiles";
 
