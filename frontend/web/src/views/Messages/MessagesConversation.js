@@ -248,7 +248,7 @@ const MessagesConversation = ({userData}) => {
             >
                 <ModalHeader>Pliki</ModalHeader>
                 <ModalBody>
-                    <UploadFile setMyFiles={setListOfFiles} />
+                    <UploadFile setMyFiles={setListOfFiles} attachFile={true} handlePushFileToArr={handlePushFileToArr} />
                     {!isEmpty(listOfFiles) && (
                         <table className="table" style={{ marginTop: '25px' }}>
                             <thead>
@@ -290,6 +290,11 @@ const MessagesConversation = ({userData}) => {
                         </table>
                     )}
                 </ModalBody>
+            <ModalFooter>
+                <button type="button" className="btn btn-success"
+                        onClick={() => setModalIsOpen(false)}>Gotowe
+                </button>
+            </ModalFooter>
             </Modal>
             <SweetAlert
                 error
