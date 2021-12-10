@@ -320,7 +320,7 @@ const MessagesConversation = ({userData}) => {
                             </tr>
                             </thead>
                             <tbody>
-                            {listOfFiles?.map((props) => {
+                            {isEmpty(listOfFiles) ? (<tr><td colSpan={4}>Brak plikow</td></tr>) : listOfFiles?.map((props) => {
                                 const {id, name, url, extension, size} = props;
                                 return (
                                     <tr key={id}>
