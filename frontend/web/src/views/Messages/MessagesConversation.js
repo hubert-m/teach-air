@@ -8,13 +8,13 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import FontAwesome from 'react-fontawesome';
 import {Twemoji} from 'react-emoji-render';
 import {DefaultAvatarSrc} from "../../constants/DefaultAvatar";
-import {getFiles} from "../../helpers/Files";
+import {deleteFile, getSearchFiles} from "../../helpers/Files";
 import {sortDesc} from "../../helpers/sort";
 import {
     Button, Modal, ModalFooter,
     ModalHeader, ModalBody
 } from "reactstrap"
-import {isEmpty} from "lodash";
+import {isEmpty, isNull, size} from "lodash";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faMinus} from "@fortawesome/free-solid-svg-icons";
 import UploadFile from "../Hosting/components/UploadFile";
@@ -32,8 +32,65 @@ const MessagesConversation = ({userData}) => {
         recipient_id: id,
         files: []
     });
+    const [lengthKeywordWhenOneRecord, setLengthKeywordWhenOneRecord] = useState(null);
+    const [data_files, setData_files] = useState({
+        keyword: '',
+    });
     const [listOfFiles, setListOfFiles] = useState([]);
     const [modalIsOpen, setModalIsOpen] = useState(false);
+
+
+
+
+
+
+
+    const handleOnChange_files = (e) => {
+        const result = {};
+        result[e.target.name] = e.target.value;
+        setData_files((prevState) => ({
+            ...prevState,
+            ...result,
+        }))
+
+        if (e.target.value.length >= 3) {
+
+            if (size(listOfFiles) === 1 && isNull(lengthKeywordWhenOneRecord)) {
+                setLengthKeywordWhenOneRecord(e.target.value.length);
+            }
+
+            if (size(listOfFiles) > 1) {
+                setLengthKeywordWhenOneRecord(null);
+            }
+
+            if (e.target.value.length < lengthKeywordWhenOneRecord || isNull(lengthKeywordWhenOneRecord)) {
+                setShowLoader(true);
+                getSearchFiles(e.target.value).then(list => {
+                    sortDesc(list, "id");
+                    setListOfFiles(list);
+                }).catch(() => {
+                }).finally(async () => {
+                    await setShowLoader(false);
+                })
+            }
+        } else if (e.target.value.length === 0) {
+            setShowLoader(true);
+            getSearchFiles().then(list => {
+                sortDesc(list, "id");
+                setListOfFiles(list);
+            }).catch(() => {
+            }).finally(async () => {
+                await setShowLoader(false);
+            })
+        }
+    }
+
+
+
+
+
+
+
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
@@ -114,7 +171,7 @@ const MessagesConversation = ({userData}) => {
 
     const handleAddFiles = () => {
         setShowLoader(true);
-        getFiles().then(list => {
+        getSearchFiles(data_files?.keyword).then(list => {
             sortDesc(list, "id");
             setListOfFiles(list);
             setModalIsOpen(true);
@@ -248,8 +305,11 @@ const MessagesConversation = ({userData}) => {
             >
                 <ModalHeader>Pliki</ModalHeader>
                 <ModalBody>
-                    <UploadFile setMyFiles={setListOfFiles} attachFile={true} handlePushFileToArr={handlePushFileToArr} />
-                    {!isEmpty(listOfFiles) && (
+                    <UploadFile setMyFiles={setListOfFiles} attachFile={true} handlePushFileToArr={handlePushFileToArr} keyword={data_files?.keyword} />
+                    <p style={{ marginTop: '25px' }}>Wyszukaj plik (wprowadź przynajmniej 3 znaki) (skasuj wszystkie znaki aby pobrać pełną listę)</p>
+                    <input type="text" id="keyword" className="form-control third" name="keyword"
+                           placeholder="Wpisz przynajmniej 3 znaki" value={data_files.keyword}
+                           onChange={handleOnChange_files}/>
                         <table className="table" style={{ marginTop: '25px' }}>
                             <thead>
                             <tr>
@@ -288,7 +348,6 @@ const MessagesConversation = ({userData}) => {
                             })}
                             </tbody>
                         </table>
-                    )}
                 </ModalBody>
             <ModalFooter>
                 <button type="button" className="btn btn-success"

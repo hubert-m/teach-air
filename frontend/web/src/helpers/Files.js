@@ -28,10 +28,13 @@ const uploadFile = (file, fileName, onUploadProgress) => {
     });
 }
 
-const getFiles = () => {
+const getSearchFiles = (keyword = "", extension = "") => {
     return new Promise((resolve, reject) => {
 
-        const data = {};
+        const data = {
+            keyword: keyword,
+            extension: extension
+        };
 
         const config = {
             headers: {
@@ -40,7 +43,7 @@ const getFiles = () => {
             }
         };
 
-        axios.post(Settings.API + ApiEndpoints.GET_FILES, data, config).then((response) => {
+        axios.post(Settings.API + ApiEndpoints.SEARCH_FILES, data, config).then((response) => {
             resolve(response.data);
         }).catch((error) => {
             let message = "Nie udało się połączyć z serwerem";
@@ -69,6 +72,6 @@ const deleteFile = (id) => {
 
 export {
     uploadFile,
-    getFiles,
+    getSearchFiles,
     deleteFile
 }

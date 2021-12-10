@@ -59,7 +59,7 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
             $router->post('/courses/change_favourite_course', 'CourseController@change_favourite_course');
 
             $router->post('/files/upload', 'FileController@upload');
-            $router->post('/files/get_files', 'FileController@get_files');
+            $router->post('/files/search', 'FileController@search');
             $router->delete('/files/delete_file/{id}', 'FileController@delete_file');
 
             $router->get('/options/get_options', 'OptionController@get_options');

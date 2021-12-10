@@ -25,7 +25,7 @@ const ApiEndpoints = {
     CHANGE_FAVOURITE_COURSE: '/courses/change_favourite_course',
 
     UPLOAD_FILE: '/files/upload',
-    GET_FILES: '/files/get_files',
+    SEARCH_FILES: '/files/search',
     DELETE_FILE: '/files/delete_file/', // :id
 
     GET_OPTIONS: '/options/get_options',

@@ -1,11 +1,11 @@
 import Dropzone from "react-dropzone";
 import {cutExtensionFromFile, getOnlyExtensionFromFile} from "../../../helpers/fileNames";
 import React, {useState} from "react";
-import {getFiles, uploadFile} from "../../../helpers/Files";
+import {getSearchFiles, uploadFile} from "../../../helpers/Files";
 import {sortDesc} from "../../../helpers/sort";
 import SweetAlert from "react-bootstrap-sweetalert";
 
-const UploadFile = ({setMyFiles = () => {}, attachFile = false, handlePushFileToArr = () => {}}) => {
+const UploadFile = ({setMyFiles = () => {}, attachFile = false, handlePushFileToArr = () => {}, keyword = ""}) => {
 
     const [showError, setShowError] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
@@ -36,7 +36,7 @@ const UploadFile = ({setMyFiles = () => {}, attachFile = false, handlePushFileTo
             setProgress(Math.round((100 * event.loaded) / event.total));
         }).then((res) => {
 
-            getFiles().then(list => {
+            getSearchFiles(keyword).then(list => {
                 sortDesc(list, "id");
                 setMyFiles(list);
 

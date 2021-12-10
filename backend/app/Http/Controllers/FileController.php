@@ -53,8 +53,8 @@ class FileController extends Controller
 
             if ($settings_max_file_size < $size) {
                 return $this->responseRequestError('Plik jest zbyt duzy. Maksymalna waga to ' . $settings_max_file_size . 'B = '
-                    . ($settings_max_file_size/1024).'KB = '
-                    . ($settings_max_file_size/1024/1024).'MB = ', 400);
+                    . ($settings_max_file_size / 1024) . 'KB = '
+                    . ($settings_max_file_size / 1024 / 1024) . 'MB = ', 400);
             }
 
             $i = 0;
@@ -91,20 +91,6 @@ class FileController extends Controller
             return $this->responseRequestError('Nie znaleziono pliku', 400);
         }
     }
-
-    public function get_files()
-    {
-        $files = File::where('created_by', '=', $this->request->auth->id)->get();
-        foreach ($files as $i => $file) {
-            $countMessages = count(Message_file::where('file_id', '=', $file->id)->get());
-            $files[$i]->usedInMessages = $countMessages;
-
-            $countPosts = count(Post_file::where('file_id', '=', $file->id)->get());
-            $files[$i]->usedInPosts = $countPosts;
-        }
-        return response()->json($files);
-    }
-
 
     public function delete_file($id)
     {
@@ -143,6 +129,40 @@ class FileController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function search()
+    {
+        $keyword = $this->request->input('keyword', '');
+        $extensions = $this->request->input('extensions', ''); // rozszerzenia oddzielane przecinkiem
+
+        $files = File::where('created_by', '=', $this->request->auth->id)
+            ->where(function ($query) use ($keyword) {
+                $keywords = explode(" ", $keyword);
+                foreach ($keywords as $word) {
+                    $word = strtolower($word);
+                    $query->whereRaw("LOWER(CONCAT(COALESCE(`name`,''), COALESCE(`extension`,''))) LIKE ?", "%$word%");
+                }
+            })
+            ->where(function ($query) use ($extensions) {
+                if ($extensions != "") {
+                    $extensions = explode(",", $extensions);
+                    foreach ($extensions as $extension) {
+                        $query->orWhere('extension', '=', $extension);
+                    }
+                }
+            })
+            ->get();
+
+        foreach ($files as $i => $file) {
+            $countMessages = count(Message_file::where('file_id', '=', $file->id)->get());
+            $files[$i]->usedInMessages = $countMessages;
+
+            $countPosts = count(Post_file::where('file_id', '=', $file->id)->get());
+            $files[$i]->usedInPosts = $countPosts;
+        }
+        return response()->json($files);
+
     }
 
     protected function responseRequestSuccess($ret)

@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {getFiles} from "../../helpers/Files";
+import {getSearchFiles} from "../../helpers/Files";
 import LoaderScreen from "../../components/LoaderScreen";
 import {sortDesc} from "../../helpers/sort";
-import {isEmpty} from "lodash";
 import UploadFile from "./components/UploadFile";
 import ListOfFiles from "./components/ListOfFiles";
 
@@ -12,7 +11,7 @@ const HostingFiles = () => {
 
     useEffect(() => {
         setShowLoader(true);
-        getFiles().then(list => {
+        getSearchFiles().then(list => {
             sortDesc(list, "id");
             setMyFiles(list);
         }).catch(() => {
@@ -30,15 +29,11 @@ const HostingFiles = () => {
 
             <UploadFile setMyFiles={setMyFiles}/>
 
-            {!isEmpty(myFiles) && (
-                <>
-                    <div className="jumbotron">
-                        <h1 className="display-7">Lista plików</h1>
-                        <hr className="my-4"/>
-                    </div>
-                    <ListOfFiles myFiles={myFiles} setMyFiles={setMyFiles} />
-                </>
-            )}
+            <div className="jumbotron">
+                <h1 className="display-7">Lista plików</h1>
+                <hr className="my-4"/>
+            </div>
+            <ListOfFiles myFiles={myFiles} setMyFiles={setMyFiles}/>
 
             {showLoader && <LoaderScreen/>}
         </>
