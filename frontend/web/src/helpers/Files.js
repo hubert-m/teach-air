@@ -28,12 +28,12 @@ const uploadFile = (file, fileName, onUploadProgress) => {
     });
 }
 
-const getSearchFiles = (keyword = "", extension = "") => {
+const getSearchFiles = (keyword = "", extensions = "") => {
     return new Promise((resolve, reject) => {
 
         const data = {
             keyword: keyword,
-            extension: extension
+            extensions: extensions
         };
 
         const config = {

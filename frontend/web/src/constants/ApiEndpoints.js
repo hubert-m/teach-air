@@ -11,6 +11,7 @@ const ApiEndpoints = {
 
     SET_USER_STATUS: '/users/set_status/', // :id
     SEARCH_USERS: '/users/search',
+    SET_PROFILE_IMAGE: '/users/set_profile_image',
 
     SEND_MESSAGE: '/messages/send_message',
     GET_MESSAGES: '/messages/get_messages/', // :id

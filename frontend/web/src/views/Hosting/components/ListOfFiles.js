@@ -97,7 +97,7 @@ const ListOfFiles = ({
                 {isEmpty(myFiles) ? (<tr><td colSpan={6}>Brak plikow</td></tr>) : myFiles?.map(({id, name, url, extension, size, usedInMessages, usedInPosts}) => (
                     <tr key={id}>
                         <td>
-                            {extension === "jpg" ? (
+                            {extension === "jpg" || extension === "jpeg" || extension === "png" ? (
                                 <>
                                     <SimpleReactLightbox>
                                         <SRLWrapper>

@@ -207,6 +207,35 @@ const getUserById = (id) => {
     });
 };
 
+const setProfileImage = (profileImageUrl) => {
+    return new Promise((resolve, reject) => {
+
+        let error = null;
+        if (!profileImageUrl)
+            error = "Brakuje URL obrazka";
+
+        if (error) {
+            reject(error);
+            return;
+        }
+
+        const data = {
+            profile_image: profileImageUrl
+        }
+
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.post(Settings.API + ApiEndpoints.SET_PROFILE_IMAGE, data, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+}
+
 
 export {
     getMe,
@@ -221,5 +250,6 @@ export {
     setUserStatus,
     getSearchUsers,
     getUserById,
+    setProfileImage
     // getUserData,
 };

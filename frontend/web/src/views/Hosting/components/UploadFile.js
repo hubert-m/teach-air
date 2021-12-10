@@ -5,7 +5,7 @@ import {getSearchFiles, uploadFile} from "../../../helpers/Files";
 import {sortDesc} from "../../../helpers/sort";
 import SweetAlert from "react-bootstrap-sweetalert";
 
-const UploadFile = ({setMyFiles = () => {}, attachFile = false, handlePushFileToArr = () => {}, keyword = ""}) => {
+const UploadFile = ({setMyFiles = () => {}, attachFile = false, handlePushFileToArr = () => {}, keyword = "", extensions = ""}) => {
 
     const [showError, setShowError] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
@@ -36,7 +36,7 @@ const UploadFile = ({setMyFiles = () => {}, attachFile = false, handlePushFileTo
             setProgress(Math.round((100 * event.loaded) / event.total));
         }).then((res) => {
 
-            getSearchFiles(keyword).then(list => {
+            getSearchFiles(keyword, extensions).then(list => {
                 sortDesc(list, "id");
                 setMyFiles(list);
 

@@ -111,6 +111,12 @@ class UserController extends Controller
     {
         $me = User::find($this->request->auth->id);
 
+        if (!$me) {
+            return response()->json([
+                'error' => 'Uzytkownik nie istnieje'
+            ], 400);
+        }
+
         if($this->request->name == "" || $this->request->lastname == "" || $this->request->sex_id == "") {
             return response()->json([
                 'error' => 'Nie mozesz usunac wymaganych wartosci'
@@ -332,5 +338,31 @@ class UserController extends Controller
         }
 
         return response()->json($users);
+    }
+
+    public function set_profile_image()
+    {
+        $user = User::find($this->request->auth->id);
+
+        if (!$user) {
+            return response()->json([
+                'error' => 'Uzytkownik nie istnieje'
+            ], 400);
+        }
+
+        try {
+            $user->profile_image = $this->request->input('profile_image', '');
+            $user->save();
+
+            return response()->json([
+                'success' => 'Pomyslnie zaktualizowano profilowe',
+                'auth' => $user
+            ], 201);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
     }
 }
