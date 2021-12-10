@@ -40,14 +40,14 @@ class UserController extends Controller
         $user = User::where('email', '=', $request->email)->first();
         if ($user) {
             return response()->json([
-                'error' => 'Email is already in use'
+                'error' => 'Taki email juz istnieje w bazie danych'
             ], 400);
         }
 
         $sex = Sex::find($request->sex_id);
         if (!$sex) {
             return response()->json([
-                'error' => 'Sex does not exist.'
+                'error' => 'Plec nie istnieje'
             ], 400);
         }
 
@@ -68,7 +68,7 @@ class UserController extends Controller
             $user->save();
 
             return response()->json([
-                'success' => 'User created successfully',
+                'success' => 'Zarejestrowano pomyslnie',
                 'user' => $user
             ], 201);
 
@@ -84,7 +84,7 @@ class UserController extends Controller
         $user = User::find($id);
         if (!$user) {
             return response()->json([
-                'error' => 'User does not exist.'
+                'error' => 'Uzytkownik nie istnieje'
             ], 400);
         }
 
@@ -113,7 +113,7 @@ class UserController extends Controller
 
         if($this->request->name == "" || $this->request->lastname == "" || $this->request->sex_id == "") {
             return response()->json([
-                'error' => 'You cannot delete this values.'
+                'error' => 'Nie mozesz usunac wymaganych wartosci'
             ], 400);
         }
 
@@ -132,7 +132,7 @@ class UserController extends Controller
             $sex = Sex::where('id', '=', $me->sex_id)->first();
             $me->sex_id = $sex;
             return response()->json([
-                'success' => 'Your data updated successfully',
+                'success' => 'Dane zaktualizowane pomyslnie',
                 'auth' => $me
             ], 201);
         } catch (\Throwable $e) {
@@ -158,7 +158,7 @@ class UserController extends Controller
     {
         if ($this->request->auth->status !== 3) {
             return response()->json([
-                'error' => 'No permissions'
+                'error' => 'Brak uprawnien do dodawania plci'
             ], 400);
         }
 
@@ -169,7 +169,7 @@ class UserController extends Controller
         $sex = Sex::where('value', '=', $this->request->sex)->first();
         if ($sex) {
             return response()->json([
-                'error' => 'Sex is already in database'
+                'error' => 'Taka plec juz istnieje w bazie danych'
             ], 400);
         }
 
@@ -180,7 +180,7 @@ class UserController extends Controller
             $sex->save();
 
             return response()->json([
-                'success' => 'Sex created successfully',
+                'success' => 'Plec dodana pomyslnie',
                 'sex' => $sex
             ], 201);
 
@@ -195,7 +195,7 @@ class UserController extends Controller
     {
         if ($this->request->auth->status !== 3) {
             return response()->json([
-                'error' => 'No permissions'
+                'error' => 'Brak uprawnien do usuwania plci'
             ], 400);
         }
 
@@ -203,13 +203,13 @@ class UserController extends Controller
 
         if (!$sex) {
             return response()->json([
-                'error' => 'Sex does not exist.'
+                'error' => 'Plec nie istnieje'
             ], 400);
         }
 
         if ($this->request->auth->sex_id == $id) {
             return response()->json([
-                'error' => 'You cannot delete your sex'
+                'error' => 'Nie mozesz usunac swojej plci'
             ], 400);
         }
 
@@ -217,7 +217,7 @@ class UserController extends Controller
             $sex->delete();
 
             return response()->json([
-                'success' => 'Sex removed successfully',
+                'success' => 'Plec usunieta pomyslnie',
                 'course' => $sex
             ], 202);
         } catch (\Throwable $e) {
@@ -231,13 +231,13 @@ class UserController extends Controller
     {
         if ($this->request->auth->status !== 3) {
             return response()->json([
-                'error' => 'No permissions'
+                'error' => 'Brak uprawnien do zmieniania statusu'
             ], 400);
         }
 
         if ($this->request->auth->id == $id) {
             return response()->json([
-                'error' => 'You cannot change status of your account'
+                'error' => 'Nie mozesz zmienic statusu swojego konta'
             ], 400);
         }
 
@@ -245,7 +245,7 @@ class UserController extends Controller
 
         if (!$user) {
             return response()->json([
-                'error' => 'User does not exist.'
+                'error' => 'Uzytkownik nie istnieje'
             ], 400);
         }
 
@@ -254,7 +254,7 @@ class UserController extends Controller
             $user->save();
 
             return response()->json([
-                'success' => 'Status changed successfully',
+                'success' => 'Status zmieniony pomyslnie',
                 'user' => $user
             ], 201);
         } catch (\Throwable $e) {
@@ -276,7 +276,7 @@ class UserController extends Controller
             $course = Course::where('id', '=', $withoutMembersOfCourseId)->first();
             if (!$course) {
                 return response()->json([
-                    'error' => 'Course does not exist.'
+                    'error' => 'Kurs nie istnieje'
                 ], 400);
             }
         }

@@ -62,7 +62,7 @@ class AuthController extends Controller
         $user = User::where('email', $this->request->input('email'))->first();
         if (!$user) {
             return response()->json([
-                'error' => 'Email does not exist.'
+                'error' => 'Taki email nie istnieje'
             ], 400);
         }
         // Verify the password and generate the token
@@ -73,7 +73,7 @@ class AuthController extends Controller
         }
         // Bad Request response
         return response()->json([
-            'error' => 'Email or password is wrong.',
+            'error' => 'Email lub haslo jest nieprawidlowe',
         ], 400);
     }
 }

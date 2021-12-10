@@ -48,11 +48,11 @@ class FileController extends Controller
             }
 
             if (!$allow_extension) {
-                return $this->responseRequestError('Extension ' . $file_ext . ' is not allowed', 400);
+                return $this->responseRequestError('Rozszerzenie ' . $file_ext . ' nie jest dozwolone', 400);
             }
 
             if ($settings_max_file_size < $size) {
-                return $this->responseRequestError('File is too large. Max size is ' . $settings_max_file_size . 'B = '
+                return $this->responseRequestError('Plik jest zbyt duzy. Maksymalna waga to ' . $settings_max_file_size . 'B = '
                     . ($settings_max_file_size/1024).'KB = '
                     . ($settings_max_file_size/1024/1024).'MB = ', 400);
             }
@@ -85,10 +85,10 @@ class FileController extends Controller
                 }
                 return $this->responseRequestSuccess($file);
             } else {
-                return $this->responseRequestError('Cannot upload file', 400);
+                return $this->responseRequestError('Nie udalo sie wgrac pliku', 400);
             }
         } else {
-            return $this->responseRequestError('File not found', 400);
+            return $this->responseRequestError('Nie znaleziono pliku', 400);
         }
     }
 
@@ -112,13 +112,13 @@ class FileController extends Controller
 
         if (!$file) {
             return response()->json([
-                'error' => 'File does not exist.'
+                'error' => 'Plik nie istnieje'
             ], 400);
         }
 
         if ($this->request->auth->id != $file->created_by) {
             return response()->json([
-                'error' => 'You cannot delete this file. Its not yours'
+                'error' => 'Nie mozesz usunac czyjegos pliku'
             ], 400);
         }
 
@@ -127,7 +127,7 @@ class FileController extends Controller
 
         if ($countMessages > 0 || $countMessages > 0) {
             return response()->json([
-                'error' => 'You cannot delete this file. Its used in message or post'
+                'error' => 'Nie mozesz usunac pliku - zostal uzyty w przynajmniej jednej wiadomosci lub poscie'
             ], 400);
         }
 
@@ -135,7 +135,7 @@ class FileController extends Controller
             $file->delete();
 
             return response()->json([
-                'success' => 'File removed successfully',
+                'success' => 'Plik usuniety pomyslnie',
                 'file' => $file
             ], 202);
         } catch (\Throwable $e) {

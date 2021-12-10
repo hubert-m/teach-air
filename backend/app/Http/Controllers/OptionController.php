@@ -28,7 +28,7 @@ class OptionController extends Controller
 
         if ($this->request->auth->status != 3) {
             return response()->json([
-                'error' => 'You arent admin. You cannot get options of web app'
+                'error' => 'Nie jestes adminem, nie mozesz pobrac informacji o ustawieniach'
             ], 400);
         }
 
@@ -41,7 +41,7 @@ class OptionController extends Controller
 
         if ($this->request->auth->status != 3) {
             return response()->json([
-                'error' => 'You arent admin. You cannot update options of web app'
+                'error' => 'Nie jestes adminem, nie mozesz zaktualizowac ustawien'
             ], 400);
         }
 
@@ -62,14 +62,14 @@ class OptionController extends Controller
         }
 
         return response()->json([
-            'success' => 'Options updated successfully'
+            'success' => 'Ustawienia zaktualizowane pomyslnie'
         ], 201);
     }
 
     public function add_option() {
         if ($this->request->auth->status != 3) {
             return response()->json([
-                'error' => 'You arent admin. You cannot update options of web app'
+                'error' => 'Nie jestes adminem, nie mozesz dodac kolejnej opcji do ustawien'
             ], 400);
         }
 
@@ -77,7 +77,7 @@ class OptionController extends Controller
 
         if($option) {
             return response()->json([
-                'error' => 'Option is already in database'
+                'error' => 'Taka opcja juz istnieje w bazie danych'
             ], 400);
         }
 
@@ -88,7 +88,7 @@ class OptionController extends Controller
             $option->save();
 
             return response()->json([
-                'success' => 'Option added successfully'
+                'success' => 'Opcja dodana pomyslnie'
             ], 201);
         } catch (\Throwable $e) {
             return response()->json([

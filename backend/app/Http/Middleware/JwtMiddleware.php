@@ -24,16 +24,16 @@ class JwtMiddleware
 
         // Have a token on that request?
         if (!$token) {
-            return response()->json(['error' => 'You must send user Token'], 401);
+            return response()->json(['error' => 'Musisz przeslac token w naglowku'], 401);
         }
 
         // Try decode token to retrieve credential payload
         try {
             $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
         } catch (ExpiredException $e) {
-            return response()->json(['error' => 'Provided token is expired.'], 400);
+            return response()->json(['error' => 'Token jest nieaktualny'], 400);
         } catch (Exception $e) {
-            return response()->json(['error' => 'An error while decoding token.'], 400);
+            return response()->json(['error' => 'Wystapil problem podczas dekodowania tokena.'], 400);
         }
 
         // Find token user

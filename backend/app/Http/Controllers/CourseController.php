@@ -32,7 +32,7 @@ class CourseController extends Controller
 
         if (!$course) {
             return response()->json([
-                'error' => 'Course does not exist.'
+                'error' => 'Kurs nie istnieje'
             ], 400);
         }
 
@@ -49,7 +49,7 @@ class CourseController extends Controller
             $course->save();
 
             return response()->json([
-                'success' => 'Course updated successfully',
+                'success' => 'Kurs zaktualizowany pomyslnie',
                 'course' => $course
             ], 201);
         } catch (\Throwable $e) {
@@ -66,7 +66,7 @@ class CourseController extends Controller
 
         if (!$course) {
             return response()->json([
-                'error' => 'Course does not exist.'
+                'error' => 'Kurs nie istnieje'
             ], 400);
         }
 
@@ -74,7 +74,7 @@ class CourseController extends Controller
             $course->delete();
 
             return response()->json([
-                'success' => 'Course removed successfully',
+                'success' => 'Kurs usuniety pomyslnie',
                 'course' => $course
             ], 202);
         } catch (\Throwable $e) {
@@ -135,7 +135,7 @@ class CourseController extends Controller
 
         if (!$course) {
             return response()->json([
-                'error' => 'Course does not exist.'
+                'error' => 'Kurs nie istnieje'
             ], 400);
         }
 
@@ -205,7 +205,7 @@ class CourseController extends Controller
 
         if (!$course) {
             return response()->json([
-                'error' => 'Course does not exist.'
+                'error' => 'Kurs nie istnieje'
             ], 400);
         }
 
@@ -262,13 +262,13 @@ class CourseController extends Controller
 
         if ($this->request->parent_id == null && $this->request->auth->status != 3) {
             return response()->json([
-                'error' => 'You arent admin. You cannot create course with parent_id = 0'
+                'error' => 'Nie jestes adminem wiec nie mozesz stworzyc kursu z parent_id = 0'
             ], 400);
         }
 
         if ($this->request->auth->status != 3 && $this->request->auth->status != 2) {
             return response()->json([
-                'error' => 'You cannot create course. No permision'
+                'error' => 'Brak uprawnien do tworzenia kursow'
             ], 400);
         }
 
@@ -277,7 +277,7 @@ class CourseController extends Controller
                 ->where('user_id', '=', $this->request->auth->id)->first();
             if (!$membersId) {
                 return response()->json([
-                    'error' => 'You are a teacher, but you arent a member of this course so you dont have access to this course'
+                    'error' => 'Jestes nauczycielem, ale nie jestes czlonkiem tego kursu wiec nie masz do niego dostepu'
                 ], 400);
             }
         }
@@ -294,7 +294,7 @@ class CourseController extends Controller
             $course->save();
 
             return response()->json([
-                'success' => 'Course created successfully',
+                'success' => 'Kurs stworzony pomyslnie',
                 'course' => $course
             ], 201);
 
@@ -309,7 +309,7 @@ class CourseController extends Controller
     {
         if ($this->request->auth->status != 3 && $this->request->auth->status != 2) {
             return response()->json([
-                'error' => 'You cannot add members to courses. No permision'
+                'error' => 'Brak uprawnien do dodawania czlonkow do kursu'
             ], 400);
         }
 
@@ -317,7 +317,7 @@ class CourseController extends Controller
 
         if (!$course) {
             return response()->json([
-                'error' => 'Course does not exist.'
+                'error' => 'Kurs nie istnieje'
             ], 400);
         }
 
@@ -325,13 +325,13 @@ class CourseController extends Controller
 
         if (!$user) {
             return response()->json([
-                'error' => 'User does not exist.'
+                'error' => 'Uzytkownik nie istnieje'
             ], 400);
         }
 
         if ($user->status == 3) {
             return response()->json([
-                'error' => 'User is admin. You dont need to add him'
+                'error' => 'Uzytkownik jest adminem. Nie musisz go dodawac'
             ], 400);
         }
 
@@ -340,7 +340,7 @@ class CourseController extends Controller
 
         if ($course_member) {
             return response()->json([
-                'error' => 'User is already member of this course.'
+                'error' => 'Uzytkownik juz jest czlonkiem tego kursu'
             ], 400);
         }
 
@@ -370,7 +370,7 @@ class CourseController extends Controller
 
         if ($isMemberOrAuthorOfParentCourses) {
             return response()->json([
-                'error' => 'User is already member of one of parent courses.'
+                'error' => 'Uzytkownik juz jest czlonkiem jednego z nadrzednych kursow'
             ], 400);
         }
 
@@ -382,7 +382,7 @@ class CourseController extends Controller
             $course_member->save();
 
             return response()->json([
-                'success' => 'Member created successfully',
+                'success' => 'Czlonek dodany pomyslnie',
                 'course_member' => $course_member
             ], 201);
         } catch (\Throwable $e) {
@@ -396,7 +396,7 @@ class CourseController extends Controller
     {
         if ($this->request->auth->status !== 3 && $this->request->auth->status !== 2) {
             return response()->json([
-                'error' => 'No permissions'
+                'error' => 'Brak uprawnien'
             ], 400);
         }
 
@@ -404,7 +404,7 @@ class CourseController extends Controller
 
         if (!$member) {
             return response()->json([
-                'error' => 'This user isnt a member of this course.'
+                'error' => 'Ten uzytkownik nie jest czlonkiem tego kursu'
             ], 400);
         }
 
@@ -412,7 +412,7 @@ class CourseController extends Controller
             $member->delete();
 
             return response()->json([
-                'success' => 'Member removed successfully',
+                'success' => 'Czlonek usuniety pomyslnie',
                 'member' => $member
             ], 202);
         } catch (\Throwable $e) {
@@ -428,7 +428,7 @@ class CourseController extends Controller
 
         if (!$course) {
             return response()->json([
-                'error' => 'Course does not exist.'
+                'error' => 'Kurs nie istnieje'
             ], 400);
         }
 
@@ -460,7 +460,7 @@ class CourseController extends Controller
 
         if(!$isMemberOfCourse) {
             return response()->json([
-                'error' => 'You arent member of this course so you cannot add this to favourite.'
+                'error' => 'Nie jestes czlonkiem tego kursu wiec nie mozesz dodac go do ulubionych'
             ], 400);
         }
 
@@ -473,7 +473,7 @@ class CourseController extends Controller
                 $favouriteCourse->delete();
 
                 return response()->json([
-                    'success' => 'Course removed from favourity successfully',
+                    'success' => 'Kurs pomyslnie usuniety z ulubionych',
                     'favourite_course' => $favouriteCourse
                 ], 202);
             } catch (\Throwable $e) {
@@ -489,7 +489,7 @@ class CourseController extends Controller
                 $favouriteCourse->save();
 
                 return response()->json([
-                    'success' => 'Course added to favourity successfully',
+                    'success' => 'Kurs pomyslnie dodany do ulubionych',
                     'favourite_course' => $favouriteCourse
                 ], 201);
 
