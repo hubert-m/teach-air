@@ -27,6 +27,31 @@ const getMe = () => {
     });
 };
 
+const updateMe = (data) => {
+    return new Promise((resolve, reject) => {
+
+        let error = null;
+        if (!data.name || !data.lastname || !data.sex_id)
+            error = "Nie możesz skasować zawartości wymaganych pól";
+
+        if (error) {
+            reject(error);
+            return;
+        }
+
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.post(Settings.API + ApiEndpoints.UPDATE_ME, data, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+}
+
 const getToken = () => {
     return localStorage.getItem("userToken");
 };
@@ -185,6 +210,7 @@ const getUserById = (id) => {
 
 export {
     getMe,
+    updateMe,
     getToken,
     authenticate,
     logout,

@@ -107,6 +107,42 @@ class UserController extends Controller
         return response()->json($this->request->auth, 200);
     }
 
+    public function update_me()
+    {
+        $me = User::find($this->request->auth->id);
+
+        if($this->request->name == "" || $this->request->lastname == "" || $this->request->sex_id == "") {
+            return response()->json([
+                'error' => 'You cannot delete this values.'
+            ], 400);
+        }
+
+        try {
+            $me->name = $this->request->name;
+            $me->second_name = $this->request->second_name;
+            $me->lastname = $this->request->lastname;
+            $me->sex_id = intval($this->request->sex_id);
+            $me->phone = $this->request->phone;
+            $me->facebook = $this->request->facebook;
+            $me->description = $this->request->description;
+            $me->hobby = $this->request->hobby;
+            $me->show_email = intval($this->request->show_email);
+            $me->save();
+
+            $sex = Sex::where('id', '=', $me->sex_id)->first();
+            $me->sex_id = $sex;
+            return response()->json([
+                'success' => 'Your data updated successfully',
+                'auth' => $me
+            ], 201);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+    }
+
 
     public function sex_list()
     {

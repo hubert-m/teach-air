@@ -1,12 +1,22 @@
 import React, {useEffect, useState} from 'react';
-import {getSexList} from "../../helpers/User";
+import {getMe, getSexList, updateMe} from "../../helpers/User";
 import {Switch} from "@mui/material";
 import parseTimeStamp from "../../helpers/parseTimeStamp";
 import {StatusUser, StatusUserName} from "../../constants/StatusUser";
 import replaceNull from "../../helpers/replaceNull";
+import SweetAlert from "react-bootstrap-sweetalert";
+import LoaderScreen from "../../components/LoaderScreen";
 
-const Settings = ({userData}) => {
-    const [data, setData] = useState(userData);
+const Settings = ({userData, setUserData}) => {
+    const [showLoader, setShowLoader] = useState(false);
+    const [showError, setShowError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [successMessage, setSuccessMessage] = useState(null);
+    const [data, setData] = useState({
+        ...userData,
+        sex_id: userData?.sex_id?.id
+    });
     const [sexList, setSexList] = useState([]);
 
     useEffect(() => {
@@ -37,11 +47,23 @@ const Settings = ({userData}) => {
     }
 
     const handleOnUpdate = () => {
-
+        setShowLoader(true);
+        console.log(data);
+        updateMe(data).then((res) => {
+            setUserData(res?.auth);
+        }).catch((err) => {
+            setErrorMessage(err);
+            setShowError(true);
+        }).finally(async () => {
+            await setShowLoader(false);
+        })
     }
 
     const handleOnReset = () => {
-        setData(replaceNull(userData));
+        setData(replaceNull({
+            ...userData,
+            sex_id: userData?.sex_id?.id
+        }));
     }
 
     return (
@@ -123,7 +145,7 @@ const Settings = ({userData}) => {
                 </div>
                 <div className="col-lg-4">
                     <label htmlFor="sex_id">Płeć</label>
-                    <select name="sex_id" onChange={handleOnChange} value={data?.sex_id?.id}>
+                    <select name="sex_id" onChange={handleOnChange} value={data?.sex_id}>
                         {sexList?.map(({id, value}) => (
                             <option value={id} key={id}>{value}</option>
                         ))}
@@ -176,6 +198,26 @@ const Settings = ({userData}) => {
                 <h1 className="display-7">Upload zdjęcia profilowego</h1>
                 <hr className="my-4"/>
             </div>
+
+            <SweetAlert
+                error
+                show={showError}
+                title="Coś poszło nie tak :("
+                confirmBtnText="Już poprawiam, Sir!"
+                confirmBtnBsStyle="danger"
+                onConfirm={() => setShowError(false)}
+            >
+                {errorMessage}
+            </SweetAlert>
+            <SweetAlert
+                success
+                show={showSuccess}
+                title="Hurraaa :)"
+                onConfirm={() => setShowSuccess(false)}
+            >
+                {successMessage}
+            </SweetAlert>
+            {showLoader && <LoaderScreen/>}
         </>
     )
 }
