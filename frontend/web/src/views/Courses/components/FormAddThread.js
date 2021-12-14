@@ -13,11 +13,13 @@ import LoaderScreen from "../../../components/LoaderScreen";
 import UploadFile from "../../Hosting/components/UploadFile";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faMinus, faPlus} from "@fortawesome/free-solid-svg-icons";
+import {addThread} from "../../../helpers/Thread";
 
-const FormAddThread = () => {
+const FormAddThread = ({ course_id }) => {
     const [showError, setShowError] = useState(false);
     const [showLoader, setShowLoader] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
+    const [showSuccess, setShowSuccess] = useState(false);
 
     const [modalIsOpenAddThread, setModalIsOpenAddThread] = useState(false);
     const [data, setData] = useState({
@@ -128,7 +130,21 @@ const FormAddThread = () => {
     }
 
     const handleAddThread = () => {
+        const payload = {
+            ...data,
+            course_id: course_id,
+            icon: data?.icon?.value
+        }
 
+        setShowLoader(true);
+        addThread(payload).then(() => {
+            setShowSuccess(true)
+        }).catch((err) => {
+            setErrorMessage(err);
+            setShowError(true);
+        }).finally(async () => {
+            await setShowLoader(false);
+        })
     }
 
 
@@ -157,7 +173,7 @@ const FormAddThread = () => {
                             options={IconsOptions}
                             value={data.icon}
                             onChange={handleOnChangeSelect}
-                            placeholder="Wybierz ikonę dla kursu *pole opcjonalne"
+                            placeholder="Wybierz ikonę dla wątku *pole opcjonalne"
                             theme={(theme) => ({
                                 ...theme,
                                 borderRadius: 0,
@@ -183,7 +199,7 @@ const FormAddThread = () => {
                         value={data.content}
                         onChange={handleOnChange}/>
                     {!isEmpty(data?.files) && (
-                        <div className="col-lg-6 offset-lg-3">
+                        <div className="col-lg-6">
                             <p>Dodane pliki (kliknij aby usunąć):</p>
                             {data?.files?.map(({id, name, extension}) => (
                                     <span key={id} className="added-file"
@@ -273,6 +289,14 @@ const FormAddThread = () => {
                 onConfirm={() => setShowError(false)}
             >
                 {errorMessage}
+            </SweetAlert>
+            <SweetAlert
+                success
+                show={showSuccess}
+                title="Hurraaa :)"
+                onConfirm={() => setShowSuccess(false)}
+            >
+                Pomyślnie dodano nowy wątek
             </SweetAlert>
             {showLoader && <LoaderScreen/>}
         </>

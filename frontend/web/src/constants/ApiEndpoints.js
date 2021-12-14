@@ -31,7 +31,9 @@ const ApiEndpoints = {
 
     GET_OPTIONS: '/options/get_options',
     UPDATE_OPTIONS: '/options/update_options',
-    ADD_OPTION: '/options/add_option'
+    ADD_OPTION: '/options/add_option',
+
+    ADD_THREAD: '/threads/add_thread'
 }
 
 export default ApiEndpoints;

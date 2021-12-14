@@ -95,7 +95,7 @@ const SubCourses = ({userData}) => {
 
             {course?.isMember === 1 && (
                 <>
-                    <FormAddThread/>
+                    <FormAddThread course_id={id}/>
                     <ListOfThreads/>
                 </>
             )}
