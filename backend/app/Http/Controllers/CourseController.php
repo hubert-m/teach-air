@@ -89,9 +89,9 @@ class CourseController extends Controller
         $parent_id = $this->request->parent_id ?: null;
         $only_favourites = (bool)$this->request->only_favourites;
 
-        if($only_favourites) {
+        if ($only_favourites) {
             $favouritesCoursesId = Favourite_course::where('user_id', '=', $this->request->auth->id)->get();
-            if(count($favouritesCoursesId) != 0) {
+            if (count($favouritesCoursesId) != 0) {
                 $courses = Course::where(function ($query) use ($favouritesCoursesId) {
                     foreach ($favouritesCoursesId as $favouriteCourse) {
                         $query->orWhere('id', '=', $favouriteCourse->course_id);
@@ -104,26 +104,70 @@ class CourseController extends Controller
             $courses = Course::where('parent_id', '=', $parent_id)->get();
         }
 
-            foreach ($courses as $i => $course) {
+        $isMemberOrAuthorOfParentCourses = false;
+
+
+        if ($parent_id != null) {
+            $currentCourse = Course::where('id', '=', $parent_id)->first();
+            if ($currentCourse->created_by == $this->request->auth->id) {
+                $isMemberOrAuthorOfParentCourses = true;
+            } else {
+                $memberOfCurrentCourse = Course_member::where('course_id', '=', $parent_id)->where('user_id', '=', $this->request->auth->id)->first();
+                if ($memberOfCurrentCourse) {
+                    $isMemberOrAuthorOfParentCourses = true;
+                }
+            }
+
+
+            $parent_id = $currentCourse->parent_id;
+            while ($parent_id != null) {
+                $course_tmp = Course::where('id', '=', $parent_id)->first();
+
+                if (!$isMemberOrAuthorOfParentCourses) {
+                    if ($course_tmp->created_by == $this->request->auth->id) {
+                        $isMemberOrAuthorOfParentCourses = true;
+                    } else {
+                        // jeśli jest członkiem któregoś z kursów
+                        $course_member_tmp = Course_member::where('course_id', '=', $parent_id)
+                            ->where('user_id', '=', $this->request->auth->id)->first();
+
+                        if ($course_member_tmp) {
+                            $isMemberOrAuthorOfParentCourses = true;
+                        }
+                    }
+                }
+
+                $parent_id = $course_tmp->parent_id;
+            }
+        }
+
+
+        foreach ($courses as $i => $course) {
+            if (!$isMemberOrAuthorOfParentCourses) {
                 if ($course->created_by == $this->request->auth->id) {
                     $courses[$i]->isMember = 1;
                 } else {
 
                     $member_tmp = Course_member::where('course_id', '=', $course->id)->where('user_id', '=', $this->request->auth->id)->first();
                     if ($member_tmp) {
-                        $course->isMember = 1;
-                    } else {
-                        $course->isMember = 0;
+                        $courses[$i]->isMember = 1;
                     }
                 }
-
-                $isFavouriteCourse = Favourite_course::where('course_id', '=', $course->id)->where('user_id', '=', $this->request->auth->id)->first();
-                if($isFavouriteCourse) {
-                    $course->isFavourite = 1;
-                } else {
-                    $course->isFavourite = 0;
-                }
+            } else {
+                $courses[$i]->isMember = 1;
             }
+
+            if ($this->request->auth->status == 3) {
+                $courses[$i]->isMember = 1;
+            }
+
+            $isFavouriteCourse = Favourite_course::where('course_id', '=', $course->id)->where('user_id', '=', $this->request->auth->id)->first();
+            if ($isFavouriteCourse) {
+                $courses[$i]->isFavourite = 1;
+            } else {
+                $courses[$i]->isFavourite = 0;
+            }
+        }
 
 
         return response()->json($courses);
@@ -189,10 +233,14 @@ class CourseController extends Controller
         $isCourseFavourite = Favourite_course::where('course_id', '=', $course->id)
             ->where('user_id', '=', $this->request->auth->id)->first();
 
-        if($isCourseFavourite) {
+        if ($isCourseFavourite) {
             $course->isFavourite = 1;
         } else {
             $course->isFavourite = 0;
+        }
+
+        if ($this->request->auth->status == 3) {
+            $course->isMember = 1;
         }
 
         return response()->json($course);
@@ -212,26 +260,28 @@ class CourseController extends Controller
         $membersId = Course_member::where('course_id', '=', $id)->get();
 
         // pobieranie wszystkich czlonkow
-        $users = User::where(function ($query) use ($membersId) {
+        $users = User::where('id', '!=', $this->request->auth->id)
+        ->where(function ($query) use ($membersId, $parent_id, $course) {
             foreach ($membersId as $member) {
                 $query->orWhere('id', '=', $member->user_id);
             }
-        })
-            ->orWhere('id', '=', $course->created_by)
-            ->orWhere(function ($query) use ($parent_id) {
-                while ($parent_id != null) {
-                    $course_tmp = Course::where('id', '=', $parent_id)->first();
-                    $query->orWhere('id', '=', $course_tmp->created_by);
 
-                    $membersId_tmp = Course_member::where('course_id', '=', $parent_id)->get();
-                    foreach ($membersId_tmp as $member_tmp) {
-                        $query->orWhere('id', '=', $member_tmp->user_id);
-                    }
 
-                    $parent_id = $course_tmp->parent_id;
+            $query->orWhere('id', '=', $course->created_by);
+            while ($parent_id != null) {
+                $course_tmp = Course::where('id', '=', $parent_id)->first();
+                $query->orWhere('id', '=', $course_tmp->created_by);
+
+                $membersId_tmp = Course_member::where('course_id', '=', $parent_id)->get();
+                foreach ($membersId_tmp as $member_tmp) {
+                    $query->orWhere('id', '=', $member_tmp->user_id);
                 }
-            })
-            ->get();
+
+                $parent_id = $course_tmp->parent_id;
+            }
+
+
+        })->get();
 
         // dopisywanie wartosci do poszczegolnych userow
 
@@ -275,9 +325,11 @@ class CourseController extends Controller
         if ($this->request->auth->status == 2) {
             $membersId = Course_member::where('course_id', '=', $this->request->parent_id)
                 ->where('user_id', '=', $this->request->auth->id)->first();
-            if (!$membersId) {
+            $author = Course::where('created_by', '=', $this->request->auth->id)
+                ->where('id', '=', $this->request->parent_id)->first();
+            if (!$membersId && !$author) {
                 return response()->json([
-                    'error' => 'Jestes nauczycielem, ale nie jestes czlonkiem tego kursu wiec nie masz do niego dostepu'
+                    'error' => 'Jestes nauczycielem, ale nie jestes czlonkiem ani zalozycielem tego kursu wiec nie masz do niego dostepu'
                 ], 400);
             }
         }
@@ -458,7 +510,7 @@ class CourseController extends Controller
             }
         }
 
-        if(!$isMemberOfCourse) {
+        if (!$isMemberOfCourse) {
             return response()->json([
                 'error' => 'Nie jestes czlonkiem tego kursu wiec nie mozesz dodac go do ulubionych'
             ], 400);

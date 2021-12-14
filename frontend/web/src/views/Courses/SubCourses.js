@@ -78,7 +78,7 @@ const SubCourses = ({userData}) => {
             {course?.isMember === 0 && (
                 <div className="alert alert-warning" role="alert">
                     Nie jesteś członkiem tego kursu, więc nie masz uprawnień do tworzenia kolejnych kategorii i pisania
-                    wiątków<br/>
+                    wątków<br/>
                     Skontaktuj się z wykładowcą lub administratorem (prawy górny róg -> Wiadomości)
                 </div>
             )}
