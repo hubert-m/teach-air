@@ -19,6 +19,7 @@ class CreateThreadsTable extends Migration
             $table->bigInteger('course_id')->unsigned()->index();
             $table->string("title", 255);
             $table->text("description")->nullable();
+            $table->string("icon", 200)->nullable();
             $table->string("slug", 200); // use in uri address : www.test.pl/thread/slug-slug lub www.test.pl/course-slug/thread-slug
             $table->bigInteger('created_by')->unsigned()->index();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

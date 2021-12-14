@@ -13,7 +13,7 @@ import {sortDesc} from "../../helpers/sort";
 import {
     Button, Modal, ModalFooter,
     ModalHeader, ModalBody
-} from "reactstrap"
+} from "reactstrap";
 import {isEmpty, isNull, size} from "lodash";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faMinus} from "@fortawesome/free-solid-svg-icons";
