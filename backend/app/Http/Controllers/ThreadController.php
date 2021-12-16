@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\Post;
 use App\Models\Post_file;
 use App\Models\Thread;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ThreadController extends Controller
@@ -67,7 +68,7 @@ class ThreadController extends Controller
                     ], 500);
                 }
             }
-            
+
             return response()->json([
                 'success' => 'Wątek stworzony pomyślnie',
                 'thread' => $thread,
@@ -78,5 +79,25 @@ class ThreadController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function get_threads_list() {
+        $course = Course::where('id', '=', $this->request->course_id)->first();
+        if(!$course) {
+            return response()->json([
+                'error' => 'Kurs nie istnieje'
+            ], 400);
+        }
+
+        // TODO Zabezpieczyc, sprawdzac czy user jest czlonkiem / adminem kursu i nadrzednych
+
+        $threads = Thread::where('course_id', '=', $this->request->course_id)->get();
+
+        foreach($threads as $i => $thread) {
+            $author = User::where('id', '=', $thread->created_by)->first();
+            $threads[$i]->created_by = $author;
+        }
+
+        return response()->json($threads);
     }
 }

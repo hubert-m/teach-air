@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Modal, ModalFooter,
     ModalHeader, ModalBody
@@ -13,13 +13,15 @@ import LoaderScreen from "../../../components/LoaderScreen";
 import UploadFile from "../../Hosting/components/UploadFile";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faMinus, faPlus} from "@fortawesome/free-solid-svg-icons";
-import {addThread} from "../../../helpers/Thread";
+import {addThread, getThreadsList} from "../../../helpers/Thread";
+import ListOfThreads from "./ListOfThreads";
 
-const FormAddThread = ({ course_id }) => {
+const FormAddThread = ({course_id}) => {
     const [showError, setShowError] = useState(false);
     const [showLoader, setShowLoader] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [threadsList, setThreadsList] = useState([]);
 
     const [modalIsOpenAddThread, setModalIsOpenAddThread] = useState(false);
     const [data, setData] = useState({
@@ -135,9 +137,22 @@ const FormAddThread = ({ course_id }) => {
             course_id: course_id,
             icon: data?.icon?.value
         }
-
         setShowLoader(true);
         addThread(payload).then(() => {
+            setModalIsOpenAddThread(false);
+            setData((prevState) => ({
+                ...prevState,
+                title: '',
+                icon: null,
+                description: '',
+                content: '',
+                files: []
+            }))
+            getThreadsList(course_id).then(list => {
+                sortDesc(list, "id");
+                setThreadsList(list);
+            }).catch(() => {
+            })
             setShowSuccess(true)
         }).catch((err) => {
             setErrorMessage(err);
@@ -147,16 +162,28 @@ const FormAddThread = ({ course_id }) => {
         })
     }
 
+    useEffect(() => {
+        setShowLoader(true);
+        getThreadsList(course_id).then(list => {
+            sortDesc(list, "id");
+            setThreadsList(list);
+        }).catch(() => {
+        }).finally(async () => {
+            await setShowLoader(false);
+        })
+    }, [course_id])
+
 
     return (
         <>
             <div className="row">
                 <div className="col-lg-3">
-                    <button style={{marginTop: '20px'}}
+                    <button style={{marginTop: '20px', marginBottom: '20px'}}
                             onClick={() => setModalIsOpenAddThread(true)}>Utwórz nowy wątek
                     </button>
                 </div>
             </div>
+            <ListOfThreads threadsList={threadsList}/>
             <Modal
                 isOpen={modalIsOpenAddThread}
                 toggle={() => setModalIsOpenAddThread(!modalIsOpenAddThread)}
@@ -229,12 +256,14 @@ const FormAddThread = ({ course_id }) => {
             >
                 <ModalHeader>Pliki</ModalHeader>
                 <ModalBody>
-                    <UploadFile setMyFiles={setListOfFiles} attachFile={true} handlePushFileToArr={handlePushFileToArr} keyword={data_files?.keyword} />
-                    <p style={{ marginTop: '25px' }}>Wyszukaj plik (wprowadź przynajmniej 3 znaki) (skasuj wszystkie znaki aby pobrać pełną listę)</p>
+                    <UploadFile setMyFiles={setListOfFiles} attachFile={true} handlePushFileToArr={handlePushFileToArr}
+                                keyword={data_files?.keyword}/>
+                    <p style={{marginTop: '25px'}}>Wyszukaj plik (wprowadź przynajmniej 3 znaki) (skasuj wszystkie znaki
+                        aby pobrać pełną listę)</p>
                     <input type="text" id="keyword" className="form-control third" name="keyword"
                            placeholder="Wpisz przynajmniej 3 znaki" value={data_files.keyword}
                            onChange={handleOnChange_files}/>
-                    <table className="table" style={{ marginTop: '25px' }}>
+                    <table className="table" style={{marginTop: '25px'}}>
                         <thead>
                         <tr>
                             <th scope="col">Nazwa pliku</th>
@@ -244,7 +273,9 @@ const FormAddThread = ({ course_id }) => {
                         </tr>
                         </thead>
                         <tbody>
-                        {isEmpty(listOfFiles) ? (<tr><td colSpan={4}>Brak plikow</td></tr>) : listOfFiles?.map((props) => {
+                        {isEmpty(listOfFiles) ? (<tr>
+                            <td colSpan={4}>Brak plikow</td>
+                        </tr>) : listOfFiles?.map((props) => {
                             const {id, name, url, extension, size} = props;
                             return (
                                 <tr key={id}>

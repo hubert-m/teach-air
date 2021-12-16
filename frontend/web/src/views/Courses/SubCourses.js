@@ -13,7 +13,6 @@ import FormAddMember from "./components/FormAddMember";
 import FormAddThread from "./components/FormAddThread";
 import ListOfThreads from "./components/ListOfThreads";
 import {StatusUser} from "../../constants/StatusUser";
-import SweetAlert from "react-bootstrap-sweetalert";
 
 const SubCourses = ({userData}) => {
     let {id} = useParams();
@@ -96,7 +95,6 @@ const SubCourses = ({userData}) => {
             {course?.isMember === 1 && (
                 <>
                     <FormAddThread course_id={id}/>
-                    <ListOfThreads/>
                 </>
             )}
 

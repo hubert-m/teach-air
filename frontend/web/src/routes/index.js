@@ -20,6 +20,7 @@ import SubCourses from "../views/Courses/SubCourses";
 import Activation from "../views/User/Activation";
 import HostingFiles from "../views/Hosting/HostingFiles";
 import Options from "../views/GlobalSettings/Options";
+import Thread from "../views/Threads/Thread";
 
 const routes = [
     {path: '/', Component: Home},
@@ -37,6 +38,7 @@ const routes = [
     {path: Routes.MAIN_COURSES, Component: MainCourses, IsAuth: true},
     {path: Routes.SUB_COURSES + ":id", Component: SubCourses, IsAuth: true},
     {path: Routes.HOSTING_FILES, Component: HostingFiles, IsAuth: true},
+    {path: Routes.THREAD + ":id", Component: Thread, IsAuth: true},
     {path: '*', Component: PageNotFound},
 ]
 

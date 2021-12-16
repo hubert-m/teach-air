@@ -1,0 +1,77 @@
+html, body {
+    overflow-x: hidden;
+}
+
+.thread-box {
+    display: flex;
+    flex-direction: column;
+    background-color: #FFF;
+    border: 2px solid var(--bs-primary);
+    margin-bottom: 15px;
+    color: #333;
+    padding: 20px;
+    transition: .4s;
+    text-decoration: none;
+}
+
+
+.thread-box-ico {
+    color: #333;
+    font-size: 30px;
+    display: inline;
+    transition: .4s;
+}
+
+.thread-box-name {
+    color: #333;
+    display: inline-block;
+    margin-left: 15px;
+    transition: .4s;
+}
+
+.thread-box-description {
+    color: #333;
+    transition: .4s;
+}
+
+.thread-box-author-information {
+    color: #333;
+    margin-bottom: 5px;
+    transition: .4s;
+}
+
+.thread-box-author-information span {
+    margin: 0 10px;
+    border: 1px solid #FFF;
+}
+
+.thread-box-author-information img {
+    max-width: 25px;
+    height: auto;
+    margin: 0 5px;
+}
+
+.thread-box:hover {
+    color: #FFF;
+    background-color: var(--bs-primary);
+}
+
+.thread-box-header {
+    transition: .4s;
+}
+
+.thread-box:hover .thread-box-author-information,
+.thread-box:hover .thread-box-description,
+.thread-box:hover .thread-box-header {
+    transform: scale(1.3) translate(15%,0);
+    color: #FFF;
+}
+
+.thread-box:hover .thread-box-name,
+.thread-box:hover .thread-box-ico {
+    color: #FFF;
+}
+
+.thread-box:hover .thread-box-name {
+    margin-left: 15px;
+}

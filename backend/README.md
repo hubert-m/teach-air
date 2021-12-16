@@ -2,6 +2,8 @@
 
 Tutaj będzie moja instrukcja :)
 
+Lista endpointów API `routes/web.php`
+
 Zainstalowane poleceniem `composer create-project --prefer-dist laravel/lumen .`
 
 ## Prod
