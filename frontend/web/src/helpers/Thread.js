@@ -77,9 +77,35 @@ const getPosts = (id) => {
     });
 };
 
+const addPost = (data) => {
+    return new Promise((resolve, reject) => {
+
+        let error = null;
+        if (!data.content)
+            error = "Treść postu nie może być pusta";
+
+        if (error) {
+            reject(error);
+            return;
+        }
+
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.post(Settings.API + ApiEndpoints.ADD_POST, data, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+};
+
 export {
     addThread,
     getThreadsList,
     getThreadById,
-    getPosts
+    getPosts,
+    addPost
 }

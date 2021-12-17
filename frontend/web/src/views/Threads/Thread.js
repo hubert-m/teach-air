@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useParams} from "react-router";
 import {getPosts, getThreadById} from "../../helpers/Thread";
 import LoaderScreen from "../../components/LoaderScreen";
@@ -13,12 +13,14 @@ import {StatusUser, StatusUserName} from "../../constants/StatusUser";
 import {faFacebook} from "@fortawesome/free-brands-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Icons} from "../../constants/Icons";
+import FormAddPost from "./components/FormAddPost";
 
 const Thread = () => {
     let {id} = useParams();
     const [showLoader, setShowLoader] = useState(false);
     const [threadData, setThreadData] = useState({});
     const [posts, setPosts] = useState([]);
+    const messagesEndRef = useRef(null)
 
     useEffect(() => {
         setShowLoader(true);
@@ -33,6 +35,14 @@ const Thread = () => {
         }).catch(() => {
         })
     }, [id])
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
+    }
+
+    useEffect(() => {
+        scrollToBottom()
+    }, [posts]);
 
     return (
         <>
@@ -136,6 +146,8 @@ const Thread = () => {
                     </div>
                 </div>
             ))}
+            <div ref={messagesEndRef}/>
+            <FormAddPost thread_id={id} setPosts={setPosts} />
             {showLoader && <LoaderScreen/>}
         </>
     )
