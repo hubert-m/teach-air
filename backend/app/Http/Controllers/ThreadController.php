@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Course_member;
 use App\Models\File;
 use App\Models\Post;
 use App\Models\Post_file;
@@ -37,7 +38,52 @@ class ThreadController extends Controller
             ], 400);
         }
 
-        // TODO Zabezpieczyc, sprawdzac czy user jest czlonkiem / adminem kursu i nadrzednych
+        $isMember = false;
+
+        if ($course->created_by == $this->request->auth->id) {
+            $isMember = true;
+        } else {
+            $member_tmp = Course_member::where('course_id', '=', $this->request->course_id)->where('user_id', '=', $this->request->auth->id)->first();
+            if ($member_tmp) {
+                $isMember = true;
+            } else {
+                $isMember = false;
+            }
+        }
+
+
+        $parent_id = $course->parent_id;
+        while ($parent_id != null) {
+            $course_tmp = Course::where('id', '=', $parent_id)->first();
+
+            // dziedziczenie uprawnień z kursów nadrzędnych (jeśli user okaże się któregoś członkiem to zwróci 1
+            if (!$isMember) {
+                if ($course_tmp->created_by == $this->request->auth->id) {
+                    // jeśli jest autorem ktróegoś z kursów
+                    $isMember = true;
+                } else {
+                    // jeśli jest członkiem któregoś z kursów
+                    $course_member_tmp = Course_member::where('course_id', '=', $parent_id)
+                        ->where('user_id', '=', $this->request->auth->id)->first();
+
+                    if ($course_member_tmp) {
+                        $isMember = true;
+                    }
+                }
+            }
+            $parent_id = $course_tmp->parent_id;
+        }
+
+        if ($this->request->auth->status == 3) {
+            $isMember = true;
+        }
+
+        if (!$isMember) {
+            return response()->json([
+                'error' => 'Nie jestes czlonkiem kursu, w ktorym napisany jest ten watek'
+            ], 400);
+        }
+
 
         try {
             $thread = new Thread();
@@ -91,7 +137,53 @@ class ThreadController extends Controller
             ], 400);
         }
 
-        // TODO Zabezpieczyc, sprawdzac czy user jest czlonkiem / adminem kursu i nadrzednych
+
+        $isMember = false;
+
+        if ($course->created_by == $this->request->auth->id) {
+            $isMember = true;
+        } else {
+            $member_tmp = Course_member::where('course_id', '=', $this->request->course_id)->where('user_id', '=', $this->request->auth->id)->first();
+            if ($member_tmp) {
+                $isMember = true;
+            } else {
+                $isMember = false;
+            }
+        }
+
+
+        $parent_id = $course->parent_id;
+        while ($parent_id != null) {
+            $course_tmp = Course::where('id', '=', $parent_id)->first();
+
+            // dziedziczenie uprawnień z kursów nadrzędnych (jeśli user okaże się któregoś członkiem to zwróci 1
+            if (!$isMember) {
+                if ($course_tmp->created_by == $this->request->auth->id) {
+                    // jeśli jest autorem ktróegoś z kursów
+                    $isMember = true;
+                } else {
+                    // jeśli jest członkiem któregoś z kursów
+                    $course_member_tmp = Course_member::where('course_id', '=', $parent_id)
+                        ->where('user_id', '=', $this->request->auth->id)->first();
+
+                    if ($course_member_tmp) {
+                        $isMember = true;
+                    }
+                }
+            }
+            $parent_id = $course_tmp->parent_id;
+        }
+
+        if ($this->request->auth->status == 3) {
+            $isMember = true;
+        }
+
+        if (!$isMember) {
+            return response()->json([
+                'error' => 'Nie jestes czlonkiem kursu, w ktorym napisany jest ten watek'
+            ], 400);
+        }
+
 
         $threads = Thread::where('course_id', '=', $this->request->course_id)->get();
 
@@ -114,7 +206,52 @@ class ThreadController extends Controller
         $course = Course::where('id', '=', $thread->course_id)->first();
         $thread->course_id = $course;
 
-        // TODO Zabezpieczyc, sprawdzac czy user jest czlonkiem / adminem kursu i nadrzednych
+
+        $isMember = false;
+
+        if ($course->created_by == $this->request->auth->id) {
+            $isMember = true;
+        } else {
+            $member_tmp = Course_member::where('course_id', '=', $course->id)->where('user_id', '=', $this->request->auth->id)->first();
+            if ($member_tmp) {
+                $isMember = true;
+            } else {
+                $isMember = false;
+            }
+        }
+
+
+        $parent_id = $course->parent_id;
+        while ($parent_id != null) {
+            $course_tmp = Course::where('id', '=', $parent_id)->first();
+
+            // dziedziczenie uprawnień z kursów nadrzędnych (jeśli user okaże się któregoś członkiem to zwróci 1
+            if (!$isMember) {
+                if ($course_tmp->created_by == $this->request->auth->id) {
+                    // jeśli jest autorem ktróegoś z kursów
+                    $isMember = true;
+                } else {
+                    // jeśli jest członkiem któregoś z kursów
+                    $course_member_tmp = Course_member::where('course_id', '=', $parent_id)
+                        ->where('user_id', '=', $this->request->auth->id)->first();
+
+                    if ($course_member_tmp) {
+                        $isMember = true;
+                    }
+                }
+            }
+            $parent_id = $course_tmp->parent_id;
+        }
+
+        if ($this->request->auth->status == 3) {
+            $isMember = true;
+        }
+
+        if (!$isMember) {
+            return response()->json([
+                'error' => 'Nie jestes czlonkiem kursu, w ktorym napisany jest ten watek'
+            ], 400);
+        }
 
 
         return response()->json($thread);
@@ -128,7 +265,59 @@ class ThreadController extends Controller
             ], 400);
         }
 
-        // TODO Zabezpieczyc, sprawdzac czy user jest czlonkiem / adminem kursu i nadrzednych
+        $course = Course::where('id', '=', $thread->course_id)->first();
+
+        if(!$course) {
+            return response()->json([
+                'error' => 'Kurs nie istnieje'
+            ], 400);
+        }
+
+        $isMember = false;
+
+        if ($course->created_by == $this->request->auth->id) {
+            $isMember = true;
+        } else {
+            $member_tmp = Course_member::where('course_id', '=', $thread->course_id)->where('user_id', '=', $this->request->auth->id)->first();
+            if ($member_tmp) {
+                $isMember = true;
+            } else {
+                $isMember = false;
+            }
+        }
+
+
+        $parent_id = $course->parent_id;
+        while ($parent_id != null) {
+            $course_tmp = Course::where('id', '=', $parent_id)->first();
+
+            // dziedziczenie uprawnień z kursów nadrzędnych (jeśli user okaże się któregoś członkiem to zwróci 1
+            if (!$isMember) {
+                if ($course_tmp->created_by == $this->request->auth->id) {
+                    // jeśli jest autorem ktróegoś z kursów
+                    $isMember = true;
+                } else {
+                    // jeśli jest członkiem któregoś z kursów
+                    $course_member_tmp = Course_member::where('course_id', '=', $parent_id)
+                        ->where('user_id', '=', $this->request->auth->id)->first();
+
+                    if ($course_member_tmp) {
+                        $isMember = true;
+                    }
+                }
+            }
+            $parent_id = $course_tmp->parent_id;
+        }
+
+        if ($this->request->auth->status == 3) {
+            $isMember = true;
+        }
+
+        if (!$isMember) {
+            return response()->json([
+                'error' => 'Nie jestes czlonkiem kursu, w ktorym napisany jest ten watek'
+            ], 400);
+        }
 
         $posts = Post::where('thread_id', '=', $this->request->thread_id)->get();
 
@@ -167,7 +356,59 @@ class ThreadController extends Controller
             ], 400);
         }
 
-        // TODO Zabezpieczyc, sprawdzac czy user jest czlonkiem / adminem kursu i nadrzednych
+        $course = Course::where('id', '=', $thread->course_id)->first();
+
+        if(!$course) {
+            return response()->json([
+                'error' => 'Kurs nie istnieje'
+            ], 400);
+        }
+
+        $isMember = false;
+
+        if ($course->created_by == $this->request->auth->id) {
+            $isMember = true;
+        } else {
+            $member_tmp = Course_member::where('course_id', '=', $thread->course_id)->where('user_id', '=', $this->request->auth->id)->first();
+            if ($member_tmp) {
+                $isMember = true;
+            } else {
+                $isMember = false;
+            }
+        }
+
+
+        $parent_id = $course->parent_id;
+        while ($parent_id != null) {
+            $course_tmp = Course::where('id', '=', $parent_id)->first();
+
+            // dziedziczenie uprawnień z kursów nadrzędnych (jeśli user okaże się któregoś członkiem to zwróci 1
+            if (!$isMember) {
+                if ($course_tmp->created_by == $this->request->auth->id) {
+                    // jeśli jest autorem ktróegoś z kursów
+                    $isMember = true;
+                } else {
+                    // jeśli jest członkiem któregoś z kursów
+                    $course_member_tmp = Course_member::where('course_id', '=', $parent_id)
+                        ->where('user_id', '=', $this->request->auth->id)->first();
+
+                    if ($course_member_tmp) {
+                        $isMember = true;
+                    }
+                }
+            }
+            $parent_id = $course_tmp->parent_id;
+        }
+
+        if ($this->request->auth->status == 3) {
+            $isMember = true;
+        }
+
+        if (!$isMember) {
+            return response()->json([
+                'error' => 'Nie jestes czlonkiem kursu, w ktorym napisany jest ten watek'
+            ], 400);
+        }
 
         try {
             $post = new Post();
