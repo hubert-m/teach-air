@@ -34,7 +34,11 @@ const ApiEndpoints = {
     ADD_OPTION: '/options/add_option',
 
     ADD_THREAD: '/threads/add_thread',
-    GET_THREADS_LIST: '/threads/get_threads_list'
+    GET_THREAD: '/threads/get_thread/', // :id
+    GET_THREADS_LIST: '/threads/get_threads_list',
+
+    GET_POSTS_LIST: '/posts/get_posts_list',
+    ADD_POST: '/posts/add_post',
 }
 
 export default ApiEndpoints;

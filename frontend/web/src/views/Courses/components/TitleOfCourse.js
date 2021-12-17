@@ -5,8 +5,10 @@ import {faHeart as heartUnchecked} from "@fortawesome/free-regular-svg-icons";
 import {changeFavouriteCourse} from "../../../helpers/Course";
 import SweetAlert from "react-bootstrap-sweetalert";
 import LoaderScreen from "../../../components/LoaderScreen";
+import {Twemoji} from 'react-emoji-render';
+import {Icons} from "../../../constants/Icons";
 
-const TitleOfCourse = ({title, description, course, updateCourse}) => {
+const TitleOfCourse = ({title, description, course, updateCourse, icon}) => {
 
     const [showLoader, setShowLoader] = useState(false);
     const [showError, setShowError] = useState(false);
@@ -27,13 +29,13 @@ const TitleOfCourse = ({title, description, course, updateCourse}) => {
     return (
         <>
             <div className="jumbotron" style={{marginTop: '50px'}}>
-                <h1 className="display-7">{title}</h1>
+                <h1 className="display-7">{!!icon && Icons[parseInt(icon, 10)]} {!!title && (<Twemoji text={title} />)}</h1>
                 {course?.isMember === 1 && (
                     <FontAwesomeIcon icon={course?.isFavourite ? heartChecked : heartUnchecked}
                                      className="heart-in-head-course"
                                      onClick={() => handleChangeFavourite(course?.id)}/>
                 )}
-                {!!description && (<p>{description}</p>)}
+                {!!description && (<p><Twemoji text={description} /></p>)}
                 <hr className="my-4"/>
             </div>
             <SweetAlert

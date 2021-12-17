@@ -6,7 +6,6 @@ import {isEmpty} from "lodash";
 import {StatusUser, StatusUserName} from "../../../constants/StatusUser";
 import {DefaultAvatarSrc} from "../../../constants/DefaultAvatar";
 import parseTimeStamp from "../../../helpers/parseTimeStamp";
-import * as PropTypes from "prop-types";
 import {Twemoji} from 'react-emoji-render';
 
 Twemoji.propTypes = {};
@@ -25,7 +24,7 @@ const ListOfThreads = ({threadsList}) => {
                                 </div>
                                 <h3 className="thread-box-name"><Twemoji text={title}/></h3>
                             </div>
-                            <p className="thread-box-description">{description}</p>
+                            <p className="thread-box-description"><Twemoji text={description}/></p>
                             <div className="thread-box-author-information">
                                 Wątek stworzony przez
                                 <img

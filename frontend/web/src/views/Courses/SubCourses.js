@@ -72,7 +72,7 @@ const SubCourses = ({userData}) => {
                 ))}
                 <BreadcrumbItem active>{course?.name}</BreadcrumbItem>
             </Breadcrumb>
-            <TitleOfCourse title={course?.name} description={course?.description} course={course} updateCourse={updateCourse}/>
+            <TitleOfCourse title={course?.name} description={course?.description} course={course} updateCourse={updateCourse} icon={course?.icon}/>
 
             {course?.isMember === 0 && (
                 <div className="alert alert-warning" role="alert">

@@ -68,7 +68,11 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
             $router->post('/options/add_option', 'OptionController@add_option');
 
             $router->post('/threads/add_thread', 'ThreadController@add_thread');
+            $router->get('/threads/get_thread/{id}', 'ThreadController@get_thread');
             $router->post('/threads/get_threads_list', 'ThreadController@get_threads_list');
+
+            $router->post('/posts/get_posts_list', 'ThreadController@get_posts_list');
+            $router->post('/posts/add_post', 'ThreadController@add_post');
         }
     );
 

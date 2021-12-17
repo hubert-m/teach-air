@@ -9,6 +9,7 @@ import {changeFavouriteCourse, getCoursesList} from "../../../helpers/Course";
 import {sortAsc} from "../../../helpers/sort";
 import LoaderScreen from "../../../components/LoaderScreen";
 import SweetAlert from "react-bootstrap-sweetalert";
+import {Twemoji} from 'react-emoji-render';
 
 const ListOfCourses = ({courses, updateListCourses}) => {
     const [showLoader, setShowLoader] = useState(false);
@@ -40,8 +41,8 @@ const ListOfCourses = ({courses, updateListCourses}) => {
                             <div className="course-box-ico">
                                 {icon ? Icons[parseInt(icon, 10)] : Icons[1]}
                             </div>
-                            <h3 className="course-box-name">{name}</h3>
-                            <p className="course-box-description">{description}</p>
+                            <h3 className="course-box-name">{!!name && (<Twemoji text={name}/>)}</h3>
+                            <p className="course-box-description">{!!description && (<Twemoji text={description}/>)}</p>
                         </Link>
                     </div>
                 ))}
