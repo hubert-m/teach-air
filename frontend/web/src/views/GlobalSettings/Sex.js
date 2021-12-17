@@ -57,7 +57,7 @@ const Sex = ({userData}) => {
     }
 
     const handleDeleteSex = (id, count_users, forceDelete = false) => {
-        if (count_users === 0 || forceDelete) {
+        if (count_users == 0 || forceDelete) {
             setShowWarningMessage({
                 id: id,
                 isWarning: false
@@ -84,7 +84,7 @@ const Sex = ({userData}) => {
     }
 
     const handleKeyPress = event => {
-        if (event.key === 'Enter') {
+        if (event.key == 'Enter') {
             handleAddSex();
         }
     };
@@ -108,59 +108,61 @@ const Sex = ({userData}) => {
                 </div>
 
             </div>
-
-            <table className="table">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Płeć</th>
-                    <th scope="col">Zarejestrowanych użytkowników</th>
-                    <th scope="col">&nbsp;</th>
-                </tr>
-                </thead>
-                <tbody>
-                {sexList.map(({id, value, count_users}) => (
-                    <tr key={id}>
-                        <th scope="row">{id}</th>
-                        <td>{value}</td>
-                        <td>{count_users}</td>
-                        <td>
-                            {userData?.sex_id?.id === id ? (
-                                <td><span className="badge bg-danger">To Twoja płeć</span>
-                                </td>
-                            ) : (
-                                <>
-                                    <button type="button" className="btn btn-danger"
-                                            onClick={() => handleDeleteSex(id, count_users)}><FontAwesomeIcon
-                                        icon={faTrash}/>
-                                    </button>
-                                    <SweetAlert
-                                        warning
-                                        showCancel
-                                        show={showWarningDeleteMessage?.id === id && showWarningDeleteMessage?.isWarning}
-                                        title="Czy na pewno?"
-                                        confirmBtnText="Tak, skasuj"
-                                        cancelBtnText="Nie, zostaw"
-                                        confirmBtnBsStyle="danger"
-                                        cancelBtnBsStyle="secondary"
-                                        onConfirm={() => handleDeleteSex(id, count_users, true)}
-                                        onCancel={() => setShowWarningMessage({
-                                            id: id,
-                                            isWarning: false
-                                        })}
-                                    >
-                                        {count_users} zarejestrowanych użytkowników posiada tą płeć. Skasowanie płci
-                                        spowoduje
-                                        skasowanie również tych użytkoników. Proces jest nieodwracalny. Chcesz usunąć
-                                        płeć {value} ?
-                                    </SweetAlert>
-                                </>
-                            )}
-                        </td>
+            <div className="table-responsive">
+                <table className="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Płeć</th>
+                        <th scope="col">Zarejestrowanych użytkowników</th>
+                        <th scope="col">&nbsp;</th>
                     </tr>
-                ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {sexList.map(({id, value, count_users}) => (
+                        <tr key={id}>
+                            <th scope="row">{id}</th>
+                            <td>{value}</td>
+                            <td>{count_users}</td>
+                            <td>
+                                {userData?.sex_id?.id == id ? (
+                                    <td><span className="badge bg-danger">To Twoja płeć</span>
+                                    </td>
+                                ) : (
+                                    <>
+                                        <button type="button" className="btn btn-danger"
+                                                onClick={() => handleDeleteSex(id, count_users)}><FontAwesomeIcon
+                                            icon={faTrash}/>
+                                        </button>
+                                        <SweetAlert
+                                            warning
+                                            showCancel
+                                            show={showWarningDeleteMessage?.id == id && showWarningDeleteMessage?.isWarning}
+                                            title="Czy na pewno?"
+                                            confirmBtnText="Tak, skasuj"
+                                            cancelBtnText="Nie, zostaw"
+                                            confirmBtnBsStyle="danger"
+                                            cancelBtnBsStyle="secondary"
+                                            onConfirm={() => handleDeleteSex(id, count_users, true)}
+                                            onCancel={() => setShowWarningMessage({
+                                                id: id,
+                                                isWarning: false
+                                            })}
+                                        >
+                                            {count_users} zarejestrowanych użytkowników posiada tą płeć. Skasowanie płci
+                                            spowoduje
+                                            skasowanie również tych użytkoników. Proces jest nieodwracalny. Chcesz
+                                            usunąć
+                                            płeć {value} ?
+                                        </SweetAlert>
+                                    </>
+                                )}
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            </div>
 
 
             <SweetAlert

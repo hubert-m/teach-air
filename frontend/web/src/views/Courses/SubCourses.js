@@ -11,7 +11,6 @@ import TitleOfCourse from "./components/TitleOfCourse";
 import ListOfCourses from "./components/ListOfCourses";
 import FormAddMember from "./components/FormAddMember";
 import FormAddThread from "./components/FormAddThread";
-import ListOfThreads from "./components/ListOfThreads";
 import {StatusUser} from "../../constants/StatusUser";
 
 const SubCourses = ({userData}) => {
@@ -74,7 +73,7 @@ const SubCourses = ({userData}) => {
             </Breadcrumb>
             <TitleOfCourse title={course?.name} description={course?.description} course={course} updateCourse={updateCourse} icon={course?.icon}/>
 
-            {course?.isMember === 0 && (
+            {course?.isMember == 0 && (
                 <div className="alert alert-warning" role="alert">
                     Nie jesteś członkiem tego kursu, więc nie masz uprawnień do tworzenia kolejnych kategorii i pisania
                     wątków<br/>
@@ -82,17 +81,17 @@ const SubCourses = ({userData}) => {
                 </div>
             )}
 
-            {course?.isMember === 1 && ((userData?.status === StatusUser.ADMIN || userData?.status === StatusUser.TEACHER) && (
+            {course?.isMember == 1 && ((userData?.status == StatusUser.ADMIN || userData?.status == StatusUser.TEACHER) && (
                 <FormAddCourse setCourses={setCourses} parent_id={id}/>
             ))}
 
             <ListOfCourses courses={courses} updateListCourses={updateListCourses}/>
 
-            {course?.isMember === 1 && ((userData?.status === StatusUser.ADMIN || userData?.status === StatusUser.TEACHER) && (
+            {course?.isMember == 1 && ((userData?.status == StatusUser.ADMIN || userData?.status == StatusUser.TEACHER) && (
                 <FormAddMember courseId={id}/>
             ))}
 
-            {course?.isMember === 1 && (
+            {course?.isMember == 1 && (
                 <>
                     <FormAddThread course_id={id}/>
                 </>

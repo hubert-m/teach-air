@@ -104,8 +104,8 @@ const Options = () => {
                     {options.map(({id, option_name, option_value}) => (
                         <div className="col-lg-6 offset-lg-3" key={id}>
                             <label htmlFor={option_name}>
-                                {option_name === "file_extensions" ? "Dopuszczalne rozszerzenia plikow (po przecinku)"
-                                    : option_name === "max_file_size" ? "Maksymalna waga pliku uploadowanego (KB)"
+                                {option_name == "file_extensions" ? "Dopuszczalne rozszerzenia plikow (po przecinku)"
+                                    : option_name == "max_file_size" ? "Maksymalna waga pliku uploadowanego (KB)"
                                         : option_name}</label>
                             <input type="text" className="form-control" name={option_name}
                                    placeholder={option_name} value={data[option_name] || option_value}

@@ -1,8 +1,8 @@
 const StatusUser = {
-    UNACTIVATED: 0,
-    STUDENT: 1,
-    TEACHER: 2,
-    ADMIN: 3,
+    UNACTIVATED: "0",
+    STUDENT: "1",
+    TEACHER: "2",
+    ADMIN: "3",
 }
 
 const StatusUserName = {

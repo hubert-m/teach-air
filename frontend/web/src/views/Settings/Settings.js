@@ -60,7 +60,7 @@ const Settings = ({userData, setUserData}) => {
 
         if (e.target.value.length >= 3) {
 
-            if (size(listOfFiles) === 1 && isNull(lengthKeywordWhenOneRecord)) {
+            if (size(listOfFiles) == 1 && isNull(lengthKeywordWhenOneRecord)) {
                 setLengthKeywordWhenOneRecord(e.target.value.length);
             }
 
@@ -78,7 +78,7 @@ const Settings = ({userData, setUserData}) => {
                     await setShowLoader(false);
                 })
             }
-        } else if (e.target.value.length === 0) {
+        } else if (e.target.value.length == 0) {
             setShowLoader(true);
             getSearchFiles(data_files?.keyword, ImageExtensions).then(list => {
                 sortDesc(list, "id");
@@ -157,16 +157,16 @@ const Settings = ({userData, setUserData}) => {
                     <p><strong>Ostatnia zmiana hasła:</strong> {parseTimeStamp(data?.last_change_pass)}</p>
                 </div>
                 <div className="col-lg-3">
-                    {data?.status === StatusUser.ADMIN ?
+                    {data?.status == StatusUser.ADMIN ?
                         (
                             <td><span className="badge bg-danger">{StatusUserName[StatusUser.ADMIN]}</span>
                             </td>
-                        ) : data?.status === StatusUser.UNACTIVATED ?
+                        ) : data?.status == StatusUser.UNACTIVATED ?
                             (
                                 <td><span
                                     className="badge bg-secondary">{StatusUserName[StatusUser.UNACTIVATED]}</span>
                                 </td>
-                            ) : data?.status === StatusUser.TEACHER ?
+                            ) : data?.status == StatusUser.TEACHER ?
                                 (
                                     <td><span
                                         className="badge bg-warning">{StatusUserName[StatusUser.TEACHER]}</span>
@@ -272,50 +272,56 @@ const Settings = ({userData, setUserData}) => {
                 <h1 className="display-7">Upload zdjęcia profilowego</h1>
                 <hr className="my-4"/>
             </div>
-            <div className="row" style={{ marginBottom: '25px' }}>
+            <div className="row" style={{marginBottom: '25px'}}>
                 <div className="col-lg-4 offset-lg-4">
-                    <img src={data?.profile_image || DefaultAvatarSrc[data?.sex_id] || DefaultAvatarSrc[0]} alt="" style={{ maxWidth: '100%' }} />
+                    <img src={data?.profile_image || DefaultAvatarSrc[data?.sex_id] || DefaultAvatarSrc[0]} alt=""
+                         style={{maxWidth: '100%'}}/>
                 </div>
             </div>
 
-            <UploadFile setMyFiles={setListOfFiles} keyword={data_files?.keyword} extensions={ImageExtensions} />
-            <p style={{ marginTop: '25px' }}>Wyszukaj zdjęcie (wprowadź przynajmniej 3 znaki) (skasuj wszystkie znaki aby pobrać pełną listę)</p>
+            <UploadFile setMyFiles={setListOfFiles} keyword={data_files?.keyword} extensions={ImageExtensions}/>
+            <p style={{marginTop: '25px'}}>Wyszukaj zdjęcie (wprowadź przynajmniej 3 znaki) (skasuj wszystkie znaki aby
+                pobrać pełną listę)</p>
             <input type="text" id="keyword" className="form-control third" name="keyword"
                    placeholder="Wpisz przynajmniej 3 znaki" value={data_files.keyword}
                    onChange={handleOnChange_files}/>
-            <table className="table">
-                <thead>
-                <tr>
-                    <th scope="col">Nazwa pliku</th>
-                    <th scope="col">Rozszerzenie</th>
-                    <th scope="col">Rozmiar</th>
-                    <th scope="col">Ustaw</th>
-                </tr>
-                </thead>
-                <tbody>
-                {isEmpty(listOfFiles) ? (<tr>
-                    <td colSpan={6}>Brak zdjęć</td>
-                </tr>) : listOfFiles?.map(({id, name, url, extension, size}) => (
-                    <tr key={id}>
-                        <td>
-                            <SimpleReactLightbox>
-                                <SRLWrapper>
-                                    <a href={url}><img src={url}
-                                                       style={{maxWidth: '50px', height: 'auto'}}
-                                                       alt=""/></a>
-                                </SRLWrapper>
-                            </SimpleReactLightbox>
-                            {name}.{extension}
-                        </td>
-                        <td>{extension}</td>
-                        <td>{Math.ceil(size / 1024)}KB</td>
-                        <td><button style={{marginTop: '20px'}}
-                                    onClick={() => handleSetProfileImage(url)}>Ustaw profilowe
-                        </button></td>
+            <div className="table-responsive">
+                <table className="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Nazwa pliku</th>
+                        <th scope="col">Rozszerzenie</th>
+                        <th scope="col">Rozmiar</th>
+                        <th scope="col">Ustaw</th>
                     </tr>
-                ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {isEmpty(listOfFiles) ? (<tr>
+                        <td colSpan={6}>Brak zdjęć</td>
+                    </tr>) : listOfFiles?.map(({id, name, url, extension, size}) => (
+                        <tr key={id}>
+                            <td>
+                                <SimpleReactLightbox>
+                                    <SRLWrapper>
+                                        <a href={url}><img src={url}
+                                                           style={{maxWidth: '50px', height: 'auto'}}
+                                                           alt=""/></a>
+                                    </SRLWrapper>
+                                </SimpleReactLightbox>
+                                {name}.{extension}
+                            </td>
+                            <td>{extension}</td>
+                            <td>{Math.ceil(size / 1024)}KB</td>
+                            <td>
+                                <button style={{marginTop: '20px'}}
+                                        onClick={() => handleSetProfileImage(url)}>Ustaw profilowe
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            </div>
 
 
             <SweetAlert

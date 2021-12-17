@@ -31,14 +31,14 @@ const ListOfThreads = ({threadsList}) => {
                                     src={created_by?.profile_image || DefaultAvatarSrc[created_by?.sex_id] || DefaultAvatarSrc[0]}
                                     alt=""/>
                                 {created_by?.name} {created_by?.lastname}
-                                {created_by?.status === StatusUser.ADMIN ?
+                                {created_by?.status == StatusUser.ADMIN ?
                                     (
                                         <span className="badge bg-danger">{StatusUserName[StatusUser.ADMIN]}</span>
-                                    ) : created_by?.status === StatusUser.UNACTIVATED ?
+                                    ) : created_by?.status == StatusUser.UNACTIVATED ?
                                         (
                                             <span
                                                 className="badge bg-secondary">{StatusUserName[StatusUser.UNACTIVATED]}</span>
-                                        ) : created_by?.status === StatusUser.TEACHER ?
+                                        ) : created_by?.status == StatusUser.TEACHER ?
                                             (
                                                 <span
                                                     className="badge bg-warning">{StatusUserName[StatusUser.TEACHER]}</span>

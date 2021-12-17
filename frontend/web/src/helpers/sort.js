@@ -10,7 +10,7 @@ const sortAsc = (arr, field, subfield = null, isDate = false) => {
             fieldB = b[field][subfield];
         }
 
-        if (typeof fieldA === 'string' || fieldA instanceof String) {
+        if (typeof fieldA =='string' || fieldA instanceof String) {
             if(isDate) {
                 fieldA = new Date(fieldA);
                 fieldB = new Date(fieldB);
@@ -41,7 +41,7 @@ const sortDesc = (arr, field, subfield = null, isDate = false) => {
             fieldB = b[field][subfield];
         }
 
-        if (typeof fieldA === 'string' || fieldA instanceof String) {
+        if (typeof fieldA =='string' || fieldA instanceof String) {
             if(isDate) {
                 fieldA = new Date(fieldA);
                 fieldB = new Date(fieldB);

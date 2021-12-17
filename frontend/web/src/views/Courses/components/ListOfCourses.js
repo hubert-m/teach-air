@@ -33,7 +33,7 @@ const ListOfCourses = ({courses, updateListCourses}) => {
             <div className="row">
                 {courses.map(({id, name, description, icon, isFavourite, isMember}) => (
                     <div className="col-lg-4 col-md-6 course-box-container" key={id}>
-                        {isMember === 1 && (
+                        {isMember == 1 && (
                             <FontAwesomeIcon icon={isFavourite ? heartChecked : heartUnchecked}
                                              className="heart-in-box-course" onClick={() => handleChangeFavourite(id)}/>
                         )}

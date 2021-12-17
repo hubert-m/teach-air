@@ -44,7 +44,7 @@ const FormAddMember = ({courseId}) => {
 
         if (e.target.value.length >= 3) {
 
-            if (size(loadOptions) === 1 && isNull(lengthKeywordWhenOneRecord)) {
+            if (size(loadOptions) == 1 && isNull(lengthKeywordWhenOneRecord)) {
                 setLengthKeywordWhenOneRecord(e.target.value.length);
             }
 
@@ -62,7 +62,7 @@ const FormAddMember = ({courseId}) => {
                     await setShowLoader(false);
                 })
             }
-        } else if (e.target.value.length === 0) {
+        } else if (e.target.value.length == 0) {
             setLoadOptions([]);
         }
     }
@@ -102,7 +102,7 @@ const FormAddMember = ({courseId}) => {
             getMembersOfCourse(courseId).then(list => {
                 sortDesc(list, "id");
                 setMembers(list);
-                const payload = { target: { value:  data?.keyword, name: "keyword" }}
+                const payload = {target: {value: data?.keyword, name: "keyword"}}
                 handleOnChange(payload);
             }).catch((e) => {
                 setErrorMessage(e);
@@ -131,57 +131,59 @@ const FormAddMember = ({courseId}) => {
 
 
             {!isEmpty(loadOptions) && (
-                <table className="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Imię</th>
-                        <th scope="col">Nazwisko</th>
-                        <th scope="col">E-mail</th>
-                        <th scope="col" colSpan={2}>&nbsp;</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {loadOptions.map(({id, email, name, second_name, lastname, status}) => (
-                        <tr key={id}>
-                            <th scope="row">{id}</th>
-                            <td>{name} {second_name}</td>
-                            <td>{lastname}</td>
-                            <td>{email}</td>
-                            {status === StatusUser.ADMIN ?
-                                (
-                                    <td><span className="badge bg-danger">{StatusUserName[StatusUser.ADMIN]}</span>
-                                    </td>
-                                ) : status === StatusUser.UNACTIVATED ?
+                <div className="table-responsive">
+                    <table className="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Imię</th>
+                            <th scope="col">Nazwisko</th>
+                            <th scope="col">E-mail</th>
+                            <th scope="col" colSpan={2}>&nbsp;</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {loadOptions.map(({id, email, name, second_name, lastname, status}) => (
+                            <tr key={id}>
+                                <th scope="row">{id}</th>
+                                <td>{name} {second_name}</td>
+                                <td>{lastname}</td>
+                                <td>{email}</td>
+                                {status == StatusUser.ADMIN ?
                                     (
-                                        <td><span
-                                            className="badge bg-secondary">{StatusUserName[StatusUser.UNACTIVATED]}</span>
+                                        <td><span className="badge bg-danger">{StatusUserName[StatusUser.ADMIN]}</span>
                                         </td>
-                                    ) : status === StatusUser.TEACHER ?
+                                    ) : status == StatusUser.UNACTIVATED ?
                                         (
                                             <td><span
-                                                className="badge bg-warning">{StatusUserName[StatusUser.TEACHER]}</span>
+                                                className="badge bg-secondary">{StatusUserName[StatusUser.UNACTIVATED]}</span>
                                             </td>
-                                        ) : (
-                                            <td><span
-                                                className="badge bg-primary">{StatusUserName[StatusUser.STUDENT]}</span>
-                                            </td>
-                                        )
-                            }
-                            <td>
-                                <td style={{textAlign: 'center'}}>
-                                    <button type="button" className="btn btn-success"
-                                            onClick={() => handleAddMember(id)}><FontAwesomeIcon
-                                        icon={faUserPlus}/>
-                                    </button>
+                                        ) : status == StatusUser.TEACHER ?
+                                            (
+                                                <td><span
+                                                    className="badge bg-warning">{StatusUserName[StatusUser.TEACHER]}</span>
+                                                </td>
+                                            ) : (
+                                                <td><span
+                                                    className="badge bg-primary">{StatusUserName[StatusUser.STUDENT]}</span>
+                                                </td>
+                                            )
+                                }
+                                <td>
+                                    <td style={{textAlign: 'center'}}>
+                                        <button type="button" className="btn btn-success"
+                                                onClick={() => handleAddMember(id)}><FontAwesomeIcon
+                                            icon={faUserPlus}/>
+                                        </button>
+                                    </td>
                                 </td>
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
             )}
-            <ListOfMembers members={members} handleDeleteMember={handleDeleteMember} />
+            <ListOfMembers members={members} handleDeleteMember={handleDeleteMember}/>
 
             <SweetAlert
                 error

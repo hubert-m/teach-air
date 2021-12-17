@@ -32,7 +32,7 @@ const MessagesList = () => {
 
         if (e.target.value.length >= 3) {
 
-            if (size(loadOptions) === 1 && isNull(lengthKeywordWhenOneRecord)) {
+            if (size(loadOptions) == 1 && isNull(lengthKeywordWhenOneRecord)) {
                 setLengthKeywordWhenOneRecord(e.target.value.length);
             }
 
@@ -71,126 +71,53 @@ const MessagesList = () => {
                    onChange={handleOnChange}/>
 
             {!isEmpty(loadOptions) && (
-                <table className="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">&nbsp;</th>
-                        <th scope="col">Imię</th>
-                        <th scope="col">Nazwisko</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">&nbsp;</th>
-                        <th scope="col" style={{textAlign: 'center'}}>Napisz wiadomość</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {loadOptions.map(({
-                                          id,
-                                          email,
-                                          name,
-                                          second_name,
-                                          lastname,
-                                          status,
-                                          show_email,
-                                          profile_image,
-                                          sex_id
-                                      }) => (
-                        <tr key={id}>
-                            <th scope="row">{id}</th>
-                            <td>
-                                <div className="message-avatar">
-                                    <img
-                                        src={profile_image || DefaultAvatarSrc[sex_id?.id] || DefaultAvatarSrc[0]}
-                                        alt=""/>
-                                </div>
-                            </td>
-                            <td>{name} {second_name}</td>
-                            <td>{lastname}</td>
-                            <td>{show_email ? email : "(ukryty)"}</td>
-                            {status === StatusUser.ADMIN ?
-                                (
-                                    <td><span className="badge bg-danger">{StatusUserName[StatusUser.ADMIN]}</span>
-                                    </td>
-                                ) : status === StatusUser.UNACTIVATED ?
-                                    (
-                                        <td><span
-                                            className="badge bg-secondary">{StatusUserName[StatusUser.UNACTIVATED]}</span>
-                                        </td>
-                                    ) : status === StatusUser.TEACHER ?
-                                        (
-                                            <td><span
-                                                className="badge bg-warning">{StatusUserName[StatusUser.TEACHER]}</span>
-                                            </td>
-                                        ) : (
-                                            <td><span
-                                                className="badge bg-primary">{StatusUserName[StatusUser.STUDENT]}</span>
-                                            </td>
-                                        )
-                            }
-                            <td style={{textAlign: 'center'}}>
-                                <button type="button" className="btn btn-info" style={{color: "#FFF"}}
-                                        onClick={() => history.push(Routes.MESSAGES_WITH_USER + id)}><FontAwesomeIcon
-                                    icon={faEnvelope}/>
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            )}
-            {!isEmpty(contacts) && (
-                <>
-                    <div className="jumbotron" style={{marginTop: '50px'}}>
-                        <h1 className="display-7">Aktywne konwersacje</h1>
-                        <hr className="my-4"/>
-                    </div>
+                <div className="table-responsive">
                     <table className="table">
                         <thead>
                         <tr>
+                            <th scope="col">#</th>
                             <th scope="col">&nbsp;</th>
                             <th scope="col">Imię</th>
                             <th scope="col">Nazwisko</th>
                             <th scope="col">Email</th>
                             <th scope="col">&nbsp;</th>
-                            <th scope="col" style={{textAlign: 'center'}}>Ostatnia wiadomość</th>
                             <th scope="col" style={{textAlign: 'center'}}>Napisz wiadomość</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {contacts.map(({
-                                           id,
-                                           email,
-                                           name,
-                                           second_name,
-                                           lastname,
-                                           status,
-                                           lastMessage,
-                                           show_email,
-                                           profile_image,
-                                           sex_id
-                                       }) => (
-                            <tr key={id}
-                                style={lastMessage?.sender_id === id && lastMessage?.is_read === 0 ? {backgroundColor: '#ffffb3'} : null}>
+                        {loadOptions.map(({
+                                              id,
+                                              email,
+                                              name,
+                                              second_name,
+                                              lastname,
+                                              status,
+                                              show_email,
+                                              profile_image,
+                                              sex_id
+                                          }) => (
+                            <tr key={id}>
+                                <th scope="row">{id}</th>
                                 <td>
                                     <div className="message-avatar">
                                         <img
-                                            src={profile_image || DefaultAvatarSrc[sex_id] || DefaultAvatarSrc[0]}
+                                            src={profile_image || DefaultAvatarSrc[sex_id?.id] || DefaultAvatarSrc[0]}
                                             alt=""/>
                                     </div>
                                 </td>
                                 <td>{name} {second_name}</td>
                                 <td>{lastname}</td>
                                 <td>{show_email ? email : "(ukryty)"}</td>
-                                {status === StatusUser.ADMIN ?
+                                {status == StatusUser.ADMIN ?
                                     (
                                         <td><span className="badge bg-danger">{StatusUserName[StatusUser.ADMIN]}</span>
                                         </td>
-                                    ) : status === StatusUser.UNACTIVATED ?
+                                    ) : status == StatusUser.UNACTIVATED ?
                                         (
                                             <td><span
                                                 className="badge bg-secondary">{StatusUserName[StatusUser.UNACTIVATED]}</span>
                                             </td>
-                                        ) : status === StatusUser.TEACHER ?
+                                        ) : status == StatusUser.TEACHER ?
                                             (
                                                 <td><span
                                                     className="badge bg-warning">{StatusUserName[StatusUser.TEACHER]}</span>
@@ -202,16 +129,6 @@ const MessagesList = () => {
                                             )
                                 }
                                 <td style={{textAlign: 'center'}}>
-                                    {lastMessage?.sender_id === id ? (
-                                        <span
-                                            className="badge bg-primary" style={{marginRight: '5px'}}>{name}</span>
-                                    ) : (
-                                        <span
-                                            className="badge bg-secondary" style={{marginRight: '5px'}}>Ty:</span>
-                                    )}
-                                    <Twemoji text={lastMessage?.content}/>
-                                </td>
-                                <td style={{textAlign: 'center'}}>
                                     <button type="button" className="btn btn-info" style={{color: "#FFF"}}
                                             onClick={() => history.push(Routes.MESSAGES_WITH_USER + id)}>
                                         <FontAwesomeIcon
@@ -222,6 +139,95 @@ const MessagesList = () => {
                         ))}
                         </tbody>
                     </table>
+                </div>
+            )}
+            {!isEmpty(contacts) && (
+                <>
+                    <div className="jumbotron" style={{marginTop: '50px'}}>
+                        <h1 className="display-7">Aktywne konwersacje</h1>
+                        <hr className="my-4"/>
+                    </div>
+                    <div className="table-responsive">
+                        <table className="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">&nbsp;</th>
+                                <th scope="col">Imię</th>
+                                <th scope="col">Nazwisko</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">&nbsp;</th>
+                                <th scope="col" style={{textAlign: 'center'}}>Ostatnia wiadomość</th>
+                                <th scope="col" style={{textAlign: 'center'}}>Napisz wiadomość</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {contacts.map(({
+                                               id,
+                                               email,
+                                               name,
+                                               second_name,
+                                               lastname,
+                                               status,
+                                               lastMessage,
+                                               show_email,
+                                               profile_image,
+                                               sex_id
+                                           }) => (
+                                <tr key={id}
+                                    style={lastMessage?.sender_id == id && lastMessage?.is_read == 0 ? {backgroundColor: '#ffffb3'} : null}>
+                                    <td>
+                                        <div className="message-avatar">
+                                            <img
+                                                src={profile_image || DefaultAvatarSrc[sex_id] || DefaultAvatarSrc[0]}
+                                                alt=""/>
+                                        </div>
+                                    </td>
+                                    <td>{name} {second_name}</td>
+                                    <td>{lastname}</td>
+                                    <td>{show_email ? email : "(ukryty)"}</td>
+                                    {status == StatusUser.ADMIN ?
+                                        (
+                                            <td><span
+                                                className="badge bg-danger">{StatusUserName[StatusUser.ADMIN]}</span>
+                                            </td>
+                                        ) : status == StatusUser.UNACTIVATED ?
+                                            (
+                                                <td><span
+                                                    className="badge bg-secondary">{StatusUserName[StatusUser.UNACTIVATED]}</span>
+                                                </td>
+                                            ) : status == StatusUser.TEACHER ?
+                                                (
+                                                    <td><span
+                                                        className="badge bg-warning">{StatusUserName[StatusUser.TEACHER]}</span>
+                                                    </td>
+                                                ) : (
+                                                    <td><span
+                                                        className="badge bg-primary">{StatusUserName[StatusUser.STUDENT]}</span>
+                                                    </td>
+                                                )
+                                    }
+                                    <td style={{textAlign: 'center'}}>
+                                        {lastMessage?.sender_id == id ? (
+                                            <span
+                                                className="badge bg-primary" style={{marginRight: '5px'}}>{name}</span>
+                                        ) : (
+                                            <span
+                                                className="badge bg-secondary" style={{marginRight: '5px'}}>Ty:</span>
+                                        )}
+                                        <Twemoji text={lastMessage?.content}/>
+                                    </td>
+                                    <td style={{textAlign: 'center'}}>
+                                        <button type="button" className="btn btn-info" style={{color: "#FFF"}}
+                                                onClick={() => history.push(Routes.MESSAGES_WITH_USER + id)}>
+                                            <FontAwesomeIcon
+                                                icon={faEnvelope}/>
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </>
             )}
 

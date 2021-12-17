@@ -66,7 +66,7 @@ const FormAddThread = ({course_id}) => {
 
         if (e.target.value.length >= 3) {
 
-            if (size(listOfFiles) === 1 && isNull(lengthKeywordWhenOneRecord)) {
+            if (size(listOfFiles) == 1 && isNull(lengthKeywordWhenOneRecord)) {
                 setLengthKeywordWhenOneRecord(e.target.value.length);
             }
 
@@ -84,7 +84,7 @@ const FormAddThread = ({course_id}) => {
                     await setShowLoader(false);
                 })
             }
-        } else if (e.target.value.length === 0) {
+        } else if (e.target.value.length == 0) {
             setShowLoader(true);
             getSearchFiles().then(list => {
                 sortDesc(list, "id");
@@ -126,7 +126,7 @@ const FormAddThread = ({course_id}) => {
 
     const isFileAddedToArray = (file) => {
         return data?.files?.find((item) => {
-                return item.id === file?.id
+                return item.id == file?.id
             }
         );
     }
@@ -263,46 +263,48 @@ const FormAddThread = ({course_id}) => {
                     <input type="text" id="keyword" className="form-control third" name="keyword"
                            placeholder="Wpisz przynajmniej 3 znaki" value={data_files.keyword}
                            onChange={handleOnChange_files}/>
-                    <table className="table" style={{marginTop: '25px'}}>
-                        <thead>
-                        <tr>
-                            <th scope="col">Nazwa pliku</th>
-                            <th scope="col">Rozszerzenie</th>
-                            <th scope="col">Rozmiar</th>
-                            <th scope="col">Dołącz</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {isEmpty(listOfFiles) ? (<tr>
-                            <td colSpan={4}>Brak plikow</td>
-                        </tr>) : listOfFiles?.map((props) => {
-                            const {id, name, url, extension, size} = props;
-                            return (
-                                <tr key={id}>
-                                    <td>
-                                        <a href={url}>{name}.{extension}</a>
-                                    </td>
-                                    <td>{extension}</td>
-                                    <td>{Math.ceil(size / 1024)}KB</td>
-                                    <td>
-                                        {isFileAddedToArray(props) ? (
-                                            <button type="button" className="btn btn-danger"
-                                                    onClick={() => handleDeleteFileFromArray(id)}>
-                                                <FontAwesomeIcon
-                                                    icon={faMinus}/>
-                                            </button>
-                                        ) : (
-                                            <button type="button" className="btn btn-success"
-                                                    onClick={() => handlePushFileToArr(props)}><FontAwesomeIcon
-                                                icon={faPlus}/>
-                                            </button>
-                                        )}
-                                    </td>
-                                </tr>
-                            )
-                        })}
-                        </tbody>
-                    </table>
+                    <div className="table-responsive">
+                        <table className="table" style={{marginTop: '25px'}}>
+                            <thead>
+                            <tr>
+                                <th scope="col">Nazwa pliku</th>
+                                <th scope="col">Rozszerzenie</th>
+                                <th scope="col">Rozmiar</th>
+                                <th scope="col">Dołącz</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {isEmpty(listOfFiles) ? (<tr>
+                                <td colSpan={4}>Brak plikow</td>
+                            </tr>) : listOfFiles?.map((props) => {
+                                const {id, name, url, extension, size} = props;
+                                return (
+                                    <tr key={id}>
+                                        <td>
+                                            <a href={url}>{name}.{extension}</a>
+                                        </td>
+                                        <td>{extension}</td>
+                                        <td>{Math.ceil(size / 1024)}KB</td>
+                                        <td>
+                                            {isFileAddedToArray(props) ? (
+                                                <button type="button" className="btn btn-danger"
+                                                        onClick={() => handleDeleteFileFromArray(id)}>
+                                                    <FontAwesomeIcon
+                                                        icon={faMinus}/>
+                                                </button>
+                                            ) : (
+                                                <button type="button" className="btn btn-success"
+                                                        onClick={() => handlePushFileToArr(props)}><FontAwesomeIcon
+                                                    icon={faPlus}/>
+                                                </button>
+                                            )}
+                                        </td>
+                                    </tr>
+                                )
+                            })}
+                            </tbody>
+                        </table>
+                    </div>
                 </ModalBody>
                 <ModalFooter>
                     <button type="button" className="btn btn-success"

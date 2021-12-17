@@ -30,7 +30,7 @@ const TitleOfCourse = ({title, description, course, updateCourse, icon}) => {
         <>
             <div className="jumbotron" style={{marginTop: '50px'}}>
                 <h1 className="display-7">{!!icon && Icons[parseInt(icon, 10)]} {!!title && (<Twemoji text={title} />)}</h1>
-                {course?.isMember === 1 && (
+                {course?.isMember == 1 && (
                     <FontAwesomeIcon icon={course?.isFavourite ? heartChecked : heartUnchecked}
                                      className="heart-in-head-course"
                                      onClick={() => handleChangeFavourite(course?.id)}/>

@@ -13,7 +13,7 @@ const getMe = () => {
         }).catch((error) => {
             let message = "Nie udało się połączyć z serwerem";
             if (error.response) {
-                if (error.response.status === 400) {
+                if (error.response.status == 400) {
                     localStorage.clear();
                     this.props.history.push(Routes.LOGIN);
                     message = null;
@@ -31,6 +31,7 @@ const updateMe = (data) => {
     return new Promise((resolve, reject) => {
 
         let error = null;
+        console.log(data);
         if (!data.name || !data.lastname || !data.sex_id)
             error = "Nie możesz skasować zawartości wymaganych pól";
 

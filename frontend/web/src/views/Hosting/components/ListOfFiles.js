@@ -46,7 +46,7 @@ const ListOfFiles = ({
 
         if (e.target.value.length >= 3) {
 
-            if (size(myFiles) === 1 && isNull(lengthKeywordWhenOneRecord)) {
+            if (size(myFiles) == 1 && isNull(lengthKeywordWhenOneRecord)) {
                 setLengthKeywordWhenOneRecord(e.target.value.length);
             }
 
@@ -64,7 +64,7 @@ const ListOfFiles = ({
                     await setShowLoader(false);
                 })
             }
-        } else if (e.target.value.length === 0) {
+        } else if (e.target.value.length == 0) {
             setShowLoader(true);
             getSearchFiles().then(list => {
                 sortDesc(list, "id");
@@ -82,52 +82,56 @@ const ListOfFiles = ({
             <input type="text" id="keyword" className="form-control third" name="keyword"
                    placeholder="Wpisz przynajmniej 3 znaki" value={data.keyword}
                    onChange={handleOnChange}/>
-            <table className="table">
-                <thead>
-                <tr>
-                    <th scope="col">Nazwa pliku</th>
-                    <th scope="col">Użyć w postach</th>
-                    <th scope="col">Użyć w wiadomościach</th>
-                    <th scope="col">Rozszerzenie</th>
-                    <th scope="col">Rozmiar</th>
-                    <th scope="col">&nbsp;</th>
-                </tr>
-                </thead>
-                <tbody>
-                {isEmpty(myFiles) ? (<tr><td colSpan={6}>Brak plikow</td></tr>) : myFiles?.map(({id, name, url, extension, size, usedInMessages, usedInPosts}) => (
-                    <tr key={id}>
-                        <td>
-                            {extension === "jpg" || extension === "jpeg" || extension === "png" ? (
-                                <>
-                                    <SimpleReactLightbox>
-                                        <SRLWrapper>
-                                            <a href={url}><img src={url}
-                                                               style={{maxWidth: '50px', height: 'auto'}}
-                                                               alt=""/></a>
-                                        </SRLWrapper>
-                                    </SimpleReactLightbox>
-                                    {name}.{extension}
-                                </>
-                            ) : (
-                                <a href={url}>{name}.{extension}</a>
-                            )}
-                        </td>
-                        <td>{usedInPosts}</td>
-                        <td>{usedInMessages}</td>
-                        <td>{extension}</td>
-                        <td>{Math.ceil(size / 1024)}KB</td>
-                        <td>
-                            {usedInMessages === 0 && usedInPosts === 0 && (
-                                <button type="button" className="btn btn-danger"
-                                        onClick={() => handleDeleteFile(id)}><FontAwesomeIcon
-                                    icon={faTrash}/>
-                                </button>
-                            )}
-                        </td>
+            <div className="table-responsive">
+                <table className="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Nazwa pliku</th>
+                        <th scope="col">Użyć w postach</th>
+                        <th scope="col">Użyć w wiadomościach</th>
+                        <th scope="col">Rozszerzenie</th>
+                        <th scope="col">Rozmiar</th>
+                        <th scope="col">&nbsp;</th>
                     </tr>
-                ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {isEmpty(myFiles) ? (<tr>
+                        <td colSpan={6}>Brak plikow</td>
+                    </tr>) : myFiles?.map(({id, name, url, extension, size, usedInMessages, usedInPosts}) => (
+                        <tr key={id}>
+                            <td>
+                                {extension == "jpg" || extension == "jpeg" || extension == "png" ? (
+                                    <>
+                                        <SimpleReactLightbox>
+                                            <SRLWrapper>
+                                                <a href={url}><img src={url}
+                                                                   style={{maxWidth: '50px', height: 'auto'}}
+                                                                   alt=""/></a>
+                                            </SRLWrapper>
+                                        </SimpleReactLightbox>
+                                        {name}.{extension}
+                                    </>
+                                ) : (
+                                    <a href={url}>{name}.{extension}</a>
+                                )}
+                            </td>
+                            <td>{usedInPosts}</td>
+                            <td>{usedInMessages}</td>
+                            <td>{extension}</td>
+                            <td>{Math.ceil(size / 1024)}KB</td>
+                            <td>
+                                {usedInMessages == 0 && usedInPosts == 0 && (
+                                    <button type="button" className="btn btn-danger"
+                                            onClick={() => handleDeleteFile(id)}><FontAwesomeIcon
+                                        icon={faTrash}/>
+                                    </button>
+                                )}
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            </div>
 
             <SweetAlert
                 error

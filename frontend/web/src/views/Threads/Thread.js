@@ -72,15 +72,15 @@ const Thread = () => {
                                                 className="d-block ui-w-40 rounded-circle"
                                                 alt="" style={{maxWidth: '100px'}}/>
                                             {created_by?.name} {created_by?.second_name} {created_by?.lastname}<br/>
-                                            {created_by?.status === StatusUser.ADMIN ?
+                                            {created_by?.status == StatusUser.ADMIN ?
                                                 (
                                                     <span
                                                         className="badge bg-danger">{StatusUserName[StatusUser.ADMIN]}</span>
-                                                ) : created_by?.status === StatusUser.UNACTIVATED ?
+                                                ) : created_by?.status == StatusUser.UNACTIVATED ?
                                                     (
                                                         <span
                                                             className="badge bg-secondary">{StatusUserName[StatusUser.UNACTIVATED]}</span>
-                                                    ) : created_by?.status === StatusUser.TEACHER ?
+                                                    ) : created_by?.status == StatusUser.TEACHER ?
                                                         (
                                                             <span
                                                                 className="badge bg-warning">{StatusUserName[StatusUser.TEACHER]}</span>
@@ -91,7 +91,7 @@ const Thread = () => {
                                             }
                                         </div>
                                         <div className="text-muted small ml-3">
-                                            {created_by?.show_email === 1 && (
+                                            {created_by?.show_email == 1 && (
                                                 <div>E-mail <strong>{created_by?.email}</strong></div>)}
                                             {!!created_by?.phone && (
                                                 <div>Tel.: <strong>{created_by?.phone}</strong></div>)}

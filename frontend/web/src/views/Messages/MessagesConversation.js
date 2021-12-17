@@ -40,11 +40,6 @@ const MessagesConversation = ({userData}) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
 
-
-
-
-
-
     const handleOnChange_files = (e) => {
         const result = {};
         result[e.target.name] = e.target.value;
@@ -55,7 +50,7 @@ const MessagesConversation = ({userData}) => {
 
         if (e.target.value.length >= 3) {
 
-            if (size(listOfFiles) === 1 && isNull(lengthKeywordWhenOneRecord)) {
+            if (size(listOfFiles) == 1 && isNull(lengthKeywordWhenOneRecord)) {
                 setLengthKeywordWhenOneRecord(e.target.value.length);
             }
 
@@ -73,7 +68,7 @@ const MessagesConversation = ({userData}) => {
                     await setShowLoader(false);
                 })
             }
-        } else if (e.target.value.length === 0) {
+        } else if (e.target.value.length == 0) {
             setShowLoader(true);
             getSearchFiles().then(list => {
                 sortDesc(list, "id");
@@ -84,12 +79,6 @@ const MessagesConversation = ({userData}) => {
             })
         }
     }
-
-
-
-
-
-
 
 
     const scrollToBottom = () => {
@@ -164,7 +153,7 @@ const MessagesConversation = ({userData}) => {
     }, [messages]);
 
     const handleKeyPress = event => {
-        if (event.key === 'Enter') {
+        if (event.key == 'Enter') {
             handleSendMessage();
         }
     };
@@ -199,7 +188,7 @@ const MessagesConversation = ({userData}) => {
 
     const isFileAddedToArray = (file) => {
         return data?.files?.find((item) => {
-                return item.id === file?.id
+                return item.id == file?.id
             }
         );
     }
@@ -217,7 +206,7 @@ const MessagesConversation = ({userData}) => {
             <div style={{maxHeight: 370, overflowY: 'auto', overflowX: 'hidden', whiteSpace: 'nowrap'}}>
                 {messages.map(({id, content, sender_id, created_at, is_read, files}) => (
                     <React.Fragment key={id}>
-                        {sender_id === userData?.id ? (
+                        {sender_id == userData?.id ? (
                             <div className="message-my">
                                 <span className="time">{parseTimeStamp(created_at)}</span>
                                 <span className="badge bg-primary"><Twemoji text={content}/></span>
@@ -226,7 +215,7 @@ const MessagesConversation = ({userData}) => {
                                         src={userData?.profile_image || DefaultAvatarSrc[userData?.sex_id?.id] || DefaultAvatarSrc[0]}
                                         alt=""/>
                                 </div>
-                                {is_read === 1 && (
+                                {is_read == 1 && (
                                     <p className="is-read"><FontAwesome
                                         className='super-crazy-colors'
                                         name='check'
@@ -305,12 +294,15 @@ const MessagesConversation = ({userData}) => {
             >
                 <ModalHeader>Pliki</ModalHeader>
                 <ModalBody>
-                    <UploadFile setMyFiles={setListOfFiles} attachFile={true} handlePushFileToArr={handlePushFileToArr} keyword={data_files?.keyword} />
-                    <p style={{ marginTop: '25px' }}>Wyszukaj plik (wprowadź przynajmniej 3 znaki) (skasuj wszystkie znaki aby pobrać pełną listę)</p>
+                    <UploadFile setMyFiles={setListOfFiles} attachFile={true} handlePushFileToArr={handlePushFileToArr}
+                                keyword={data_files?.keyword}/>
+                    <p style={{marginTop: '25px'}}>Wyszukaj plik (wprowadź przynajmniej 3 znaki) (skasuj wszystkie znaki
+                        aby pobrać pełną listę)</p>
                     <input type="text" id="keyword" className="form-control third" name="keyword"
                            placeholder="Wpisz przynajmniej 3 znaki" value={data_files.keyword}
                            onChange={handleOnChange_files}/>
-                        <table className="table" style={{ marginTop: '25px' }}>
+                    <div className="table-responsive">
+                        <table className="table" style={{marginTop: '25px'}}>
                             <thead>
                             <tr>
                                 <th scope="col">Nazwa pliku</th>
@@ -320,7 +312,9 @@ const MessagesConversation = ({userData}) => {
                             </tr>
                             </thead>
                             <tbody>
-                            {isEmpty(listOfFiles) ? (<tr><td colSpan={4}>Brak plikow</td></tr>) : listOfFiles?.map((props) => {
+                            {isEmpty(listOfFiles) ? (<tr>
+                                <td colSpan={4}>Brak plikow</td>
+                            </tr>) : listOfFiles?.map((props) => {
                                 const {id, name, url, extension, size} = props;
                                 return (
                                     <tr key={id}>
@@ -348,12 +342,13 @@ const MessagesConversation = ({userData}) => {
                             })}
                             </tbody>
                         </table>
+                    </div>
                 </ModalBody>
-            <ModalFooter>
-                <button type="button" className="btn btn-success"
-                        onClick={() => setModalIsOpen(false)}>Gotowe
-                </button>
-            </ModalFooter>
+                <ModalFooter>
+                    <button type="button" className="btn btn-success"
+                            onClick={() => setModalIsOpen(false)}>Gotowe
+                    </button>
+                </ModalFooter>
             </Modal>
             <SweetAlert
                 error
