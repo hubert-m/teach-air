@@ -162,7 +162,7 @@ class UserController extends Controller
 
     public function sex_add(Request $request)
     {
-        if ($this->request->auth->status !== 3) {
+        if ($this->request->auth->status != 3) {
             return response()->json([
                 'error' => 'Brak uprawnien do dodawania plci'
             ], 400);
@@ -199,7 +199,7 @@ class UserController extends Controller
 
     public function delete_sex($id)
     {
-        if ($this->request->auth->status !== 3) {
+        if ($this->request->auth->status != 3) {
             return response()->json([
                 'error' => 'Brak uprawnien do usuwania plci'
             ], 400);
@@ -235,7 +235,7 @@ class UserController extends Controller
 
     public function set_status(Request $request, $id)
     {
-        if ($this->request->auth->status !== 3) {
+        if ($this->request->auth->status != 3) {
             return response()->json([
                 'error' => 'Brak uprawnien do zmieniania statusu'
             ], 400);
