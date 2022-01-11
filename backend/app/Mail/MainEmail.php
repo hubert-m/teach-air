@@ -23,15 +23,15 @@ class MainEmail extends Mailable
         $address = 'no-reply@teach-air.pl';
         $name = 'Teach-Air';
         $typ_wiadomosci = $this->data['type'];
-        $odbiorca = $this->data['recipient'];
+        $token_aktywacji = $this->data['activate_token'];
+        $adres_aktywacji_front = env("FRONT_URL", "http://localhost:3000")."/".env("ACTIVATION_PAGE", "activation")."/".$token_aktywacji;
 
         if($typ_wiadomosci == "rejestracja") {
             $imie = $this->data['name'];
             return $this->view('emails.rejestracja')
                 ->from($address, $name)
-                ->cc($odbiorca, $imie)
                 ->subject("Witaj ".$imie." na Teach-Air")
-                ->with([ 'imie' => $imie ]);
+                ->with([ 'imie' => $imie, 'token_aktywacji' => $token_aktywacji, 'adres_aktywacji' => $adres_aktywacji_front ]);
         }
 
 

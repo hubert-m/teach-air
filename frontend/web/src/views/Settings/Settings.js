@@ -10,7 +10,7 @@ import {isEmpty, isNull, size} from "lodash";
 import SimpleReactLightbox, {SRLWrapper} from "simple-react-lightbox";
 import {getSearchFiles} from "../../helpers/Files";
 import {sortDesc} from "../../helpers/sort";
-import ImageExtensions from "../../helpers/ImageExtensions";
+import ImageExtensions from "../../constants/ImageExtensions";
 import UploadFile from "../Hosting/components/UploadFile";
 import {DefaultAvatarSrc} from "../../constants/DefaultAvatar";
 

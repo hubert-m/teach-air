@@ -67,6 +67,13 @@ class AuthController extends Controller
         }
         // Verify the password and generate the token
         if (Hash::check($this->request->input('password'), $user->password)) {
+            if($user->status == 0) {
+                return response()->json([
+                    'error' => 'Konto nie zostalo jeszcze aktywowane. Sprawdz maila',
+                ], 400);
+            }
+
+
             return response()->json([
                 'token' => $this->jwt($user)
             ], 200);

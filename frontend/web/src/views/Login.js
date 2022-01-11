@@ -44,7 +44,9 @@ function Login({setUserToken}) {
                             onClick={() => login()}>Zaloguj
                     </button>
                     <div id="formFooter">
-                        <Link to={Routes.FORGET_PASSWORD}>Zapomniałeś hasła?</Link>
+                        <Link to={Routes.FORGET_PASSWORD}>Zapomniałeś hasła?</Link><br />
+                        {/* eslint-disable-next-line react/jsx-no-comment-textnodes */}
+                        <Link to={Routes.FORGET_PASSWORD}>Twoje konto nie jest aktywne?</Link> {/*TODO*/}
                     </div>
                 </div>
             </div>

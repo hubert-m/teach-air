@@ -72,7 +72,8 @@ class UserController extends Controller
             $data = [
                 'type' => 'rejestracja',
                 'name' => $user->name.' '.$user->lastname,
-                'recipient' => $user->email
+                'recipient' => $user->email,
+                'activate_token' => $user->activate_token
             ];
             Mail::to($user->email)->send(new MainEmail($data));
 
