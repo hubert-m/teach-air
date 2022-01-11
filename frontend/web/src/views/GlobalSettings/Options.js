@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import ContainerGlobalSettings from "./ContainerGlobalSettings";
-import {sortDesc} from "../../helpers/sort";
+import {sortAsc, sortDesc} from "../../helpers/sort";
 import {addOption, getOptionsList, updateOptions} from "../../helpers/Options";
 import LoaderScreen from "../../components/LoaderScreen";
 import SweetAlert from "react-bootstrap-sweetalert";
@@ -22,7 +22,7 @@ const Options = () => {
     useEffect(() => {
         setShowLoader(true);
         getOptionsList().then(list => {
-            sortDesc(list, "id");
+            sortAsc(list, "id");
             setOptions(list);
         }).catch(() => {
         }).finally(async () => {
@@ -54,7 +54,7 @@ const Options = () => {
             setSuccessMessage("Pomyślnie zaktualizowano ustawienia");
             setShowSuccess(true);
             getOptionsList().then(list => {
-                sortDesc(list, "id");
+                sortAsc(list, "id");
                 setOptions(list);
             }).catch(() => {
             })
@@ -77,7 +77,7 @@ const Options = () => {
             setSuccessMessage("Pomyślnie dodano opcje");
             setShowSuccess(true);
             getOptionsList().then(list => {
-                sortDesc(list, "id");
+                sortAsc(list, "id");
                 setOptions(list);
             }).catch(() => {
             })

@@ -510,6 +510,10 @@ class CourseController extends Controller
             }
         }
 
+        if ($this->request->auth->status == 3) {
+            $isMemberOfCourse = true;
+        }
+
         if (!$isMemberOfCourse) {
             return response()->json([
                 'error' => 'Nie jestes czlonkiem tego kursu wiec nie mozesz dodac go do ulubionych'

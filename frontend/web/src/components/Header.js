@@ -19,10 +19,7 @@ function Header({userData, userToken}) {
                 <Navbar.Toggle aria-controls="responsive-navbar-nav"
                                onClick={() => setExpanded(expanded ? false : "expanded")}/>
                 <Navbar.Collapse id="responsive-navbar-nav">
-                    <Nav className="me-auto">
-                        <Nav.Link href="#" onClick={() => setExpanded(false)}>Podstrona 1</Nav.Link>
-                        <Nav.Link href="#" onClick={() => setExpanded(false)}>Podstrona 2</Nav.Link>
-                    </Nav>
+                    <Nav className="me-auto" />
                     <Nav>
                         {userToken ? (
                             <>

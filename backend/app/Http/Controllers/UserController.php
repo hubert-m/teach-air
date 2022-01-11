@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\MainEmail;
 use App\Models\Course;
 use App\Models\Course_member;
 use App\Models\Sex;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -66,6 +68,13 @@ class UserController extends Controller
             $user->activate_token = uniqid();
 
             $user->save();
+
+            $data = [
+                'type' => 'rejestracja',
+                'name' => $user->name.' '.$user->lastname,
+                'recipient' => $user->email
+            ];
+            Mail::to($user->email)->send(new MainEmail($data));
 
             return response()->json([
                 'success' => 'Zarejestrowano pomyslnie',

@@ -6,6 +6,8 @@ Lista endpointów API `routes/web.php`
 
 Zainstalowane poleceniem `composer create-project --prefer-dist laravel/lumen .`
 
+Instalacja illuminate/mail `composer require illuminate/mail`
+
 ## Prod
 
 `TODO - finalną wersję bazy wyeksportować do pliku database.sql | ewentualnie napisać skrypt install.php z formularzem, instalacją bazy danych i tworzeniem pliku .env`
