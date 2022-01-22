@@ -140,3 +140,8 @@
     background-color: var(--bs-primary);
     color: #FFF;
 }
+
+.nav-link .badge {
+    padding: 4px;
+    margin-left: 5px;
+}

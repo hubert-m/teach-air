@@ -13,7 +13,7 @@ const getMe = () => {
         }).catch((error) => {
             let message = "Nie udało się połączyć z serwerem";
             if (error.response) {
-                if (error.response.status == 400) {
+                if (error.response.status == 400 || error.response.status == 401) {
                     localStorage.clear();
                     this.props.history.push(Routes.LOGIN);
                     message = null;

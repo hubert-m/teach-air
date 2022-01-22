@@ -39,17 +39,23 @@ const Register = () => {
         }))
     }
 
-    const handleRegister = (event) => {
+    const handleRegister = () => {
         register(data).then(() => {
             setShowSuccess(true);
             setTimeout(() => {
                 history.push(Routes.LOGIN);
-            }, 4000)
+            }, 5000)
         }).catch(errorMessage => {
             setErrorMessage(errorMessage);
             setShowError(true);
         });
     }
+
+    const handleKeyPress = event => {
+        if (event.key == 'Enter') {
+            handleRegister();
+        }
+    };
 
 
     return (
@@ -61,36 +67,23 @@ const Register = () => {
                         <div className="col-lg-6">
                             <input type="email" id="email" className="form-control fadeIn second" name="email"
                                    placeholder="E-mail" aria-describedby="emailHelp" value={data.email}
-                                   onChange={handleOnChange}/>
+                                   onChange={handleOnChange} onKeyPress={handleKeyPress} autoFocus/>
+                            <input type="password" id="password" className="form-control fadeIn third" name="password"
+                                   placeholder="Hasło" value={data.password}
+                                   onChange={handleOnChange} onKeyPress={handleKeyPress}/>
+                            <input type="password" id="passwordRepeat" className="form-control fadeIn third"
+                                   name="passwordRepeat"
+                                   placeholder="Powtórz hasło" value={data.passwordRepeat}
+                                   onChange={handleOnChange} onKeyPress={handleKeyPress}/>
                         </div>
                         <div className="col-lg-6">
                             <input type="text" id="name" className="form-control fadeIn second" name="name"
                                    placeholder="Imię" value={data.name}
-                                   onChange={handleOnChange}/>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-lg-6">
-                            <input type="password" id="password" className="form-control fadeIn third" name="password"
-                                   placeholder="Hasło" value={data.password}
-                                   onChange={handleOnChange}/>
-                        </div>
-                        <div className="col-lg-6">
+                                   onChange={handleOnChange} onKeyPress={handleKeyPress}/>
                             <input type="text" id="lastname" className="form-control fadeIn third" name="lastname"
                                    placeholder="Nazwisko" value={data.lastname}
-                                   onChange={handleOnChange}/>
-                        </div>
-
-                    </div>
-                    <div className="row">
-                        <div className="col-lg-6">
-                            <input type="password" id="passwordRepeat" className="form-control fadeIn third"
-                                   name="passwordRepeat"
-                                   placeholder="Powtórz hasło" value={data.passwordRepeat}
-                                   onChange={handleOnChange}/>
-                        </div>
-                        <div className="col-lg-6">
-                            <select className="fadeIn third" name="sex_id" onChange={handleOnChange}>
+                                   onChange={handleOnChange} onKeyPress={handleKeyPress}/>
+                            <select className="fadeIn third" name="sex_id" onChange={handleOnChange} onKeyPress={handleKeyPress}>
                                 <option selected>Wybierz płeć</option>
                                 {sexList.map(({id, value}) => (
                                     <option value={id}>{value}</option>
@@ -98,6 +91,7 @@ const Register = () => {
                             </select>
                         </div>
                     </div>
+
                     <button className="fadeIn fourth" style={{margin: '15px auto 25px auto'}}
                             onClick={() => handleRegister()}>Zarejestruj
                     </button>
@@ -124,7 +118,8 @@ const Register = () => {
                 title="Hurraaa :)"
                 onConfirm={() => setShowSuccess(false)}
             >
-                Za chwile zostaniesz przekierowany do panelu logowania
+                Za chwile zostaniesz przekierowany do panelu logowania<br/>
+                Na maila przyjdzie Ci link aktywacyjny
             </SweetAlert>
         </>
     );

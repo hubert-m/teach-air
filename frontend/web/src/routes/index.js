@@ -21,6 +21,8 @@ import Activation from "../views/User/Activation";
 import HostingFiles from "../views/Hosting/HostingFiles";
 import Options from "../views/GlobalSettings/Options";
 import Thread from "../views/Threads/Thread";
+import ActivationMain from "../views/User/ActivationMain";
+import ForgetPassword from "../views/User/ForgetPassword";
 
 const routes = [
     {path: '/', Component: Home},
@@ -34,7 +36,9 @@ const routes = [
     {path: Routes.GLOBAL_SETTINGS_SEX, Component: Sex, IsAdmin: true},
     {path: Routes.GLOBAL_SETTINGS_SITE_OPTIONS, Component: Options, IsAdmin: true},
     {path: Routes.SETTINGS, Component: Settings, IsAuth: true},
+    {path: Routes.USER_ACTIVATION_MAIN, Component: ActivationMain},
     {path: Routes.USER_ACTIVATION + ":code", Component: Activation}, // TODO
+    {path: Routes.FORGET_PASSWORD, Component: ForgetPassword},
     {path: Routes.MAIN_COURSES, Component: MainCourses, IsAuth: true},
     {path: Routes.SUB_COURSES + ":id", Component: SubCourses, IsAuth: true},
     {path: Routes.HOSTING_FILES, Component: HostingFiles, IsAuth: true},

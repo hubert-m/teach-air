@@ -29,6 +29,12 @@ function Login({setUserToken}) {
         });
     }
 
+    const handleKeyPress = event => {
+        if (event.key == 'Enter') {
+            login();
+        }
+    };
+
     return (
         <>
             <div className="wrapper fadeInDown">
@@ -36,17 +42,17 @@ function Login({setUserToken}) {
                     <h2>Panel logowania</h2>
                     <input type="email" id="email" className="form-control fadeIn second" name="email"
                            placeholder="E-mail" aria-describedby="emailHelp" value={email}
-                           onChange={e => setEmail(e.target.value)}/>
+                           onChange={e => setEmail(e.target.value)} onKeyPress={handleKeyPress} autoFocus/>
                     <input type="password" id="password" className="form-control fadeIn third" name="password"
                            placeholder="Hasło" value={password}
-                           onChange={e => setPassword(e.target.value)}/>
+                           onChange={e => setPassword(e.target.value)} onKeyPress={handleKeyPress}/>
                     <button className="fadeIn fourth" style={{margin: '15px auto 25px auto'}}
                             onClick={() => login()}>Zaloguj
                     </button>
                     <div id="formFooter">
                         <Link to={Routes.FORGET_PASSWORD}>Zapomniałeś hasła?</Link><br />
                         {/* eslint-disable-next-line react/jsx-no-comment-textnodes */}
-                        <Link to={Routes.FORGET_PASSWORD}>Twoje konto nie jest aktywne?</Link> {/*TODO*/}
+                        <Link to={Routes.USER_ACTIVATION_MAIN}>Twoje konto nie jest aktywne?</Link> {/*TODO*/}
                     </div>
                 </div>
             </div>

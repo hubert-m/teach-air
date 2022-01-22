@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useParams} from "react-router";
-import {getUserById} from "../../helpers/User";
+import {getMe, getUserById} from "../../helpers/User";
 import LoaderScreen from "../../components/LoaderScreen";
 import {getMessages, sendMessage} from "../../helpers/Message";
 import parseTimeStamp from "../../helpers/parseTimeStamp";
@@ -19,7 +19,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faMinus} from "@fortawesome/free-solid-svg-icons";
 import UploadFile from "../Hosting/components/UploadFile";
 
-const MessagesConversation = ({userData}) => {
+const MessagesConversation = ({userData, setUserData}) => {
     let {id} = useParams();
     const [contact, setContact] = useState({});
     const [messages, setMessages] = useState([]);
@@ -144,6 +144,14 @@ const MessagesConversation = ({userData}) => {
         }).catch(() => {
         })
 
+        // przy wyjsciu ze strony
+        return function cleanup() {
+            getMe().then(userDataTmp => {
+                setUserData(userDataTmp);
+                //console.log(userDataTmp);
+            }).catch(() => {})
+        }
+
         // TODO
         // updateMessages.start();
     }, [])
@@ -225,8 +233,8 @@ const MessagesConversation = ({userData}) => {
                                 )}
                                 {!isEmpty(files) && (
                                     <div className="files-under-message-container">
-                                        {files.map(({name, url, extension}) => (
-                                            <a href={url} className="file-under-message">{name}.{extension}</a>
+                                        {files.map(({id, name, url, extension}) => (
+                                            <a href={url} key={id} className="file-under-message">{name}.{extension}</a>
                                         ))}
                                     </div>
                                 )}
@@ -242,8 +250,8 @@ const MessagesConversation = ({userData}) => {
                                 <span className="time">{parseTimeStamp(created_at)}</span>
                                 {!isEmpty(files) && (
                                     <div className="files-under-message-container">
-                                        {files.map(({name, url, extension}) => (
-                                            <a href={url} className="file-under-message">{name}.{extension}</a>
+                                        {files.map(({id, name, url, extension}) => (
+                                            <a href={url} key={id} className="file-under-message">{name}.{extension}</a>
                                         ))}
                                     </div>
                                 )}

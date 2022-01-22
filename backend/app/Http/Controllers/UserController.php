@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\MainEmail;
 use App\Models\Course;
 use App\Models\Course_member;
+use App\Models\Message;
 use App\Models\Sex;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -114,6 +115,9 @@ class UserController extends Controller
     {
         $sex = Sex::where('id', '=', $this->request->auth->sex_id)->first();
         $this->request->auth->sex_id = $sex;
+        $unread_messages = count(Message::where('recipient_id', '=', $this->request->auth->id)
+            ->where('is_read', '=', 0)->get());
+        $this->request->auth->unread_messages = $unread_messages;
         return response()->json($this->request->auth, 200);
     }
 
