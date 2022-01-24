@@ -9,6 +9,7 @@ use App\Models\Message;
 use App\Models\Sex;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
@@ -378,5 +379,40 @@ class UserController extends Controller
             ], 500);
         }
 
+    }
+
+    public function change_password(Request $request) {
+        $id_auth_user = $request->auth->id;
+        $old_password = $request->old_password;
+        $new_password = $request->new_password;
+
+        $user = User::where('id', '=', $id_auth_user)->first();
+
+        if($old_password == "" || $new_password == "") {
+            return response()->json([
+                'error' => 'Musisz wypelnic wszystkie pola',
+            ], 400);
+        }
+
+        if (!Hash::check($old_password, $user->password)) {
+            return response()->json([
+                'error' => 'Stare haslo nie jest prawidlowe',
+            ], 400);
+        }
+
+        try {
+            $user->password = Hash::make($new_password);
+            $user->last_change_pass = DB::raw('DATE_ADD(NOW(), INTERVAL 1 HOUR)'); // bez interval 1 hour zwraca godzine wczesniejszy czas
+            $user->save();
+
+            return response()->json([
+                'success' => 'Pomyslnie zmieniono haslo',
+                'auth' => $user
+            ], 201);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

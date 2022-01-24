@@ -44,6 +44,7 @@ $router->group(
         $router->put('/users/set_status/{id}', 'UserController@set_status');
         $router->get('/users/{id}', 'UserController@show');
         $router->post('/users/update_me', 'UserController@update_me');
+        $router->post('/users/change_password', 'UserController@change_password'); // dla zalogowanego usera
         $router->post('/users/set_profile_image', 'UserController@set_profile_image');
 
         $router->post('/messages/send_message', 'MessageController@send_message');

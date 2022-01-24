@@ -31,7 +31,7 @@ const updateMe = (data) => {
     return new Promise((resolve, reject) => {
 
         let error = null;
-        console.log(data);
+
         if (!data.name || !data.lastname || !data.sex_id)
             error = "Nie możesz skasować zawartości wymaganych pól";
 
@@ -42,6 +42,35 @@ const updateMe = (data) => {
 
         const config = {headers: {token: localStorage.getItem("userToken")}};
         axios.post(Settings.API + ApiEndpoints.UPDATE_ME, data, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+}
+
+const changePassword = (data) => {
+    return new Promise((resolve, reject) => {
+
+        let error = null;
+
+        if (!data?.new_password || !data?.new_password_repeat || !data?.old_password)
+            error = "Musisz wypełnić wszystkie pola";
+
+        if (data?.new_password != data?.new_password_repeat)
+            error = "Nowe hasła nie są identyczne";
+
+        if (error) {
+            reject(error);
+            return;
+        }
+
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.post(Settings.API + ApiEndpoints.CHANGE_PASSWORD, data, config).then((response) => {
             resolve(response.data);
         }).catch((error) => {
             let message = "Nie udało się połączyć z serwerem";
@@ -251,6 +280,7 @@ export {
     setUserStatus,
     getSearchUsers,
     getUserById,
-    setProfileImage
+    setProfileImage,
+    changePassword
     // getUserData,
 };

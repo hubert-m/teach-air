@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {getSexList, setProfileImage, updateMe} from "../../helpers/User";
+import {changePassword, getSexList, setProfileImage, updateMe} from "../../helpers/User";
 import {Switch} from "@mui/material";
 import parseTimeStamp from "../../helpers/parseTimeStamp";
 import {StatusUser, StatusUserName} from "../../constants/StatusUser";
@@ -13,8 +13,11 @@ import {sortDesc} from "../../helpers/sort";
 import ImageExtensions from "../../constants/ImageExtensions";
 import UploadFile from "../Hosting/components/UploadFile";
 import {DefaultAvatarSrc} from "../../constants/DefaultAvatar";
+import Routes from "../../constants/Routes";
+import {useHistory} from "react-router";
 
 const Settings = ({userData, setUserData}) => {
+    const history = useHistory();
     const [showLoader, setShowLoader] = useState(false);
     const [showError, setShowError] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
@@ -23,6 +26,11 @@ const Settings = ({userData, setUserData}) => {
     const [data, setData] = useState({
         ...userData,
         sex_id: userData?.sex_id?.id
+    });
+    const [dataPassword, setDataPassword] = useState({
+        old_password: '',
+        new_password: '',
+        new_password_repeat: ''
     });
     const [sexList, setSexList] = useState([]);
 
@@ -100,6 +108,15 @@ const Settings = ({userData, setUserData}) => {
         }))
     }
 
+    const handleOnChangePassword = (e) => {
+        const result = {};
+        result[e.target.name] = e.target.value;
+        setDataPassword((prevState) => ({
+            ...prevState,
+            ...result,
+        }))
+    }
+
     const handleOnChangeSwitch = (e) => {
         const result = {};
         result[e.target.name] = e.target.checked ? 1 : 0;
@@ -107,6 +124,22 @@ const Settings = ({userData, setUserData}) => {
             ...prevState,
             ...result,
         }))
+    }
+
+    const handleOnSubmitChangePassword = () => {
+        setShowLoader(true);
+        changePassword(dataPassword).then(() => {
+            setSuccessMessage("Pomyślnie zmieniono hasło");
+            setShowSuccess(true);
+            setTimeout(() => {
+                history.push(Routes.LOGOUT);
+            }, 3000)
+        }).catch((err) => {
+            setErrorMessage(err);
+            setShowError(true);
+        }).finally(async () => {
+            await setShowLoader(false);
+        })
     }
 
     const handleOnUpdate = () => {
@@ -268,6 +301,37 @@ const Settings = ({userData, setUserData}) => {
                     </button>
                 </div>
             </div>
+            <div className="jumbotron" style={{marginTop: '50px'}}>
+                <h1 className="display-7">Zmień haslo</h1>
+                <hr className="my-4"/>
+            </div>
+            <div className="row">
+                <div className="col-lg-4">
+                    <label htmlFor="phone">Stare hasło</label>
+                    <input type="password" className="form-control" name="old_password"
+                           placeholder="Stare hasło" value={dataPassword?.old_password}
+                           onChange={handleOnChangePassword}/>
+                </div>
+                <div className="col-lg-4">
+                    <label htmlFor="phone">Nowe hasło</label>
+                    <input type="password" className="form-control" name="new_password"
+                           placeholder="Nowe hasło" value={dataPassword?.new_password}
+                           onChange={handleOnChangePassword}/>
+                </div>
+                <div className="col-lg-4">
+                    <label htmlFor="phone">Powtórz nowe hasło</label>
+                    <input type="password" className="form-control" name="new_password_repeat"
+                           placeholder="Powtórz nowe hasło" value={dataPassword?.new_password_repeat}
+                           onChange={handleOnChangePassword}/>
+                </div>
+                <div className="col-lg-12">
+                    <button style={{marginTop: '20px'}}
+                            onClick={() => handleOnSubmitChangePassword()}>Zmień hasło
+                    </button>
+                </div>
+            </div>
+
+
             <div className="jumbotron" style={{marginTop: '50px'}}>
                 <h1 className="display-7">Upload zdjęcia profilowego</h1>
                 <hr className="my-4"/>

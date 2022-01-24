@@ -1,6 +1,7 @@
 const ApiEndpoints = {
     USERS_ME: '/users/me',
     UPDATE_ME: '/users/update_me',
+    CHANGE_PASSWORD: '/users/change_password',
     LOGIN: '/auth/verify',
     REGISTER: '/users',
     GET_USER_BY_ID: '/users/', // :id
