@@ -26,12 +26,22 @@ class MainEmail extends Mailable
         $token_aktywacji = $this->data['activate_token'];
         $adres_aktywacji_front = env("FRONT_URL", "http://localhost:3000")."/".env("ACTIVATION_PAGE", "activation")."/".$token_aktywacji;
 
+        $adres_reset_hasla_front = env("FRONT_URL", "http://localhost:3000")."/".env("RESET_PASSWORD_PAGE", "forget-password")."/".$token_aktywacji;
+
         if($typ_wiadomosci == "rejestracja") {
             $imie = $this->data['name'];
             return $this->view('emails.rejestracja')
                 ->from($address, $name)
                 ->subject("Witaj ".$imie." na Teach-Air")
                 ->with([ 'imie' => $imie, 'token_aktywacji' => $token_aktywacji, 'adres_aktywacji' => $adres_aktywacji_front ]);
+        }
+
+        if($typ_wiadomosci == "reset-hasla") {
+            $imie = $this->data['name'];
+            return $this->view('emails.resethasla')
+                ->from($address, $name)
+                ->subject("Wniosek o reset hasła dla ".$imie." na Teach-Air")
+                ->with([ 'imie' => $imie, 'token_aktywacji' => $token_aktywacji, 'adres_resetu' => $adres_reset_hasla_front ]);
         }
 
 

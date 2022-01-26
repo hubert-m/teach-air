@@ -5,6 +5,8 @@ const ApiEndpoints = {
     LOGIN: '/auth/verify',
     REGISTER: '/users',
     GET_USER_BY_ID: '/users/', // :id
+    SEND_ACTIVATION_AGAIN: '/users/send_activation_again', // oprogramowac TODO
+    ACTIVATE_ACCOUNT: '/users/activate_account',
 
     SEX_LIST: '/users/sex_list',
     SEX_ADD: '/users/sex_add',

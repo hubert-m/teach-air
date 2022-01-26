@@ -22,6 +22,7 @@ class CreateQuizQuestionsTable extends Migration
             $table->string("answer_b", 200);
             $table->string("answer_c", 200);
             $table->string("answer_d", 200);
+            $table->string("correct_answer", 1);
             $table->bigInteger('quiz_id')->unsigned()->index();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));

@@ -415,4 +415,81 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    public function send_activation_again(Request $request) {
+        $email = $request->email;
+
+        $user = User::where('email', '=', $email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'error' => 'Uzytkownik nie istnieje'
+            ], 400);
+        }
+
+        if($user->status != 0) {
+            return response()->json([
+                'error' => 'Twoje konto juz jest aktywowane',
+            ], 400);
+        }
+
+        try {
+            $user->activate_token = uniqid();
+            $user->save();
+
+        $data = [
+            'type' => 'rejestracja',
+            'name' => $user->name.' '.$user->lastname,
+            'recipient' => $user->email,
+            'activate_token' => $user->activate_token
+        ];
+        Mail::to($user->email)->send(new MainEmail($data));
+
+        return response()->json([
+            'success' => 'Link aktywacyjny zostal wyslany na maila',
+            'auth' => $user
+        ], 201);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function activate_account(Request $request) {
+        $activate_token = $request->activate_token;
+        $user = User::where('activate_token', '=', $activate_token)->first();
+
+        if(!$user) {
+            return response()->json([
+                'error' => 'Kod aktywacyjny jest nieprawidlowy',
+            ], 400);
+        }
+
+        if($user->status != 0) {
+            return response()->json([
+                'error' => 'Twoje konto juz jest aktywowane',
+            ], 400);
+        }
+
+        try {
+            $user->activate_token = uniqid();
+            $user->status = 1; // zmieniamy na studenta
+            $user->save();
+
+            return response()->json([
+                'success' => 'Konto zostalo pomyslnie aktywowane. Juz mozesz sie zalogowac',
+                'auth' => $user
+            ], 201);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+
+
+    }
 }

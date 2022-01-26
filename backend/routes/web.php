@@ -25,6 +25,11 @@ $router->post('/users', 'UserController@create');
 // lista płci potrzebna przy rejestracji - nie wymaga tokenu
 $router->get('/users/sex_list', 'UserController@sex_list');
 
+$router->post('/users/send_activation_again', 'UserController@send_activation_again');
+
+// przyjmuje kod aktywacji i emaila => aktywuje konto - status 1
+$router->post('/users/activate_account', 'UserController@activate_account');
+
 // Protected routes
 $router->group(
     ['middleware' => 'jwt.auth'],

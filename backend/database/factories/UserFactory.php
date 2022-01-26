@@ -31,6 +31,7 @@ class UserFactory extends Factory
             'lastname' => $this->faker->lastName,
             'phone' => $this->faker->phoneNumber,
             'sex_id' => 1,
+            'status' => 1, // domyślnie student, a przy rejestracji domyslnie jest 0 czyli nieaktywny
             'activate_token' => uniqid()
         ];
 
@@ -42,6 +43,7 @@ class UserFactory extends Factory
             'lastname' => $this->faker->lastName,
             // 'profile_image' => $this->faker->imageUrl,
             'sex_id' => 2,
+            'status' => 1, // domyślnie student
             'activate_token' => uniqid()
         ];
 

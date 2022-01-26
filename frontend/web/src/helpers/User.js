@@ -266,6 +266,56 @@ const setProfileImage = (profileImageUrl) => {
     });
 }
 
+const sendActivationAgain = (data) => {
+    return new Promise((resolve, reject) => {
+
+        let error = null;
+        if (!data.email)
+            error = "Musisz podać email";
+        else if (!validateEmail(data.email))
+            error = "Wprowadzony adres e-mail jest nieprawidłowy";
+
+        if (error) {
+            reject(error);
+            return;
+        }
+
+        axios.post(Settings.API + ApiEndpoints.SEND_ACTIVATION_AGAIN, data).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+}
+
+const activateAccount = (data) => {
+    return new Promise((resolve, reject) => {
+
+        let error = null;
+        if (!data.activate_token)
+            error = "Musisz podać kod aktywacyjny";
+
+        if (error) {
+            reject(error);
+            return;
+        }
+
+        axios.post(Settings.API + ApiEndpoints.ACTIVATE_ACCOUNT, data).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+}
+
 
 export {
     getMe,
@@ -281,6 +331,8 @@ export {
     getSearchUsers,
     getUserById,
     setProfileImage,
-    changePassword
+    changePassword,
+    sendActivationAgain,
+    activateAccount
     // getUserData,
 };

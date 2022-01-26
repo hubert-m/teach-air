@@ -23,6 +23,7 @@ import Options from "../views/GlobalSettings/Options";
 import Thread from "../views/Threads/Thread";
 import ActivationMain from "../views/User/ActivationMain";
 import ForgetPassword from "../views/User/ForgetPassword";
+import ForgetPasswordWithCode from "../views/User/ForgetPasswordWithCode";
 
 const routes = [
     {path: '/', Component: Home},
@@ -37,8 +38,9 @@ const routes = [
     {path: Routes.GLOBAL_SETTINGS_SITE_OPTIONS, Component: Options, IsAdmin: true},
     {path: Routes.SETTINGS, Component: Settings, IsAuth: true},
     {path: Routes.USER_ACTIVATION_MAIN, Component: ActivationMain},
-    {path: Routes.USER_ACTIVATION + ":code", Component: Activation}, // TODO
+    {path: Routes.USER_ACTIVATION + ":code", Component: Activation},
     {path: Routes.FORGET_PASSWORD, Component: ForgetPassword},
+    {path: Routes.FORGET_PASSWORD_WITH_CODE + ":code", Component: ForgetPasswordWithCode},
     {path: Routes.MAIN_COURSES, Component: MainCourses, IsAuth: true},
     {path: Routes.SUB_COURSES + ":id", Component: SubCourses, IsAuth: true},
     {path: Routes.HOSTING_FILES, Component: HostingFiles, IsAuth: true},

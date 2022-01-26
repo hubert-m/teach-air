@@ -307,19 +307,19 @@ const Settings = ({userData, setUserData}) => {
             </div>
             <div className="row">
                 <div className="col-lg-4">
-                    <label htmlFor="phone">Stare hasło</label>
+                    <label htmlFor="old_password">Stare hasło</label>
                     <input type="password" className="form-control" name="old_password"
                            placeholder="Stare hasło" value={dataPassword?.old_password}
                            onChange={handleOnChangePassword}/>
                 </div>
                 <div className="col-lg-4">
-                    <label htmlFor="phone">Nowe hasło</label>
+                    <label htmlFor="new_password">Nowe hasło</label>
                     <input type="password" className="form-control" name="new_password"
                            placeholder="Nowe hasło" value={dataPassword?.new_password}
                            onChange={handleOnChangePassword}/>
                 </div>
                 <div className="col-lg-4">
-                    <label htmlFor="phone">Powtórz nowe hasło</label>
+                    <label htmlFor="new_password_repeat">Powtórz nowe hasło</label>
                     <input type="password" className="form-control" name="new_password_repeat"
                            placeholder="Powtórz nowe hasło" value={dataPassword?.new_password_repeat}
                            onChange={handleOnChangePassword}/>
