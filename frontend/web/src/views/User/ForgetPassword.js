@@ -64,6 +64,18 @@ const ForgetPassword = () => {
         })
     }
 
+    const handleKeyPressSendEmail = event => {
+        if (event.key == 'Enter') {
+            handleSendResetPassword();
+        }
+    };
+
+    const handleKeyPressResetPassword = event => {
+        if (event.key == 'Enter') {
+            handleResetPassword();
+        }
+    };
+
     return (
         <>
             <div className="jumbotron" style={{marginTop: '50px'}}>
@@ -74,7 +86,7 @@ const ForgetPassword = () => {
                     <div className="col-lg-6">
                         <input type="email" id="email" className="form-control" name="email"
                                placeholder="E-mail" aria-describedby="emailHelp" value={dataSendResetPassword.email}
-                               onChange={handleOnChangeSendResetPassword} />
+                               onChange={handleOnChangeSendResetPassword} onKeyPress={handleKeyPressSendEmail} />
                     </div>
                     <div className="col-lg-6">
                         <button style={{margin: '15px auto 25px auto'}}
@@ -99,7 +111,7 @@ const ForgetPassword = () => {
                         <label htmlFor="repeat_password">Powtórz Nowe hasło</label>
                         <input type="password" className="form-control" name="repeat_password"
                                placeholder="Powtórz nowe hasło" value={dataResetPassword?.repeat_password}
-                               onChange={handleOnChangeResetPassword}/>
+                               onChange={handleOnChangeResetPassword} onKeyPress={handleKeyPressResetPassword}/>
                     </div>
                     <div className="col-lg-4">
                         <button style={{margin: '15px auto 25px auto'}}

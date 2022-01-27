@@ -214,10 +214,10 @@ const setUserStatus = (id, status) => {
     });
 };
 
-const getSearchUsers = (keyword = "", course_id = "") => {
+const getSearchUsers = (keyword = "", course_id = "", status = "", sex_id = "") => {
     return new Promise((resolve, reject) => {
         const config = {headers: {token: localStorage.getItem("userToken")}};
-        const data = {"keyword": keyword, "without_members_of_course_id": course_id};
+        const data = {"keyword": keyword, "without_members_of_course_id": course_id, "status": status, "sex_id": sex_id};
         axios.post(Settings.API + ApiEndpoints.SEARCH_USERS, data, config).then((response) => {
             resolve(response.data);
         }).catch((error) => {

@@ -62,6 +62,18 @@ const ActivationMain = () => {
         })
     }
 
+    const handleKeyPressSendActivate = event => {
+        if (event.key == 'Enter') {
+            handleSendAgain();
+        }
+    };
+
+    const handleKeyPressActivate = event => {
+        if (event.key == 'Enter') {
+            handleActive();
+        }
+    };
+
     return (
         <>
             <div className="jumbotron" style={{marginTop: '50px'}}>
@@ -74,7 +86,7 @@ const ActivationMain = () => {
                 <div className="col-lg-6">
                     <input type="email" id="email" className="form-control" name="email"
                            placeholder="E-mail" aria-describedby="emailHelp" value={dataSendAgain.email}
-                           onChange={handleOnChangeSendAgain} />
+                           onChange={handleOnChangeSendAgain} onKeyPress={handleKeyPressSendActivate} />
                 </div>
                 <div className="col-lg-6">
                     <button style={{margin: '15px auto 25px auto'}}
@@ -88,7 +100,7 @@ const ActivationMain = () => {
                 <div className="col-lg-6">
                     <input type="text" className="form-control" name="activate_token"
                            placeholder="Kod aktywacyjny" value={dataActive.activate_token}
-                           onChange={handleOnChangeActive} />
+                           onChange={handleOnChangeActive} onKeyPress={handleKeyPressActivate} />
                 </div>
                 <div className="col-lg-6">
                     <button style={{margin: '15px auto 25px auto'}}

@@ -291,6 +291,7 @@ class UserController extends Controller
         $id_auth_user = $this->request->auth->id;
         $keyword = $request->input('keyword', '');
         $status = $request->input('status', '');
+        $sex_id = $request->input('sex_id', '');
         $withoutMembersOfCourseId = $request->input('without_members_of_course_id', '');
 
         if ($withoutMembersOfCourseId != "") {
@@ -318,6 +319,11 @@ class UserController extends Controller
             ->where(function ($query) use ($status) {
                 if ($status != "") {
                     $query->where('status', '=', $status);
+                }
+            })
+            ->where(function ($query) use ($sex_id) {
+                if ($sex_id != "") {
+                    $query->where('sex_id', '=', $sex_id);
                 }
             })
             ->where(function ($query) use ($withoutMembersOfCourseId) {

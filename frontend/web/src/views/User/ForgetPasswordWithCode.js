@@ -47,7 +47,7 @@ const ForgetPasswordWithCode = () => {
 
     const handleKeyPress = event => {
         if (event.key == 'Enter') {
-            handleResetPassword ();
+            handleResetPassword();
         }
     };
 
