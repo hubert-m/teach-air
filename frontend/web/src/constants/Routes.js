@@ -18,7 +18,8 @@ const Routes = {
     SUB_COURSES: '/courses/', // :id
     THREAD: '/thread/', // :id
     HOSTING_FILES: '/files',
-    QUIZ: '/quiz'
+    QUIZZES: '/quizzes',
+    QUIZ: '/quiz/' // :id
 }
 
 export default Routes;

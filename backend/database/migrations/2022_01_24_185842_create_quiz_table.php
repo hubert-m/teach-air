@@ -18,7 +18,8 @@ class CreateQuizTable extends Migration
             $table->id();
             $table->string("title", 255);
             $table->text("description")->nullable();
-            //$table->bigInteger('course_id')->unsigned()->index();
+            $table->bigInteger('seconds_for_answer')->nullable()->default(0); // domyslnie bez limitu czasu
+            $table->bigInteger('course_id')->unsigned()->index()->nullable(); // może być przypisany do jakiegos kursu, ale nie musi
             $table->bigInteger('created_by')->unsigned()->index();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));

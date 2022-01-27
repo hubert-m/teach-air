@@ -15,4 +15,13 @@ class Quiz_question extends Model
     protected $fillable = [
         'question','description','answer_a','answer_b','answer_c','answer_d','quiz_id'
     ];
+
+    /**
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'correct_answer',
+    ];
 }

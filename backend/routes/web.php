@@ -82,6 +82,10 @@ $router->group(
 
         $router->post('/posts/get_posts_list', 'ThreadController@get_posts_list');
         $router->post('/posts/add_post', 'ThreadController@add_post');
+
+        $router->post('/quizzes/create_quiz', 'QuizController@create_quiz');
+        $router->get('/quizzes/get_quiz/{id}', 'QuizController@get_quiz');
+        $router->get('/quizzes/get_quizzes', 'QuizController@get_quizzes_list');
     }
 );
 

@@ -24,6 +24,8 @@ import Thread from "../views/Threads/Thread";
 import ActivationMain from "../views/User/ActivationMain";
 import ForgetPassword from "../views/User/ForgetPassword";
 import ForgetPasswordWithCode from "../views/User/ForgetPasswordWithCode";
+import MainQuizzes from "../views/Quizes/MainQuizzes";
+import Quiz from "../views/Quizes/Quiz";
 
 const routes = [
     {path: '/', Component: Home},
@@ -45,6 +47,8 @@ const routes = [
     {path: Routes.SUB_COURSES + ":id", Component: SubCourses, IsAuth: true},
     {path: Routes.HOSTING_FILES, Component: HostingFiles, IsAuth: true},
     {path: Routes.THREAD + ":id", Component: Thread, IsAuth: true},
+    {path: Routes.QUIZZES, Component: MainQuizzes, IsAuth: true},
+    {path: Routes.QUIZ + ":id", Component: Quiz, IsAuth: true},
     {path: '*', Component: PageNotFound},
 ]
 

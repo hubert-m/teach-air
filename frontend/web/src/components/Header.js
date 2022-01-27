@@ -8,7 +8,6 @@ import {Twemoji} from "react-emoji-render";
 
 function Header({userData, userToken}) {
     const [expanded, setExpanded] = useState(false);
-    console.log(expanded);
 
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top" expanded={expanded}>
@@ -25,8 +24,8 @@ function Header({userData, userToken}) {
                             <>
                                 <Nav.Link as={NavLink} to={Routes.MAIN_COURSES}
                                           onClick={() => setExpanded(false)}>Kursy</Nav.Link>
-                                <Nav.Link as={NavLink} to={Routes.QUIZ}
-                                          onClick={() => setExpanded(false)}>Quiz</Nav.Link>
+                                <Nav.Link as={NavLink} to={Routes.QUIZZES}
+                                          onClick={() => setExpanded(false)}>Quizy</Nav.Link>
                                 <Nav.Link as={NavLink} to={Routes.MESSAGES_LIST}
                                           onClick={() => setExpanded(false)}>
                                     Wiadomości

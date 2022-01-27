@@ -44,6 +44,10 @@ const ApiEndpoints = {
 
     GET_POSTS_LIST: '/posts/get_posts_list',
     ADD_POST: '/posts/add_post',
+
+    QUIZZES_LIST: '/quizzes/get_quizzes', // TODO oprogramowac
+    GET_QUIZ: '/quizzes/get_quiz/', // :id
+    CREATE_QUIZ: '/quizzes/create_quiz' // TODO oprogramowac
 }
 
 export default ApiEndpoints;
