@@ -36,7 +36,7 @@ class MainEmail extends Mailable
                 ->with([ 'imie' => $imie, 'token_aktywacji' => $token_aktywacji, 'adres_aktywacji' => $adres_aktywacji_front ]);
         }
 
-        if($typ_wiadomosci == "reset-hasla") {
+        if($typ_wiadomosci == "resethasla") {
             $imie = $this->data['name'];
             return $this->view('emails.resethasla')
                 ->from($address, $name)

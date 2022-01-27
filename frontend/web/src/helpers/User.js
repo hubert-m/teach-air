@@ -316,6 +316,58 @@ const activateAccount = (data) => {
     });
 }
 
+const sendResetPassword = (data) => {
+    return new Promise((resolve, reject) => {
+
+        let error = null;
+        if (!data.email)
+            error = "Musisz podać email";
+        else if (!validateEmail(data.email))
+            error = "Wprowadzony adres e-mail jest nieprawidłowy";
+
+        if (error) {
+            reject(error);
+            return;
+        }
+
+        axios.post(Settings.API + ApiEndpoints.SEND_RESET_PASSWORD, data).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+}
+
+const resetPassword = (data) => {
+    return new Promise((resolve, reject) => {
+
+        let error = null;
+        if (!data.activate_token)
+            error = "Musisz podać kod do resetu hasła";
+        else if(data.password != data.repeat_password)
+            error = "Wprowadzone hasła nie są takie same";
+
+        if (error) {
+            reject(error);
+            return;
+        }
+
+        axios.post(Settings.API + ApiEndpoints.RESET_PASSWORD, data).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+}
+
 
 export {
     getMe,
@@ -333,6 +385,8 @@ export {
     setProfileImage,
     changePassword,
     sendActivationAgain,
-    activateAccount
+    activateAccount,
+    sendResetPassword,
+    resetPassword
     // getUserData,
 };

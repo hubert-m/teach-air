@@ -1,6 +1,15 @@
 import React, {useState} from "react";
+import {resetPassword, sendResetPassword} from "../../helpers/User";
+import SweetAlert from "react-bootstrap-sweetalert";
+import LoaderScreen from "../../components/LoaderScreen";
 
 const ForgetPassword = () => {
+    const [showLoader, setShowLoader] = useState(false);
+    const [showError, setShowError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [successMessage, setSuccessMessage] = useState(null);
+
     const [dataSendResetPassword, setDataSendResetPassword] = useState({
         email: ''
     });
@@ -30,11 +39,29 @@ const ForgetPassword = () => {
     }
 
     const handleSendResetPassword = () => {
-        // wyslij token do zmiany hasla na maila
+        setShowLoader(true);
+        sendResetPassword(dataSendResetPassword).then(res => {
+            setSuccessMessage(res.success);
+            setShowSuccess(true);
+        }).catch((error) => {
+            setErrorMessage(error);
+            setShowError(true);
+        }).finally(async () => {
+            await setShowLoader(false);
+        })
     }
 
     const handleResetPassword = () => {
-        // zmien haslo
+        setShowLoader(true);
+        resetPassword(dataResetPassword).then(res => {
+            setSuccessMessage(res.success);
+            setShowSuccess(true);
+        }).catch((error) => {
+            setErrorMessage(error);
+            setShowError(true);
+        }).finally(async () => {
+            await setShowLoader(false);
+        })
     }
 
     return (
@@ -81,6 +108,25 @@ const ForgetPassword = () => {
                     </div>
                 </div>
             </div>
+            <SweetAlert
+                error
+                show={showError}
+                title="Coś poszło nie tak :("
+                confirmBtnText="Już poprawiam, Sir!"
+                confirmBtnBsStyle="danger"
+                onConfirm={() => setShowError(false)}
+            >
+                {errorMessage}
+            </SweetAlert>
+            <SweetAlert
+                success
+                show={showSuccess}
+                title="Hurraaa :)"
+                onConfirm={() => setShowSuccess(false)}
+            >
+                {successMessage}
+            </SweetAlert>
+            {showLoader && <LoaderScreen/>}
         </>
     )
 }

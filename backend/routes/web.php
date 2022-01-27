@@ -30,6 +30,10 @@ $router->post('/users/send_activation_again', 'UserController@send_activation_ag
 // przyjmuje kod aktywacji i emaila => aktywuje konto - status 1
 $router->post('/users/activate_account', 'UserController@activate_account');
 
+$router->post('/users/send_reset_password', 'UserController@send_reset_password');
+
+$router->post('/users/reset_password', 'UserController@reset_password');
+
 // Protected routes
 $router->group(
     ['middleware' => 'jwt.auth'],

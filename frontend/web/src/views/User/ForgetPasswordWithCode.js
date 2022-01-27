@@ -1,8 +1,19 @@
 import React, {useState} from "react";
-import {useParams} from "react-router";
+import {useHistory, useParams} from "react-router";
+import SweetAlert from "react-bootstrap-sweetalert";
+import LoaderScreen from "../../components/LoaderScreen";
+import {resetPassword} from "../../helpers/User";
+import Routes from "../../constants/Routes";
 
 const ForgetPasswordWithCode = () => {
     let {code} = useParams();
+    const history = useHistory();
+
+    const [showLoader, setShowLoader] = useState(false);
+    const [showError, setShowError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [successMessage, setSuccessMessage] = useState(null);
 
     const [dataResetPassword, setDataResetPassword] = useState({
         activate_token: code,
@@ -22,8 +33,23 @@ const ForgetPasswordWithCode = () => {
     }
 
     const handleResetPassword = () => {
-        // zmien haslo
+        setShowLoader(true);
+        resetPassword(dataResetPassword).then(res => {
+            setSuccessMessage(res.success);
+            setShowSuccess(true);
+        }).catch((error) => {
+            setErrorMessage(error);
+            setShowError(true);
+        }).finally(async () => {
+            await setShowLoader(false);
+        })
     }
+
+    const handleKeyPress = event => {
+        if (event.key == 'Enter') {
+            handleResetPassword ();
+        }
+    };
 
     return (
         <>
@@ -42,13 +68,13 @@ const ForgetPasswordWithCode = () => {
                         <label htmlFor="password">Nowe hasło</label>
                         <input type="password" className="form-control" name="password"
                                placeholder="Nowe hasło" value={dataResetPassword?.password}
-                               onChange={handleOnChangeResetPassword}/>
+                               onChange={handleOnChangeResetPassword} autoFocus/>
                     </div>
                     <div className="col-lg-4">
                         <label htmlFor="repeat_password">Powtórz Nowe hasło</label>
                         <input type="password" className="form-control" name="repeat_password"
                                placeholder="Powtórz nowe hasło" value={dataResetPassword?.repeat_password}
-                               onChange={handleOnChangeResetPassword}/>
+                               onChange={handleOnChangeResetPassword} onKeyPress={handleKeyPress}/>
                     </div>
                     <div className="col-lg-4">
                         <button style={{margin: '15px auto 25px auto'}}
@@ -57,6 +83,28 @@ const ForgetPasswordWithCode = () => {
                     </div>
                 </div>
             </div>
+            <SweetAlert
+                error
+                show={showError}
+                title="Coś poszło nie tak :("
+                confirmBtnText="Już poprawiam, Sir!"
+                confirmBtnBsStyle="danger"
+                onConfirm={() => setShowError(false)}
+            >
+                {errorMessage}
+            </SweetAlert>
+            <SweetAlert
+                success
+                show={showSuccess}
+                title="Hurraaa :)"
+                onConfirm={() => {
+                    setShowSuccess(false)
+                    history.push(Routes.LOGIN);
+                }}
+            >
+                {successMessage}
+            </SweetAlert>
+            {showLoader && <LoaderScreen/>}
         </>
     )
 }

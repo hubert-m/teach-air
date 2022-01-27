@@ -492,4 +492,69 @@ class UserController extends Controller
 
 
     }
+
+    public function send_reset_password(Request $request) {
+        $email = $request->email;
+
+        $user = User::where('email', '=', $email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'error' => 'Uzytkownik nie istnieje'
+            ], 400);
+        }
+
+        try {
+            $user->activate_token = uniqid();
+            $user->save();
+
+            $data = [
+                'type' => 'resethasla',
+                'name' => $user->name.' '.$user->lastname,
+                'recipient' => $user->email,
+                'activate_token' => $user->activate_token
+            ];
+            Mail::to($user->email)->send(new MainEmail($data));
+
+            return response()->json([
+                'success' => 'Kod do resetu hasla zostal wyslany na maila',
+                'auth' => $user
+            ], 201);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function reset_password(Request $request) {
+        $activate_token = $request->activate_token;
+        $password = $request->password;
+        $user = User::where('activate_token', '=', $activate_token)->first();
+
+        if(!$user) {
+            return response()->json([
+                'error' => 'Kod do resetu hasla jest nieprawidlowy',
+            ], 400);
+        }
+
+        try {
+            $user->activate_token = uniqid();
+            $user->password = Hash::make($password);
+            $user->last_change_pass = DB::raw('DATE_ADD(NOW(), INTERVAL 1 HOUR)'); // bez interval 1 hour zwraca godzine wczesniejszy czas
+            $user->save();
+
+            return response()->json([
+                'success' => 'Haslo zostalo pomyslnie zresetowane. Juz mozesz sie zalogowac',
+                'auth' => $user
+            ], 201);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+    }
 }
