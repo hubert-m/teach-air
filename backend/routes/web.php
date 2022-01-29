@@ -86,6 +86,12 @@ $router->group(
         $router->post('/quizzes/create_quiz', 'QuizController@create_quiz');
         $router->get('/quizzes/get_quiz/{id}', 'QuizController@get_quiz');
         $router->get('/quizzes/get_quizzes', 'QuizController@get_quizzes_list');
+
+        $router->post('/questions/create_question', 'QuizController@create_question');
+        $router->get('/questions/random_question/{quiz_id}', 'QuizController@random_question');
+        $router->get('/questions/get_question/{id}', 'QuizController@get_question');
+        $router->get('/questions/get_questions/{quiz_id}', 'QuizController@get_questions_list');
+        $router->post('/questions/check_answer', 'QuizController@check_correct_answer');
     }
 );
 

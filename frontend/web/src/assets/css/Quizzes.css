@@ -1,0 +1,7 @@
+.button-add-quiz {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 50px;
+    min-height: 50px;
+}

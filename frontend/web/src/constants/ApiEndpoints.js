@@ -47,7 +47,13 @@ const ApiEndpoints = {
 
     QUIZZES_LIST: '/quizzes/get_quizzes', // TODO oprogramowac
     GET_QUIZ: '/quizzes/get_quiz/', // :id
-    CREATE_QUIZ: '/quizzes/create_quiz' // TODO oprogramowac
+    CREATE_QUIZ: '/quizzes/create_quiz', // TODO oprogramowac
+
+    CREATE_QUESTION: '/questions/create_question',
+    GET_RANDOM_QUESTION: '/questions/random_question/', // :quiz_id
+    GET_QUESTION: '/questions/get_question/', // :id
+    GET_QUESTIONS: '/questions/get_questions/', // :quiz_id
+    CHECK_ANSWER: '/questions/check_answer' // POST
 }
 
 export default ApiEndpoints;

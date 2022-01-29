@@ -19,7 +19,8 @@ const Routes = {
     THREAD: '/thread/', // :id
     HOSTING_FILES: '/files',
     QUIZZES: '/quizzes',
-    QUIZ: '/quiz/' // :id
+    QUIZ: '/quiz/', // :id
+    QUIZ_EDIT: '/quiz/edit/' // :id
 }
 
 export default Routes;
