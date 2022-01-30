@@ -126,6 +126,21 @@ const changeFavouriteCourse = (course_id) => {
     });
 }
 
+const getCoursesListForSelect = () => {
+    return new Promise((resolve, reject) => {
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.get(Settings.API + ApiEndpoints.GET_COURSES_LIST_FOR_SELECT, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+}
+
 export {
     getCoursesList,
     addCourse,
@@ -133,5 +148,6 @@ export {
     getMembersOfCourse,
     addMember,
     deleteMember,
-    changeFavouriteCourse
+    changeFavouriteCourse,
+    getCoursesListForSelect
 }

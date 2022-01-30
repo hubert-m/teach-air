@@ -556,4 +556,23 @@ class CourseController extends Controller
             }
         }
     }
+
+    public function get_courses_list_for_select() {
+        $courses = Course::all();
+
+        foreach($courses as $i => $course) {
+            $prefix_name = "";
+            $order_num = 1;
+            $parent_id = $course->parent_id;
+            while ($parent_id != null) {
+                $course_tmp = Course::where('id', '=', $parent_id)->first();
+                $prefix_name .= $course_tmp->name." => ";
+                $parent_id = $course_tmp->parent_id;
+            }
+            $courses[$i]->name = $prefix_name.$courses[$i]->name;
+
+        }
+
+        return response()->json($courses);
+    }
 }

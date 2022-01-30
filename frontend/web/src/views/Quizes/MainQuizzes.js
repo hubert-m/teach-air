@@ -1,16 +1,19 @@
 import React, {useEffect, useState} from "react";
-import {sortDesc} from "../../helpers/sort";
-import {getQuizzesList} from "../../helpers/Quiz";
+import {sortAsc, sortDesc} from "../../helpers/sort";
+import {addQuiz, getQuizzesList} from "../../helpers/Quiz";
 import LoaderScreen from "../../components/LoaderScreen";
 import {DefaultAvatarSrc} from "../../constants/DefaultAvatar";
 import Routes from "../../constants/Routes";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faRunning, faEdit, faPlus, faMinus} from "@fortawesome/free-solid-svg-icons";
+import {faRunning, faEdit, faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {useHistory} from "react-router";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
-import UploadFile from "../Hosting/components/UploadFile";
-import {isEmpty} from "lodash";
 import SweetAlert from "react-bootstrap-sweetalert";
+import {getFullTimeFromSeconds, getSecondsFromTime} from "../../helpers/secondsTime";
+import {getCoursesListForSelect} from "../../helpers/Course";
+import {StatusUser} from "../../constants/StatusUser";
+import {Link} from "react-router-dom";
+import {Twemoji} from 'react-emoji-render';
 
 const MainQuizzes = ({userData}) => {
     const history = useHistory();
@@ -21,6 +24,13 @@ const MainQuizzes = ({userData}) => {
     const [successMessage, setSuccessMessage] = useState(null);
     const [quizzesList, setQuizzesList] = useState([]);
     const [showFormAddQuiz, setShowFormAddQuiz] = useState(false);
+    const [listOfCourses, setListOfCourses] = useState([]);
+    const [data, setData] = useState({
+        title: '',
+        description: '',
+        seconds_for_answer: '0:00',
+        course_id: '',
+    })
 
     useEffect(() => {
         //window.location.reload(false); // refresh strony po powrocie ze strony quizu
@@ -36,9 +46,79 @@ const MainQuizzes = ({userData}) => {
 
     const handleAddQuiz = () => {
         // setShowFormAddQuiz(false) przy sukcesie
+        setShowLoader(true);
+        const payload = {
+            ...data,
+            seconds_for_answer: getSecondsFromTime(data?.seconds_for_answer)
+        }
+        addQuiz(payload).then(() => {
+            setShowFormAddQuiz(false)
+
+            getQuizzesList().then(list => {
+                sortDesc(list, "id");
+                setQuizzesList(list)
+
+                setData({
+                    title: '',
+                    description: '',
+                    seconds_for_answer: '0:00',
+                    course_id: '',
+                })
+
+            }).catch(() => {
+            }).finally(async () => {
+                await setShowLoader(false);
+            })
+
+        }).catch(async (err) => {
+            await setShowLoader(false);
+            setErrorMessage(err);
+            setShowError(true)
+        })
     }
 
+    const handleOnChange = (e) => {
+        const result = {};
+        result[e.target.name] = e.target.value;
+        setData((prevState) => ({
+            ...prevState,
+            ...result,
+        }))
+    }
 
+    const onBlur = (e) => {
+        const value = e.target.value;
+        const seconds = Math.max(0, getSecondsFromTime(value));
+
+        const time = getFullTimeFromSeconds(seconds);
+        const result = {};
+        result[e.target.name] = time;
+        setData((prevState) => ({
+            ...prevState,
+            ...result,
+        }))
+    };
+
+    const handleShowFormAddQuiz = () => {
+        setShowFormAddQuiz(true)
+
+        setShowLoader(true);
+        getCoursesListForSelect().then(list => {
+            sortAsc(list, "name");
+            setListOfCourses(list)
+        }).catch(() => {
+        }).finally(async () => {
+            await setShowLoader(false);
+        })
+    }
+
+    const handleShowEditForm = () => {
+
+    }
+
+    const handleDeleteQuiz = () => {
+
+    }
 
     return (
         <>
@@ -47,7 +127,7 @@ const MainQuizzes = ({userData}) => {
                 {(userData?.status == 2 || userData?.status == 3) && (
                     <button type="button" className="btn btn-success button-add-quiz" style={{color: "#FFF"}}
                             onClick={() => {
-                                setShowFormAddQuiz(true)
+                                handleShowFormAddQuiz()
                             }}>
                         <FontAwesomeIcon
                             icon={faPlus}/>
@@ -67,11 +147,14 @@ const MainQuizzes = ({userData}) => {
                     </tr>
                     </thead>
                     <tbody>
-                    {quizzesList.map(({id, title, seconds_for_answer, created_by}) => (
+                    {quizzesList.map(({id, title, seconds_for_answer, created_by, course_id}) => (
                         <tr key={id}>
                             <th scope="row">{id}</th>
-                            <td>{title}</td>
-                            <td>{seconds_for_answer ? seconds_for_answer+' sekund' : 'Bez limitu czasowego'}</td>
+                            <td><Twemoji text={title}/> {course_id != 0 && (
+                                <Link to={Routes.SUB_COURSES + course_id?.id}
+                                      className="quizzes-list-course-name"><Twemoji text={course_id?.name}/></Link>)}
+                            </td>
+                            <td>{seconds_for_answer ? seconds_for_answer + ' sekund' : 'Bez limitu czasowego'}</td>
                             <td>
                                 <div className="message-avatar">
                                     <img
@@ -85,12 +168,31 @@ const MainQuizzes = ({userData}) => {
                                     <FontAwesomeIcon
                                         icon={faRunning}/>
                                 </button>
-                                {created_by?.id == userData?.id && (
-                                    <button type="button" className="btn btn-warning" style={{color: "#FFF", marginLeft: "10px"}}
-                                            onClick={() => history.push(Routes.QUIZ_EDIT + id)}>
-                                        <FontAwesomeIcon
-                                            icon={faEdit}/>
-                                    </button>
+                                {(created_by?.id == userData?.id || userData?.status == StatusUser.ADMIN) && (
+                                    <>
+                                        <button type="button" className="btn btn-success"
+                                                style={{color: "#FFF", marginLeft: "10px"}}
+                                                onClick={() => history.push(Routes.QUIZ_QUESTIONS + id)}>
+                                            <FontAwesomeIcon
+                                                icon={faPlus}/>
+                                        </button>
+                                        <button type="button" className="btn btn-warning"
+                                                style={{color: "#FFF", marginLeft: "10px"}}
+                                                onClick={() => {
+                                                    handleShowEditForm()
+                                                }}>
+                                            <FontAwesomeIcon
+                                                icon={faEdit}/>
+                                        </button>
+                                        <button type="button" className="btn btn-danger"
+                                                style={{color: "#FFF", marginLeft: "10px"}}
+                                                onClick={() => {
+                                                    handleDeleteQuiz()
+                                                }}>
+                                            <FontAwesomeIcon
+                                                icon={faTrash}/>
+                                        </button>
+                                    </>
                                 )}
                             </td>
                         </tr>
@@ -106,7 +208,30 @@ const MainQuizzes = ({userData}) => {
             >
                 <ModalHeader>Dodaj Quiz</ModalHeader>
                 <ModalBody>
-                    <p>Tresc</p>
+                    <label htmlFor="title">Tytuł Quizu</label>
+                    <input type="text" className="form-control" name="title"
+                           placeholder="Tytuł quizu" value={data.title}
+                           onChange={handleOnChange}/>
+                    <label htmlFor="description">Opis quizu <sub>(pole opcjonalne)</sub></label>
+                    <textarea
+                        className="form-control"
+                        placeholder="Opis quizu *pole opcjonalne"
+                        rows="3"
+                        name="description"
+                        value={data.description}
+                        onChange={handleOnChange}/>
+                    <label htmlFor="seconds_for_answer">Czas na udzielenie odpowiedzi <sub>(0:00 sekund oznacza bez
+                        ograniczenia czasowego)</sub></label>
+                    <input type="text" className="form-control" name="seconds_for_answer"
+                           placeholder="Czas na odpowiedź" value={data.seconds_for_answer}
+                           onChange={handleOnChange} onBlur={onBlur}/>
+                    <label htmlFor="description">Kurs <sub>(pole opcjonalne)</sub></label>
+                    <select name="course_id" onChange={handleOnChange}>
+                        <option selected>Wybierz kurs</option>
+                        {listOfCourses.map(({id, name}) => (
+                            <option value={id} key={id}>{name}</option>
+                        ))}
+                    </select>
                 </ModalBody>
                 <ModalFooter>
                     <button type="button" className="btn btn-success"

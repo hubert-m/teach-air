@@ -5,3 +5,14 @@
     min-width: 50px;
     min-height: 50px;
 }
+
+.quizzes-list-course-name {
+    display: block;
+    font-size: 11px;
+    text-decoration: none;
+}
+
+.quizzes-list-course-name::before {
+    content: 'Kurs: ';
+    color: #333;
+}

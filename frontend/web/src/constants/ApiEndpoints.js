@@ -29,6 +29,7 @@ const ApiEndpoints = {
     DELETE_MEMBER: '/courses/delete_member',
     GET_MEMBERS_OF_COURSE: '/courses/get_members_of_course/', // :id
     CHANGE_FAVOURITE_COURSE: '/courses/change_favourite_course',
+    GET_COURSES_LIST_FOR_SELECT: '/courses/get_courses_list_for_select',
 
     UPLOAD_FILE: '/files/upload',
     SEARCH_FILES: '/files/search',

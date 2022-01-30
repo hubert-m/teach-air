@@ -4,8 +4,13 @@ import React, {useState} from "react";
 import {getSearchFiles, uploadFile} from "../../../helpers/Files";
 import {sortDesc} from "../../../helpers/sort";
 import SweetAlert from "react-bootstrap-sweetalert";
+import {setProfileImage} from "../../../helpers/User";
 
-const UploadFile = ({setMyFiles = () => {}, attachFile = false, handlePushFileToArr = () => {}, keyword = "", extensions = ""}) => {
+const UploadFile = ({
+                        setMyFiles = () => {
+                        }, attachFile = false, handlePushFileToArr = () => {
+    }, keyword = "", extensions = "", changeProfile = "", setUserData = {}
+                    }) => {
 
     const [showError, setShowError] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
@@ -44,8 +49,13 @@ const UploadFile = ({setMyFiles = () => {}, attachFile = false, handlePushFileTo
                     handlePushFileToArr(res?.data)
                 }
 
-            }).catch(() => {
-            })
+            }).catch(() => {})
+
+            if (changeProfile != "") {
+                setProfileImage(res?.data?.url).then((res_user) => {
+                    setUserData(res_user?.auth);
+                }).catch(() => {})
+            }
 
             setSuccessMessage("Pomyślnie udało się wgrać plik :)");
             setShowSuccess(true);

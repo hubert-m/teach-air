@@ -240,14 +240,20 @@ const getUserById = (id) => {
 const setProfileImage = (profileImageUrl) => {
     return new Promise((resolve, reject) => {
 
+        /*
         let error = null;
+
         if (!profileImageUrl)
             error = "Brakuje URL obrazka";
+            // uzywamy tez do usuwania zdjecia
+
 
         if (error) {
             reject(error);
             return;
         }
+
+         */
 
         const data = {
             profile_image: profileImageUrl

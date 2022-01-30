@@ -42,9 +42,9 @@ class QuizController extends Controller
         try {
             $quiz = new Quiz;
             $quiz->title = $request->title;
-            $quiz->description = $request->description;
+            $quiz->description = $request->description ?: '';
             $quiz->seconds_for_answer = $request->input('seconds_for_answer', 0) ?: 0;
-            $quiz->course_id = $request->input('course_id', 0);
+            $quiz->course_id = $request->input('course_id', 0) ?: 0;
             $quiz->created_by = $request->auth->id;
             $quiz->save();
 

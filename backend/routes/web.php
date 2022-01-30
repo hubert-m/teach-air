@@ -67,6 +67,7 @@ $router->group(
         $router->post('/courses/add_member', 'CourseController@add_member');
         $router->post('/courses/delete_member', 'CourseController@delete_member');
         $router->post('/courses/change_favourite_course', 'CourseController@change_favourite_course');
+        $router->get('/courses/get_courses_list_for_select', 'CourseController@get_courses_list_for_select');
 
         $router->post('/files/upload', 'FileController@upload');
         $router->post('/files/search', 'FileController@search');

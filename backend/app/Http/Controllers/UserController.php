@@ -375,6 +375,9 @@ class UserController extends Controller
             $user->profile_image = $this->request->input('profile_image', '');
             $user->save();
 
+            $sex = Sex::where('id', '=', $user->sex_id)->first();
+            $user->sex_id = $sex;
+
             return response()->json([
                 'success' => 'Pomyslnie zaktualizowano profilowe',
                 'auth' => $user

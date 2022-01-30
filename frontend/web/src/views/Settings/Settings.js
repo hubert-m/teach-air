@@ -163,8 +163,12 @@ const Settings = ({userData, setUserData}) => {
 
     const handleSetProfileImage = (url) => {
         setShowLoader(true);
-        setProfileImage(url).then((res) => {
-            setUserData(res?.auth);
+        setProfileImage(url).then(() => {
+            setUserData({
+                ...data,
+                sex_id: userData?.sex_id,
+                profile_image: url
+            });
         }).catch((err) => {
             setErrorMessage(err);
             setShowError(true);
@@ -342,8 +346,21 @@ const Settings = ({userData, setUserData}) => {
                          style={{maxWidth: '100%'}}/>
                 </div>
             </div>
+            {data?.profile_image != "" && (
+                <div className="row" style={{marginBottom: '25px'}}>
+                    <div className="col-lg-4 offset-lg-4">
+                        <button type="button" className="btn btn-danger"
+                                style={{color: "#FFF", marginLeft: "10px"}}
+                                onClick={() => {
+                                    handleSetProfileImage('')
+                                }}>
+                            Usuń zdjęcie profilowe
+                        </button>
+                    </div>
+                </div>
+            )}
 
-            <UploadFile setMyFiles={setListOfFiles} keyword={data_files?.keyword} extensions={ImageExtensions}/>
+            <UploadFile setMyFiles={setListOfFiles} keyword={data_files?.keyword} extensions={ImageExtensions} changeProfile={data?.id} setUserData={setUserData}/>
             <p style={{marginTop: '25px'}}>Wyszukaj zdjęcie (wprowadź przynajmniej 3 znaki) (skasuj wszystkie znaki aby
                 pobrać pełną listę)</p>
             <input type="text" id="keyword" className="form-control third" name="keyword"

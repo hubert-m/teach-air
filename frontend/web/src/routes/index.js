@@ -26,7 +26,7 @@ import ForgetPassword from "../views/User/ForgetPassword";
 import ForgetPasswordWithCode from "../views/User/ForgetPasswordWithCode";
 import MainQuizzes from "../views/Quizes/MainQuizzes";
 import Quiz from "../views/Quizes/Quiz";
-import QuizEdit from "../views/Quizes/QuizEdit";
+import QuizQuestions from "../views/Quizes/QuizQuestions";
 
 const routes = [
     {path: '/', Component: Home},
@@ -49,7 +49,7 @@ const routes = [
     {path: Routes.HOSTING_FILES, Component: HostingFiles, IsAuth: true},
     {path: Routes.THREAD + ":id", Component: Thread, IsAuth: true},
     {path: Routes.QUIZZES, Component: MainQuizzes, IsAuth: true},
-    {path: Routes.QUIZ_EDIT + ":id", Component: QuizEdit, IsAuth: true},
+    {path: Routes.QUIZ_QUESTIONS + ":id", Component: QuizQuestions, IsAuth: true},
     {path: Routes.QUIZ + ":id", Component: Quiz, IsAuth: true},
     {path: '*', Component: PageNotFound},
 ]
