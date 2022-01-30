@@ -12,7 +12,6 @@ import ListOfCourses from "./components/ListOfCourses";
 import FormAddMember from "./components/FormAddMember";
 import FormAddThread from "./components/FormAddThread";
 import {StatusUser} from "../../constants/StatusUser";
-import {Twemoji} from 'react-emoji-render';
 
 const SubCourses = ({userData}) => {
     let {id} = useParams();
@@ -68,9 +67,9 @@ const SubCourses = ({userData}) => {
             <Breadcrumb>
                 <BreadcrumbItem><Link to={Routes.MAIN_COURSES}>Kursy</Link></BreadcrumbItem>
                 {course?.navi?.map(({id, name}, key) => (
-                    <BreadcrumbItem key={key}><Link to={Routes.SUB_COURSES + id}><Twemoji text={name} /></Link></BreadcrumbItem>
+                    <BreadcrumbItem key={key}><Link to={Routes.SUB_COURSES + id}>{name}</Link></BreadcrumbItem>
                 ))}
-                <BreadcrumbItem active><Twemoji text={course?.name} /></BreadcrumbItem>
+                <BreadcrumbItem active>{course?.name}</BreadcrumbItem>
             </Breadcrumb>
             <TitleOfCourse title={course?.name} description={course?.description} course={course} updateCourse={updateCourse} icon={course?.icon}/>
 

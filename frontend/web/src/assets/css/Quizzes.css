@@ -16,3 +16,26 @@
     content: 'Kurs: ';
     color: #333;
 }
+
+.quiz-absolute-right-corner {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    text-align: right;
+}
+
+.quiz-absolute-right-corner .btn {
+    margin-bottom: 15px;
+}
+
+.quiz-absolute-right-corner-scores {
+    text-align: right;
+}
+
+.quiz-absolute-right-corner-scores p {
+    line-height: 0;
+    margin-bottom: 5px;
+    display: inline-block;
+    margin-left: 5px;
+    min-width: 180px;
+}

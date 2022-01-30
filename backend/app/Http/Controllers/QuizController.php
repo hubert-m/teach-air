@@ -105,6 +105,12 @@ class QuizController extends Controller
             ], 400);
         }
 
+        if($quiz->created_by != $request->auth->id || $request->auth->status != 3) {
+            return response()->json([
+                'error' => 'Nie mozesz utworzyc pytania do tego quizu'
+            ], 400);
+        }
+
         try {
             $question = new Quiz_question;
             $question->question = $request->question;
@@ -137,13 +143,17 @@ class QuizController extends Controller
                 'error' => 'Brak pytan'
             ], 400);
         }
-        $id_question = rand(1, $count_questions);
-        $question = Quiz_question::where('id', '=', $id_question)->first();
+        $rand_question = rand(1, $count_questions);
+        $array_questions = @json_decode(json_encode($questions), true);
+        $question = $array_questions[$rand_question-1];
         return response()->json($question);
     }
 
     public function get_questions_list($quiz_id) {
         $questions = Quiz_question::where('quiz_id', '=', $quiz_id)->get();
+        foreach($questions as $i => $question) {
+            $questions[$i]->correct = $question->correct_answer;
+        }
         return response()->json($questions);
     }
 
@@ -174,6 +184,34 @@ class QuizController extends Controller
                 'success' => 'Poprawna odpowiedz',
                 'question' => $question
             ], 201);
+        }
+    }
+
+    public function delete_quiz($id) {
+        $quiz = Quiz::where('id', '=', $id)->first();
+        if(!$quiz) {
+            return response()->json([
+                'error' => 'Taki quiz nie istnieje'
+            ], 400);
+        }
+
+        if($quiz->created_by != $this->request->auth->id || $this->request->auth->status != 3) {
+            return response()->json([
+                'error' => 'Nie mozesz usunac tego quizu'
+            ], 400);
+        }
+
+        try {
+            $quiz->delete();
+
+            return response()->json([
+                'success' => 'Quiz usuniety pomyslnie',
+                'quiz' => $quiz
+            ], 202);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 }

@@ -197,7 +197,11 @@ const deleteSex = (id) => {
         axios.delete(Settings.API + ApiEndpoints.DELETE_SEX + id, config).then((response) => {
             resolve(response.data);
         }).catch((error) => {
-            reject(error);
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
         });
     });
 };

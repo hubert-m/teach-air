@@ -46,9 +46,10 @@ const ApiEndpoints = {
     GET_POSTS_LIST: '/posts/get_posts_list',
     ADD_POST: '/posts/add_post',
 
-    QUIZZES_LIST: '/quizzes/get_quizzes', // TODO oprogramowac
+    QUIZZES_LIST: '/quizzes/get_quizzes',
     GET_QUIZ: '/quizzes/get_quiz/', // :id
-    CREATE_QUIZ: '/quizzes/create_quiz', // TODO oprogramowac
+    CREATE_QUIZ: '/quizzes/create_quiz',
+    DELETE_QUIZ: '/quizzes/delete_quiz/', // :id
 
     CREATE_QUESTION: '/questions/create_question',
     GET_RANDOM_QUESTION: '/questions/random_question/', // :quiz_id

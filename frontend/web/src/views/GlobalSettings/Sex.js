@@ -72,7 +72,9 @@ const Sex = ({userData}) => {
                 }).finally(async () => {
                     await setShowLoader(false);
                 })
-            }).catch(() => {
+            }).catch((err) => {
+                setErrorMessage(err)
+                setShowError(true)
             });
 
         } else {

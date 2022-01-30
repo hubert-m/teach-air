@@ -20,7 +20,7 @@ const Routes = {
     HOSTING_FILES: '/files',
     QUIZZES: '/quizzes',
     QUIZ: '/quiz/', // :id
-    QUIZ_QUESTIONS: '/quiz/questions/' // :id
+    QUIZ_EDIT: '/quiz/edit/' // :id
 }
 
 export default Routes;

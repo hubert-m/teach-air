@@ -6,7 +6,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faGraduationCap, faCheckCircle, faCrown, faUser} from '@fortawesome/free-solid-svg-icons';
 import LoaderScreen from "../../components/LoaderScreen";
 import {isNull, size} from "lodash";
-import {sortDesc} from "../../helpers/sort";
+import {sortAsc, sortDesc} from "../../helpers/sort";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -36,7 +36,7 @@ const Users = ({userData}) => {
         })
 
         getSexList().then(list => {
-            sortDesc(list, "id");
+            sortAsc(list, "id");
             setSexList(list);
         }).catch(() => {
         })

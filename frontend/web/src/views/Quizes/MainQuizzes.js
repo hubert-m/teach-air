@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {sortAsc, sortDesc} from "../../helpers/sort";
-import {addQuiz, getQuizzesList} from "../../helpers/Quiz";
+import {addQuiz, deleteQuiz, getQuizzesList} from "../../helpers/Quiz";
 import LoaderScreen from "../../components/LoaderScreen";
 import {DefaultAvatarSrc} from "../../constants/DefaultAvatar";
 import Routes from "../../constants/Routes";
@@ -14,6 +14,7 @@ import {getCoursesListForSelect} from "../../helpers/Course";
 import {StatusUser} from "../../constants/StatusUser";
 import {Link} from "react-router-dom";
 import {Twemoji} from 'react-emoji-render';
+import {isEmpty} from "lodash";
 
 const MainQuizzes = ({userData}) => {
     const history = useHistory();
@@ -31,6 +32,8 @@ const MainQuizzes = ({userData}) => {
         seconds_for_answer: '0:00',
         course_id: '',
     })
+    const [idQuizToDelete, setIdQuizToDelete] = useState(0);
+    const [showFormAboutDeleteQuiz, setShowFormAboutDeleteQuiz] = useState(false);
 
     useEffect(() => {
         //window.location.reload(false); // refresh strony po powrocie ze strony quizu
@@ -112,12 +115,23 @@ const MainQuizzes = ({userData}) => {
         })
     }
 
-    const handleShowEditForm = () => {
-
-    }
-
     const handleDeleteQuiz = () => {
-
+        setShowLoader(true);
+        deleteQuiz(idQuizToDelete).then((res) => {
+            getQuizzesList().then(list => {
+                setSuccessMessage(res?.success)
+                setShowSuccess(true)
+                sortDesc(list, "id");
+                setQuizzesList(list)
+            }).catch(() => {
+            }).finally(async () => {
+                await setShowLoader(false);
+            })
+        }).catch(async (err) => {
+            await setShowLoader(false);
+            setErrorMessage(err)
+            setShowError(true)
+        })
     }
 
     return (
@@ -147,7 +161,7 @@ const MainQuizzes = ({userData}) => {
                     </tr>
                     </thead>
                     <tbody>
-                    {quizzesList.map(({id, title, seconds_for_answer, created_by, course_id}) => (
+                    {!isEmpty(quizzesList) ? quizzesList.map(({id, title, seconds_for_answer, created_by, course_id}) => (
                         <tr key={id}>
                             <th scope="row">{id}</th>
                             <td><Twemoji text={title}/> {course_id != 0 && (
@@ -170,24 +184,17 @@ const MainQuizzes = ({userData}) => {
                                 </button>
                                 {(created_by?.id == userData?.id || userData?.status == StatusUser.ADMIN) && (
                                     <>
-                                        <button type="button" className="btn btn-success"
-                                                style={{color: "#FFF", marginLeft: "10px"}}
-                                                onClick={() => history.push(Routes.QUIZ_QUESTIONS + id)}>
-                                            <FontAwesomeIcon
-                                                icon={faPlus}/>
-                                        </button>
                                         <button type="button" className="btn btn-warning"
                                                 style={{color: "#FFF", marginLeft: "10px"}}
-                                                onClick={() => {
-                                                    handleShowEditForm()
-                                                }}>
+                                                onClick={() => history.push(Routes.QUIZ_EDIT + id)}>
                                             <FontAwesomeIcon
                                                 icon={faEdit}/>
                                         </button>
                                         <button type="button" className="btn btn-danger"
                                                 style={{color: "#FFF", marginLeft: "10px"}}
                                                 onClick={() => {
-                                                    handleDeleteQuiz()
+                                                    setIdQuizToDelete(id)
+                                                    setShowFormAboutDeleteQuiz(true)
                                                 }}>
                                             <FontAwesomeIcon
                                                 icon={faTrash}/>
@@ -196,7 +203,11 @@ const MainQuizzes = ({userData}) => {
                                 )}
                             </td>
                         </tr>
-                    ))}
+                    )) : (
+                        <tr>
+                            <td colSpan={5} style={{ textAlign: 'center' }}>Brak quizów. Utwórz pierwszy</td>
+                        </tr>
+                    )}
                     </tbody>
                 </table>
             </div>
@@ -242,6 +253,25 @@ const MainQuizzes = ({userData}) => {
                     </button>
                 </ModalFooter>
             </Modal>
+            <SweetAlert
+                warning
+                showCancel
+                show={showFormAboutDeleteQuiz}
+                title="Na pewno?"
+                confirmBtnText="Tak, skasuj"
+                cancelBtnText="Nie, zostaw"
+                confirmBtnBsStyle="danger"
+                cancelBtnBsStyle="secondary"
+                onConfirm={() => {
+                    setShowFormAboutDeleteQuiz(false)
+                    handleDeleteQuiz()
+                }}
+                onCancel={() => {
+                    setShowFormAboutDeleteQuiz(false);
+                }}
+            >
+                Czy na pewno chcesz skasować quiz o ID={idQuizToDelete} ? Zostaną też skasowane wszystkie pytania do niego przypisane
+            </SweetAlert>
             <SweetAlert
                 error
                 show={showError}
