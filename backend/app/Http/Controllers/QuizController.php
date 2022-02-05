@@ -69,7 +69,7 @@ class QuizController extends Controller
             ], 400);
         }
 
-        if($quiz->created_by != $this->request->auth->id || $this->request->auth->status != 3) {
+        if($quiz->created_by != $this->request->auth->id && $this->request->auth->status != 3) {
             return response()->json([
                 'error' => 'Nie mozesz edytowac tego quizu'
             ], 400);
@@ -149,7 +149,7 @@ class QuizController extends Controller
             ], 400);
         }
 
-        if($quiz->created_by != $request->auth->id || $request->auth->status != 3) {
+        if($quiz->created_by != $request->auth->id && $request->auth->status != 3) {
             return response()->json([
                 'error' => 'Nie mozesz utworzyc pytania do tego quizu'
             ], 400);
@@ -272,6 +272,12 @@ class QuizController extends Controller
         if(!$quiz) {
             return response()->json([
                 'error' => 'Taki quiz nie istnieje'
+            ], 400);
+        }
+
+        if($request->auth->id == $quiz->created_by) {
+            return response()->json([
+                'error' => 'Nie możesz rozwiązać quizu stworzonego przez siebie'
             ], 400);
         }
 

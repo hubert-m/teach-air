@@ -7,14 +7,15 @@ import useInterval from "../../helpers/useInterval";
 import {Badge} from "react-bootstrap";
 import {finishQuiz, getQuizById, updateQuiz} from "../../helpers/Quiz";
 import LoaderScreen from "../../components/LoaderScreen";
-import {getSecondsFromTime} from "../../helpers/secondsTime";
-// import useExitPrompt from "../../helpers/useExitPrompt";
+import { useBeforeunload } from 'react-beforeunload';
+// import { usePageVisibility } from 'react-page-visibility';
+// https://www.npmjs.com/package/react-page-visibility // moze sie przydac do obslugi konca quizu, kiedy odfocusujemy okno przegladarki
 
 const Quiz = () => {
     let {id} = useParams();
     const history = useHistory();
     const windowSize = useWindowSize();
-    // const [showExitPrompt, setShowExitPrompt] = useExitPrompt(false);
+    // const isVisible = usePageVisibility()
 
     const [showLoader, setShowLoader] = useState(false);
     const [showError, setShowError] = useState(false);
@@ -82,7 +83,30 @@ const Quiz = () => {
             setShowError(true)
         })
 
+        // jesli opuscimy quiz przechodząc do innej podstrony
+        return function cleanup() {
+            endQuiz("OTHER")
+        }
+
     }, [])
+
+    useBeforeunload((event) => {
+        /*
+        if (ready) {
+            event.preventDefault();
+        }
+         */
+        // jesli opuscimy quiz zamykajac karte przeglądarki, albo całą przeglądarke
+        endQuiz("OTHER")
+    });
+
+    /*
+
+    useEffect(() => {
+        console.log(123)
+    }, [isVisible])
+
+     */
 
 
     const onVisibilityChange = () => {

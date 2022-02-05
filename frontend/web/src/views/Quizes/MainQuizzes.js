@@ -188,7 +188,7 @@ const MainQuizzes = ({userData}) => {
                                 </div>
                                 {created_by?.name} {created_by?.lastname}</td>
                             <td style={{textAlign: 'center'}}>
-                                {finished == '0' && (
+                                {finished == '0' && created_by?.id != userData?.id && (
                                     <button type="button" className="btn btn-info" style={{color: "#FFF"}}
                                             onClick={() => history.push(Routes.QUIZ + id)}>
                                         <FontAwesomeIcon
