@@ -7,7 +7,7 @@ import {sortAsc, sortDesc} from "../../helpers/sort";
 import {getFullTimeFromSeconds, getSecondsFromTime} from "../../helpers/secondsTime";
 import SweetAlert from "react-bootstrap-sweetalert";
 import LoaderScreen from "../../components/LoaderScreen";
-import {getQuestionsList, getQuizById, updateQuiz} from "../../helpers/Quiz";
+import {addQuestion, getQuestionsList, getQuizById, updateQuiz} from "../../helpers/Quiz";
 import {Accordion} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
@@ -18,6 +18,16 @@ import {getSearchUsers} from "../../helpers/User";
 const QuizEdit = ({userData}) => {
     let {id} = useParams();
     const history = useHistory();
+
+    const initialQuestionField = {
+        question: '',
+        description: '',
+        answer_a: '',
+        answer_b: '',
+        answer_c: '',
+        answer_d: '',
+        correct_answer: ''
+    }
 
     const [showLoader, setShowLoader] = useState(false);
     const [showError, setShowError] = useState(false);
@@ -36,6 +46,8 @@ const QuizEdit = ({userData}) => {
         seconds_for_answer: '0:00',
         course_id: '',
     })
+
+    const [dataQuestion, setDataQuestion] = useState(initialQuestionField)
 
     useEffect(() => {
         if (userData?.status != StatusUser.ADMIN && userData?.status != StatusUser.TEACHER) {
@@ -73,6 +85,15 @@ const QuizEdit = ({userData}) => {
         }))
     }
 
+    const handleOnChangeQuestion = (e) => {
+        const result = {};
+        result[e.target.name] = e.target.value;
+        setDataQuestion((prevState) => ({
+            ...prevState,
+            ...result,
+        }))
+    }
+
     const onBlur = (e) => {
         const value = e.target.value;
         const seconds = Math.max(0, getSecondsFromTime(value));
@@ -103,7 +124,32 @@ const QuizEdit = ({userData}) => {
     }
 
     const handleAddQuestion = () => {
+        setShowLoader(true);
+        addQuestion(id, dataQuestion).then(() => {
+            setShowFormAddQuestion(false)
+            setDataQuestion(initialQuestionField)
 
+            getQuestionsList(id).then(list => {
+                sortDesc(list, "id");
+                setListOfQuestions(list)
+            }).catch(() => {
+            })
+
+            setSuccessMessage("Pomyślnie dodano pytanie do quizu")
+            setShowSuccess(true)
+        }).catch((err) => {
+            setErrorMessage(err)
+            setShowError(true)
+        }).finally(async () => {
+            await setShowLoader(false);
+        })
+    }
+
+    const signCorrectAnswer = (answer) => {
+        setDataQuestion((prevState) => ({
+            ...prevState,
+            correct_answer: answer
+        }))
     }
 
     return (
@@ -140,7 +186,7 @@ const QuizEdit = ({userData}) => {
                             <option value={id} key={id}>{name}</option>
                         ))}
                     </select>
-                    <button type="button" className="btn btn-success" style={{ marginTop: '15px' }}
+                    <button type="button" className="btn btn-success" style={{marginTop: '15px'}}
                             onClick={() => handleEditQuiz()}>Zapisz zmiany
                     </button>
                 </div>
@@ -155,17 +201,30 @@ const QuizEdit = ({userData}) => {
                 <hr className="my-4"/>
             </div>
             <Accordion>
-            {!isEmpty(listOfQuestions) ? listOfQuestions.map(({id, question, description, answer_a, answer_b, answer_c, answer_d, correct}) => (
-                <Accordion.Item key={id} eventKey={id}>
-                    <Accordion.Header>#{id} - {question}</Accordion.Header>
-                    <Accordion.Body>
-                        {!isEmpty(description) && (<p><strong>Opis:</strong> {description}</p>)}
-                        <p><strong>{correct == 'a' ? (<span style={{ color: 'green' }}>Odpowiedź A:</span>) : (<span>Odpowiedź A:</span>)}</strong> {answer_a}</p>
-                        <p><strong>{correct == 'b' ? (<span style={{ color: 'green' }}>Odpowiedź B:</span>) : (<span>Odpowiedź B:</span>)}</strong> {answer_b}</p>
-                        <p><strong>{correct == 'c' ? (<span style={{ color: 'green' }}>Odpowiedź C:</span>) : (<span>Odpowiedź C:</span>)}</strong> {answer_c}</p>
-                        <p><strong>{correct == 'd' ? (<span style={{ color: 'green' }}>Odpowiedź D:</span>) : (<span>Odpowiedź D:</span>)}</strong> {answer_d}</p>
-                    </Accordion.Body>
-                </Accordion.Item>
+                {!isEmpty(listOfQuestions) ? listOfQuestions.map(({
+                                                                      id,
+                                                                      question,
+                                                                      description,
+                                                                      answer_a,
+                                                                      answer_b,
+                                                                      answer_c,
+                                                                      answer_d,
+                                                                      correct
+                                                                  }) => (
+                    <Accordion.Item key={id} eventKey={id}>
+                        <Accordion.Header>#{id} - {question}</Accordion.Header>
+                        <Accordion.Body>
+                            {!isEmpty(description) && (<p><strong>Opis:</strong> {description}</p>)}
+                            <p><strong>{correct == 'a' ? (<span style={{color: 'green'}}>Odpowiedź A:</span>) : (
+                                <span>Odpowiedź A:</span>)}</strong> {answer_a}</p>
+                            <p><strong>{correct == 'b' ? (<span style={{color: 'green'}}>Odpowiedź B:</span>) : (
+                                <span>Odpowiedź B:</span>)}</strong> {answer_b}</p>
+                            <p><strong>{correct == 'c' ? (<span style={{color: 'green'}}>Odpowiedź C:</span>) : (
+                                <span>Odpowiedź C:</span>)}</strong> {answer_c}</p>
+                            <p><strong>{correct == 'd' ? (<span style={{color: 'green'}}>Odpowiedź D:</span>) : (
+                                <span>Odpowiedź D:</span>)}</strong> {answer_d}</p>
+                        </Accordion.Body>
+                    </Accordion.Item>
 
                 )) : (<p>Brak pytań dla tego quizu. Utwórz pierwsze</p>)}
             </Accordion>
@@ -180,7 +239,56 @@ const QuizEdit = ({userData}) => {
                 className="modal-lg"
             >
                 <ModalHeader>Dodaj Pytanie</ModalHeader>
-                <ModalBody>
+                <ModalBody className="form-add-question">
+                    <label htmlFor="question">Pytanie</label>
+                    <input type="text" className="form-control" name="question"
+                           placeholder="Pytanie" value={dataQuestion.question}
+                           onChange={handleOnChangeQuestion}/>
+                    <label htmlFor="description">Opis pytania</label>
+                    <textarea
+                        className="form-control"
+                        placeholder="Opis pytania *pole opcjonalne"
+                        rows="2"
+                        name="description"
+                        value={dataQuestion.description}
+                        onChange={handleOnChangeQuestion}/>
+                    <label htmlFor="answer_a" onClick={() => signCorrectAnswer('a')}
+                           style={{color: dataQuestion.correct_answer == 'a' ? 'green' : 'black'}}>Odpowiedź A</label>
+                    <textarea
+                        className="form-control"
+                        placeholder="Odpowiedź A"
+                        rows="2"
+                        name="answer_a"
+                        value={dataQuestion.answer_a}
+                        onChange={handleOnChangeQuestion}/>
+                    <label htmlFor="answer_b" onClick={() => signCorrectAnswer('b')}
+                           style={{color: dataQuestion.correct_answer == 'b' ? 'green' : 'black'}}>Odpowiedź B</label>
+                    <textarea
+                        className="form-control"
+                        placeholder="Odpowiedź B"
+                        rows="2"
+                        name="answer_b"
+                        value={dataQuestion.answer_b}
+                        onChange={handleOnChangeQuestion}/>
+                    <label htmlFor="answer_c" onClick={() => signCorrectAnswer('c')}
+                           style={{color: dataQuestion.correct_answer == 'c' ? 'green' : 'black'}}>Odpowiedź C</label>
+                    <textarea
+                        className="form-control"
+                        placeholder="Odpowiedź C"
+                        rows="2"
+                        name="answer_c"
+                        value={dataQuestion.answer_c}
+                        onChange={handleOnChangeQuestion}/>
+                    <label htmlFor="answer_d" onClick={() => signCorrectAnswer('d')}
+                           style={{color: dataQuestion.correct_answer == 'd' ? 'green' : 'black'}}>Odpowiedź D</label>
+                    <textarea
+                        className="form-control"
+                        placeholder="Odpowiedź D"
+                        rows="2"
+                        name="answer_d"
+                        value={dataQuestion.answer_d}
+                        onChange={handleOnChangeQuestion}/>
+                    <sub>Kliknij na tytuł (label) pola aby oznaczyć poprawną odpowiedź</sub>
 
                 </ModalBody>
                 <ModalFooter>
@@ -207,6 +315,7 @@ const QuizEdit = ({userData}) => {
                 success
                 show={showSuccess}
                 title="Hurraaa :)"
+                confirmBtnBsStyle="success"
                 onConfirm={() => setShowSuccess(false)}
             >
                 {successMessage}

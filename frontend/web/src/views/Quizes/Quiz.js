@@ -5,8 +5,9 @@ import Routes from "../../constants/Routes";
 import useWindowSize from "../../helpers/useWindowSize";
 import useInterval from "../../helpers/useInterval";
 import {Badge} from "react-bootstrap";
-import {getQuizById} from "../../helpers/Quiz";
+import {finishQuiz, getQuizById, updateQuiz} from "../../helpers/Quiz";
 import LoaderScreen from "../../components/LoaderScreen";
+import {getSecondsFromTime} from "../../helpers/secondsTime";
 // import useExitPrompt from "../../helpers/useExitPrompt";
 
 const Quiz = () => {
@@ -58,7 +59,7 @@ const Quiz = () => {
                     description: 'Zmieniłeś rozmiar okna, więc quiz się zakończył. Wynik quizu został wysłany zarówno na Twojego maila jak i do wykładowcy',
                     type: 'danger'
                 })
-                endQuiz()
+                endQuiz("RESIZE_WINDOW")
             }
             setPreventCheat((prevState) => {
                 return prevState + 1
@@ -92,7 +93,7 @@ const Quiz = () => {
                 description: 'Zmieniłeś kartę przeglądarki, więc quiz się zakończył. Wynik quizu został wysłany zarówno na Twojego maila jak i do wykładowcy',
                 type: 'danger'
             })
-            endQuiz()
+            endQuiz("CHANGE_TAB")
         }
     };
 
@@ -114,14 +115,23 @@ const Quiz = () => {
 
     // w przypadku zakonczenia quizu z przicisku i potwierdzenia
     const handleSuccessFinishQuiz = () => {
-        endQuiz()
+        endQuiz("SUCCESS")
         history.push(Routes.QUIZZES)
         // komunikat z wynikami ewentualnie przekierowanie na strone quizów
     }
 
-    const endQuiz = () => {
+    const endQuiz = (typeOfFinish) => {
         console.log("Strzał do API z wynikami quizu")
         // bez przekierowania
+
+        finishQuiz({
+            quiz_id: id,
+            correct_answers: correctAnswers,
+            wrong_answers: wrongAnswers,
+            kind_of_finish: typeOfFinish
+        }).then(() => {
+            // bez przekierowania
+        }).catch(() => {})
     }
 
     return (
@@ -132,7 +142,7 @@ const Quiz = () => {
                         <h1 className="display-7">{quizData?.title}</h1>
                         {quizData?.description != "" && (<p>{quizData?.description}</p>)}
                         <hr className="my-4"/>
-                        <div class="quiz-absolute-right-corner">
+                        <div className="quiz-absolute-right-corner">
                             <button type="button" className="btn btn-danger"
                                     onClick={() => setShowAskFinishQuiz(true)}>Zakończ quiz
                             </button>

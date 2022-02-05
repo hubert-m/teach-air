@@ -97,6 +97,21 @@ const getQuizById = (id) => {
     });
 };
 
+const finishQuiz = (data) => {
+    return new Promise((resolve, reject) => {
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.post(Settings.API + ApiEndpoints.FINISH_QUIZ, data, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+}
+
 const getQuestionsList = (quiz_id) => {
     return new Promise((resolve, reject) => {
         const config = {headers: {token: localStorage.getItem("userToken")}};
@@ -112,11 +127,49 @@ const getQuestionsList = (quiz_id) => {
     });
 };
 
+const addQuestion = (quiz_id, data) => {
+    return new Promise((resolve, reject) => {
+
+        let error = null;
+        if (!data.correct_answer)
+            error = "Musisz oznaczyć prawidłową odpowiedź na pytanie";
+
+        if(!data.answer_a || !data.answer_b || !data.answer_c || !data.answer_d)
+            error = "Musisz wpisać wszystkie 4 możliwe odpowiedzi";
+
+        if (!data.question)
+            error = "Musisz wpisać treść pytania";
+
+        if (error) {
+            reject(error);
+            return;
+        }
+
+        data = {
+            ...data,
+            quiz_id: quiz_id
+        }
+
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.post(Settings.API + ApiEndpoints.CREATE_QUESTION, data, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+}
+
 export {
     getQuizzesList,
     addQuiz,
     updateQuiz,
     deleteQuiz,
     getQuizById,
-    getQuestionsList
+    finishQuiz,
+    getQuestionsList,
+    addQuestion
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Quiz;
 use App\Models\Quiz_question;
+use App\Models\Quiz_user;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -102,6 +103,16 @@ class QuizController extends Controller
             if($quiz->course_id > 0) {
                 $course = Course::where('id', '=', $quiz->course_id)->first();
                 $quizzes[$i]->course_id = $course;
+            }
+
+            $already_finished = Quiz_user::where('quiz_id', '=', $quiz->id)->where('user_id', '=', $this->request->auth->id)->first();
+
+            if($already_finished) {
+                $quizzes[$i]->finished = 1;
+                $quizzes[$i]->correct_answers = $already_finished->correct_answers;
+                $quizzes[$i]->wrong_answers = $already_finished->wrong_answers;
+            } else {
+                $quizzes[$i]->finished = 0;
             }
         }
         return response()->json($quizzes);
@@ -246,5 +257,49 @@ class QuizController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function finish_quiz(Request $request) {
+        $already_finished = Quiz_user::where('quiz_id', '=', $request->quiz_id)->where('user_id', '=', $request->auth->id)->first();
+
+        if($already_finished) {
+            return response()->json([
+                'error' => 'Ten quiz juz zostal przez Ciebie ukonczony. Nie ma drugiego podejscia'
+            ], 400);
+        }
+
+        $quiz = Quiz::where('id', '=', $request->quiz_id)->first();
+        if(!$quiz) {
+            return response()->json([
+                'error' => 'Taki quiz nie istnieje'
+            ], 400);
+        }
+
+        if($request->kind_of_finish != "SUCCESS" && $request->kind_of_finish != "CHANGE_TAB" && $request->kind_of_finish != "RESIZE_WINDOW") {
+            $request->kind_of_finish = "OTHER";
+        }
+
+        try {
+            $finish = new Quiz_user;
+            $finish->user_id = $request->auth->id;
+            $finish->quiz_id = $request->quiz_id;
+            $finish->correct_answers = $request->correct_answers;
+            $finish->wrong_answers = $request->wrong_answers;
+            $finish->kind_of_finish = $request->kind_of_finish;
+            $finish->save();
+
+            // TODO tutaj jeszcze wysylka maili i / lub wysyłka wiadomosci prywatnej z wynikiem quizu w aplikacji
+
+            return response()->json([
+                'success' => 'Pomyślnie zakończono quiz',
+                'quiz_user' => $finish
+            ], 201);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
     }
 }

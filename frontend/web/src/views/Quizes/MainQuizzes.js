@@ -161,10 +161,21 @@ const MainQuizzes = ({userData}) => {
                     </tr>
                     </thead>
                     <tbody>
-                    {!isEmpty(quizzesList) ? quizzesList.map(({id, title, seconds_for_answer, created_by, course_id}) => (
+                    {!isEmpty(quizzesList) ? quizzesList.map(({
+                                                                  id,
+                                                                  title,
+                                                                  seconds_for_answer,
+                                                                  created_by,
+                                                                  course_id,
+                                                                  finished,
+                                                                  correct_answers,
+                                                                  wrong_answers
+                                                              }) => (
                         <tr key={id}>
                             <th scope="row">{id}</th>
-                            <td><Twemoji text={title}/> {course_id != 0 && (
+                            <td><Twemoji text={title}/> {finished == '1' && (<span>[Ukończony <span
+                                style={{color: 'green'}}>{correct_answers}</span> / <span
+                                style={{color: 'red'}}>{wrong_answers}</span>]</span>)} {course_id != 0 && (
                                 <Link to={Routes.SUB_COURSES + course_id?.id}
                                       className="quizzes-list-course-name"><Twemoji text={course_id?.name}/></Link>)}
                             </td>
@@ -177,11 +188,13 @@ const MainQuizzes = ({userData}) => {
                                 </div>
                                 {created_by?.name} {created_by?.lastname}</td>
                             <td style={{textAlign: 'center'}}>
-                                <button type="button" className="btn btn-info" style={{color: "#FFF"}}
-                                        onClick={() => history.push(Routes.QUIZ + id)}>
-                                    <FontAwesomeIcon
-                                        icon={faRunning}/>
-                                </button>
+                                {finished == '0' && (
+                                    <button type="button" className="btn btn-info" style={{color: "#FFF"}}
+                                            onClick={() => history.push(Routes.QUIZ + id)}>
+                                        <FontAwesomeIcon
+                                            icon={faRunning}/>
+                                    </button>
+                                )}
                                 {(created_by?.id == userData?.id || userData?.status == StatusUser.ADMIN) && (
                                     <>
                                         <button type="button" className="btn btn-warning"
@@ -205,7 +218,7 @@ const MainQuizzes = ({userData}) => {
                         </tr>
                     )) : (
                         <tr>
-                            <td colSpan={5} style={{ textAlign: 'center' }}>Brak quizów. Utwórz pierwszy</td>
+                            <td colSpan={5} style={{textAlign: 'center'}}>Brak quizów. Utwórz pierwszy</td>
                         </tr>
                     )}
                     </tbody>
@@ -270,7 +283,8 @@ const MainQuizzes = ({userData}) => {
                     setShowFormAboutDeleteQuiz(false);
                 }}
             >
-                Czy na pewno chcesz skasować quiz o ID={idQuizToDelete} ? Zostaną też skasowane wszystkie pytania do niego przypisane
+                Czy na pewno chcesz skasować quiz o ID={idQuizToDelete} ? Zostaną też skasowane wszystkie pytania do
+                niego przypisane
             </SweetAlert>
             <SweetAlert
                 error
