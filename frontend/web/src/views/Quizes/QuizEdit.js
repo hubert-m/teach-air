@@ -7,13 +7,19 @@ import {sortAsc, sortDesc} from "../../helpers/sort";
 import {getFullTimeFromSeconds, getSecondsFromTime} from "../../helpers/secondsTime";
 import SweetAlert from "react-bootstrap-sweetalert";
 import LoaderScreen from "../../components/LoaderScreen";
-import {addQuestion, getQuestionsList, getQuizById, updateQuiz} from "../../helpers/Quiz";
+import {
+    addQuestion,
+    deleteQuestion,
+    getQuestionsList,
+    getQuizById,
+    updateQuestion,
+    updateQuiz
+} from "../../helpers/Quiz";
 import {Accordion} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPlus} from "@fortawesome/free-solid-svg-icons";
+import {faEdit, faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {isEmpty} from "lodash";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
-import {getSearchUsers} from "../../helpers/User";
 
 const QuizEdit = ({userData}) => {
     let {id} = useParams();
@@ -34,6 +40,10 @@ const QuizEdit = ({userData}) => {
     const [errorMessage, setErrorMessage] = useState(null);
     const [showSuccess, setShowSuccess] = useState(false);
     const [successMessage, setSuccessMessage] = useState(null);
+
+    const [idQuestionToModify ,setIdQuestionToModify] = useState(null);
+    const [showAskAboutDeleteQuestion, setShowAskAboutDeleteQuestion] = useState(false);
+    const [showFormAboutEditQuestion, setShowFormAboutEditQuestion] = useState(false);
 
     const [showFormAddQuestion, setShowFormAddQuestion] = useState(false);
 
@@ -152,6 +162,46 @@ const QuizEdit = ({userData}) => {
         }))
     }
 
+    const handleDeleteQuestion = () => {
+        setShowLoader(true);
+        deleteQuestion(idQuestionToModify).then(() => {
+            getQuestionsList(id).then(list => {
+                sortDesc(list, "id");
+                setListOfQuestions(list)
+            }).catch(() => {
+            })
+            setSuccessMessage("Pomyślnie usunięto pytanie")
+            setShowSuccess(true)
+        }).catch((err) => {
+            setErrorMessage(err)
+            setShowError(true)
+        }).finally(async () => {
+            await setShowLoader(false);
+        })
+    }
+
+    const handleEditQuestion = () => {
+        setShowLoader(true);
+        updateQuestion(idQuestionToModify, dataQuestion).then(() => {
+            setShowFormAboutEditQuestion(false)
+            setDataQuestion(initialQuestionField)
+
+            getQuestionsList(id).then(list => {
+                sortDesc(list, "id");
+                setListOfQuestions(list)
+            }).catch(() => {
+            })
+
+            setSuccessMessage("Pomyślnie zaktualizowano pytanie")
+            setShowSuccess(true)
+        }).catch((err) => {
+            setErrorMessage(err)
+            setShowError(true)
+        }).finally(async () => {
+            await setShowLoader(false);
+        })
+    }
+
     return (
         <>
             <div className="jumbotron" style={{marginTop: '50px'}}>
@@ -194,7 +244,10 @@ const QuizEdit = ({userData}) => {
             <div className="jumbotron" style={{marginTop: '50px'}}>
                 <h1 className="display-7">Pytania</h1>
                 <button type="button" className="btn btn-success button-add-quiz" style={{color: "#FFF"}}
-                        onClick={() => setShowFormAddQuestion(true)}>
+                        onClick={() => {
+                            setDataQuestion(initialQuestionField)
+                            setShowFormAddQuestion(true)
+                        }}>
                     <FontAwesomeIcon
                         icon={faPlus}/>
                 </button>
@@ -223,6 +276,35 @@ const QuizEdit = ({userData}) => {
                                 <span>Odpowiedź C:</span>)}</strong> {answer_c}</p>
                             <p><strong>{correct == 'd' ? (<span style={{color: 'green'}}>Odpowiedź D:</span>) : (
                                 <span>Odpowiedź D:</span>)}</strong> {answer_d}</p>
+                            <div className="edit-question-right-bottom-cornet">
+                                <button type="button" className="btn btn-warning"
+                                        style={{color: "#FFF", marginLeft: "10px"}}
+                                        onClick={() => {
+                                            setIdQuestionToModify(id)
+                                            setDataQuestion({
+                                                question: question,
+                                                description: description,
+                                                answer_a: answer_a,
+                                                answer_b: answer_b,
+                                                answer_c: answer_c,
+                                                answer_d: answer_d,
+                                                correct_answer: correct
+                                            })
+                                            setShowFormAboutEditQuestion(true)
+                                        }}>
+                                    <FontAwesomeIcon
+                                        icon={faEdit}/>
+                                </button>
+                                <button type="button" className="btn btn-danger"
+                                        style={{color: "#FFF", marginLeft: "10px"}}
+                                        onClick={() => {
+                                            setIdQuestionToModify(id)
+                                            setShowAskAboutDeleteQuestion(true)
+                                        }}>
+                                    <FontAwesomeIcon
+                                        icon={faTrash}/>
+                                </button>
+                            </div>
                         </Accordion.Body>
                     </Accordion.Item>
 
@@ -300,6 +382,97 @@ const QuizEdit = ({userData}) => {
                     </button>
                 </ModalFooter>
             </Modal>
+
+
+
+
+            <Modal
+                isOpen={showFormAboutEditQuestion}
+                toggle={() => setShowFormAboutEditQuestion(!showFormAboutEditQuestion)}
+                className="modal-lg"
+            >
+                <ModalHeader>Edytuj Pytanie #{idQuestionToModify}</ModalHeader>
+                <ModalBody className="form-add-question">
+                    <label htmlFor="question">Pytanie</label>
+                    <input type="text" className="form-control" name="question"
+                           placeholder="Pytanie" value={dataQuestion.question}
+                           onChange={handleOnChangeQuestion}/>
+                    <label htmlFor="description">Opis pytania</label>
+                    <textarea
+                        className="form-control"
+                        placeholder="Opis pytania *pole opcjonalne"
+                        rows="2"
+                        name="description"
+                        value={dataQuestion.description}
+                        onChange={handleOnChangeQuestion}/>
+                    <label htmlFor="answer_a" onClick={() => signCorrectAnswer('a')}
+                           style={{color: dataQuestion.correct_answer == 'a' ? 'green' : 'black'}}>Odpowiedź A</label>
+                    <textarea
+                        className="form-control"
+                        placeholder="Odpowiedź A"
+                        rows="2"
+                        name="answer_a"
+                        value={dataQuestion.answer_a}
+                        onChange={handleOnChangeQuestion}/>
+                    <label htmlFor="answer_b" onClick={() => signCorrectAnswer('b')}
+                           style={{color: dataQuestion.correct_answer == 'b' ? 'green' : 'black'}}>Odpowiedź B</label>
+                    <textarea
+                        className="form-control"
+                        placeholder="Odpowiedź B"
+                        rows="2"
+                        name="answer_b"
+                        value={dataQuestion.answer_b}
+                        onChange={handleOnChangeQuestion}/>
+                    <label htmlFor="answer_c" onClick={() => signCorrectAnswer('c')}
+                           style={{color: dataQuestion.correct_answer == 'c' ? 'green' : 'black'}}>Odpowiedź C</label>
+                    <textarea
+                        className="form-control"
+                        placeholder="Odpowiedź C"
+                        rows="2"
+                        name="answer_c"
+                        value={dataQuestion.answer_c}
+                        onChange={handleOnChangeQuestion}/>
+                    <label htmlFor="answer_d" onClick={() => signCorrectAnswer('d')}
+                           style={{color: dataQuestion.correct_answer == 'd' ? 'green' : 'black'}}>Odpowiedź D</label>
+                    <textarea
+                        className="form-control"
+                        placeholder="Odpowiedź D"
+                        rows="2"
+                        name="answer_d"
+                        value={dataQuestion.answer_d}
+                        onChange={handleOnChangeQuestion}/>
+                    <sub>Kliknij na tytuł (label) pola aby oznaczyć poprawną odpowiedź</sub>
+
+                </ModalBody>
+                <ModalFooter>
+                    <button type="button" className="btn btn-success"
+                            onClick={() => handleEditQuestion()}>Edytuj pytanie
+                    </button>
+                    <button type="button" className="btn btn-secondary"
+                            onClick={() => setShowFormAboutEditQuestion(false)}>Zamknij okno
+                    </button>
+                </ModalFooter>
+            </Modal>
+
+            <SweetAlert
+                warning
+                showCancel
+                show={showAskAboutDeleteQuestion}
+                title="Na pewno?"
+                confirmBtnText="Tak, skasuj"
+                cancelBtnText="Nie, zostaw"
+                confirmBtnBsStyle="danger"
+                cancelBtnBsStyle="secondary"
+                onConfirm={() => {
+                    setShowAskAboutDeleteQuestion(false)
+                    handleDeleteQuestion()
+                }}
+                onCancel={() => {
+                    setShowAskAboutDeleteQuestion(false)
+                }}
+            >
+                Czy na pewno chcesz skasować pytanie o ID={idQuestionToModify} ?
+            </SweetAlert>
 
             <SweetAlert
                 error

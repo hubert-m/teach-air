@@ -43,3 +43,7 @@
 .form-add-question label {
     cursor: pointer;
 }
+
+.edit-question-right-bottom-cornet {
+    text-align: right;
+}

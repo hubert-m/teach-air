@@ -575,4 +575,31 @@ class CourseController extends Controller
 
         return response()->json($courses);
     }
+
+    public function delete_course($id) {
+        if ($this->request->auth->status != 3) {
+            return response()->json([
+                'error' => 'Nie jestes adminem, wiec nie mozesz kasowac kursow'
+            ], 400);
+        }
+
+        $course = Course::where('id', '=', $id)->first();
+        if(!$course) {
+            return response()->json([
+                'error' => 'Taki kurs nie istnieje'
+            ], 400);
+        }
+        try {
+            $course->delete();
+
+            return response()->json([
+                'success' => 'Kurs usuniety pomyslnie',
+                'course' => $course
+            ], 202);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

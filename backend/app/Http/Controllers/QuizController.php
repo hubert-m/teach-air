@@ -308,4 +308,121 @@ class QuizController extends Controller
         }
 
     }
+
+    public function delete_question($id) {
+        $question = Quiz_question::where('id', '=', $id)->first();
+
+        if(!$question) {
+            return response()->json([
+                'error' => 'Take pytanie nie istnieje'
+            ], 400);
+        }
+
+        $quiz_of_question = Quiz::where('id', '=', $question->quiz_id)->first();
+
+        if($quiz_of_question->created_by != $this->request->auth->id || $this->request->auth->status != 3) {
+            return response()->json([
+                'error' => 'Nie mozesz usunac tego pytania'
+            ], 400);
+        }
+
+        try {
+            $question->delete();
+
+            return response()->json([
+                'success' => 'Pytanie usuniete pomyslnie',
+                'question' => $question
+            ], 202);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function update_question($id) {
+        $question = Quiz_question::where('id', '=', $id)->first();
+
+        if(!$question) {
+            return response()->json([
+                'error' => 'Take pytanie nie istnieje'
+            ], 400);
+        }
+
+        $quiz_of_question = Quiz::where('id', '=', $question->quiz_id)->first();
+
+        if($quiz_of_question->created_by != $this->request->auth->id || $this->request->auth->status != 3) {
+            return response()->json([
+                'error' => 'Nie mozesz edytowac tego pytania'
+            ], 400);
+        }
+
+        try {
+
+            $question->question = $this->request->input('question') ?: $question->question;
+            $question->description = $this->request->input('description') ?: $question->description;
+            $question->answer_a = $this->request->input('answer_a') ?: $question->answer_a;
+            $question->answer_b = $this->request->input('answer_b') ?: $question->answer_b;
+            $question->answer_c = $this->request->input('answer_c') ?: $question->answer_c;
+            $question->answer_d = $this->request->input('answer_d') ?: $question->answer_d;
+            $question->correct_answer = $this->request->input('correct_answer') ?: $question->correct_answer;
+            $question->save();
+
+            return response()->json([
+                'success' => 'Pytanie do quizu zaktualizowane pomyslnie',
+                'question' => $question
+            ], 201);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function users_finished_quiz($quiz_id) {
+        $finished_users = Quiz_user::where('quiz_id', '=', $quiz_id)->get();
+        foreach($finished_users as $i => $finished_user) {
+            $finished_users[$i]->user_id = User::where('id', '=', $finished_user->user_id)->first();
+        }
+        return response()->json($finished_users);
+    }
+
+    public function give_another_chance(Request $request) {
+        $quiz = Quiz::where('id', '=', $request->quiz_id)->first();
+        if(!$quiz) {
+            return response()->json([
+                'error' => 'Taki quiz nie istnieje'
+            ], 400);
+        }
+
+        $user = User::where('id', '=', $request->user_id)->first();
+        if(!$user) {
+            return response()->json([
+                'error' => 'Taki uzytkownik nie istnieje'
+            ], 400);
+        }
+
+        $quiz_user = Quiz_user::where('quiz_id', '=', $request->quiz_id)->where('user_id', '=', $request->user_id)->first();
+        if(!$quiz_user) {
+            return response()->json([
+                'error' => 'Ten uzytkownik jeszcze nie rozwiazal tego quizu'
+            ], 400);
+        }
+
+        try {
+            $quiz_user->delete();
+
+            return response()->json([
+                'success' => 'Pomyslnie dano druga szane uzytkownikowi. Moze jeszcze raz przystapic do tego quizu',
+                'quiz_user' => $quiz_user
+            ], 201);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

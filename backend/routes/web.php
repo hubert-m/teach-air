@@ -68,6 +68,7 @@ $router->group(
         $router->post('/courses/delete_member', 'CourseController@delete_member');
         $router->post('/courses/change_favourite_course', 'CourseController@change_favourite_course');
         $router->get('/courses/get_courses_list_for_select', 'CourseController@get_courses_list_for_select');
+        $router->delete('/courses/delete_course/{id}', 'CourseController@delete_course');
 
         $router->post('/files/upload', 'FileController@upload');
         $router->post('/files/search', 'FileController@search');
@@ -90,12 +91,16 @@ $router->group(
         $router->get('/quizzes/get_quizzes', 'QuizController@get_quizzes_list');
         $router->delete('/quizzes/delete_quiz/{id}', 'QuizController@delete_quiz');
         $router->post('/quizzes/finish_quiz', 'QuizController@finish_quiz');
+        $router->get('/quizzes/users_finished/{quiz_id}', 'QuizController@users_finished_quiz');
+        $router->post('/quizzes/give_another_chance', 'QuizController@give_another_chance');
 
         $router->post('/questions/create_question', 'QuizController@create_question');
         $router->get('/questions/random_question/{quiz_id}', 'QuizController@random_question');
         $router->get('/questions/get_question/{id}', 'QuizController@get_question');
         $router->get('/questions/get_questions/{quiz_id}', 'QuizController@get_questions_list');
         $router->post('/questions/check_answer', 'QuizController@check_correct_answer');
+        $router->delete('/questions/delete_question/{id}', 'QuizController@delete_question');
+        $router->put('/questions/update_question/{id}', 'QuizController@update_question');
     }
 );
 
