@@ -5,15 +5,15 @@ import Routes from "../../constants/Routes";
 import useWindowSize from "../../helpers/useWindowSize";
 import useInterval from "../../helpers/useInterval";
 import {Badge} from "react-bootstrap";
-import {getSearchUsers} from "../../helpers/User";
-import {sortDesc} from "../../helpers/sort";
 import {getQuizById} from "../../helpers/Quiz";
 import LoaderScreen from "../../components/LoaderScreen";
+// import useExitPrompt from "../../helpers/useExitPrompt";
 
 const Quiz = () => {
     let {id} = useParams();
     const history = useHistory();
     const windowSize = useWindowSize();
+    // const [showExitPrompt, setShowExitPrompt] = useExitPrompt(false);
 
     const [showLoader, setShowLoader] = useState(false);
     const [showError, setShowError] = useState(false);
@@ -107,6 +107,7 @@ const Quiz = () => {
     // rozpoczecie quizu po zatwierdzeniu komuniktu
     const startQuiz = () => {
         setReady(true)
+        // setShowExitPrompt(true)
         // pobranie pytania losowego
 
     }

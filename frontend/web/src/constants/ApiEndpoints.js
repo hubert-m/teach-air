@@ -49,6 +49,7 @@ const ApiEndpoints = {
     QUIZZES_LIST: '/quizzes/get_quizzes',
     GET_QUIZ: '/quizzes/get_quiz/', // :id
     CREATE_QUIZ: '/quizzes/create_quiz',
+    UPDATE_QUIZ: '/quizzes/update_quiz/', // :id
     DELETE_QUIZ: '/quizzes/delete_quiz/', // :id
 
     CREATE_QUESTION: '/questions/create_question',

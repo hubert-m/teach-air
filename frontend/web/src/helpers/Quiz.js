@@ -42,6 +42,31 @@ const addQuiz = (data) => {
     });
 }
 
+const updateQuiz = (id, data) => {
+    return new Promise((resolve, reject) => {
+
+        let error = null;
+        if (!data.title)
+            error = "Nie możesz zmienić tytułu na pusty";
+
+        if (error) {
+            reject(error);
+            return;
+        }
+
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.put(Settings.API + ApiEndpoints.UPDATE_QUIZ + id, data, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+}
+
 const deleteQuiz = (id) => {
     return new Promise((resolve, reject) => {
         const config = {headers: {token: localStorage.getItem("userToken")}};
@@ -72,9 +97,26 @@ const getQuizById = (id) => {
     });
 };
 
+const getQuestionsList = (quiz_id) => {
+    return new Promise((resolve, reject) => {
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.get(Settings.API + ApiEndpoints.GET_QUESTIONS + quiz_id, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+};
+
 export {
     getQuizzesList,
     addQuiz,
+    updateQuiz,
     deleteQuiz,
-    getQuizById
+    getQuizById,
+    getQuestionsList
 }

@@ -8,16 +8,17 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import FontAwesome from 'react-fontawesome';
 import {Twemoji} from 'react-emoji-render';
 import {DefaultAvatarSrc} from "../../constants/DefaultAvatar";
-import {deleteFile, getSearchFiles} from "../../helpers/Files";
+import {getSearchFiles} from "../../helpers/Files";
 import {sortDesc} from "../../helpers/sort";
 import {
-    Button, Modal, ModalFooter,
+    Modal, ModalFooter,
     ModalHeader, ModalBody
 } from "reactstrap";
 import {isEmpty, isNull, size} from "lodash";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faMinus} from "@fortawesome/free-solid-svg-icons";
 import UploadFile from "../Hosting/components/UploadFile";
+import useInterval from "../../helpers/useInterval";
 
 const MessagesConversation = ({userData, setUserData}) => {
     let {id} = useParams();
@@ -85,18 +86,12 @@ const MessagesConversation = ({userData, setUserData}) => {
         messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
     }
 
-    const funcUpdateMessage = () => {
+    useInterval(() => {
         getMessages(id).then(list => {
             setMessages(list);
         }).catch(() => {
         })
-    }
-
-    // uruchamia się nawet na innych routach i po przelogowaniu TODO naprawić
-    //const [updateMessages] = useState(new cron.CronJob("*/5 * * * * *",async ()=>{
-    //await funcUpdateMessage();
-    //}));
-
+    }, 5000)
 
     const handleOnChange = (e) => {
         const result = {};
@@ -152,8 +147,6 @@ const MessagesConversation = ({userData, setUserData}) => {
             }).catch(() => {})
         }
 
-        // TODO
-        // updateMessages.start();
     }, [])
 
     useEffect(() => {

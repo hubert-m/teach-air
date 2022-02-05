@@ -85,6 +85,7 @@ $router->group(
         $router->post('/posts/add_post', 'ThreadController@add_post');
 
         $router->post('/quizzes/create_quiz', 'QuizController@create_quiz');
+        $router->put('/quizzes/update_quiz/{id}', 'QuizController@update_quiz');
         $router->get('/quizzes/get_quiz/{id}', 'QuizController@get_quiz');
         $router->get('/quizzes/get_quizzes', 'QuizController@get_quizzes_list');
         $router->delete('/quizzes/delete_quiz/{id}', 'QuizController@delete_quiz');

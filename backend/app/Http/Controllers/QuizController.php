@@ -60,6 +60,39 @@ class QuizController extends Controller
         }
     }
 
+    public function update_quiz($id) {
+        $quiz = Quiz::where('id', '=', $id)->first();
+        if(!$quiz) {
+            return response()->json([
+                'error' => 'Taki quiz nie istnieje'
+            ], 400);
+        }
+
+        if($quiz->created_by != $this->request->auth->id || $this->request->auth->status != 3) {
+            return response()->json([
+                'error' => 'Nie mozesz edytowac tego quizu'
+            ], 400);
+        }
+
+        try {
+            $quiz->title = $this->request->input('title') ?: $quiz->title;
+            $quiz->description = $this->request->input('description') ?: $quiz->description;
+            $quiz->seconds_for_answer = $this->request->input('seconds_for_answer') ?: $quiz->seconds_for_answer;
+            $quiz->course_id = $this->request->input('course_id') ?: 0;
+            $quiz->save();
+
+            return response()->json([
+                'success' => 'Quiz zaktualizowany pomyslnie',
+                'quiz' => $quiz
+            ], 201);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function get_quizzes_list() {
         $quizzes = Quiz::all();
         foreach ($quizzes as $i => $quiz) {

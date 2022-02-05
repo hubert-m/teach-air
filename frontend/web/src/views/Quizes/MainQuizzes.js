@@ -238,7 +238,7 @@ const MainQuizzes = ({userData}) => {
                            onChange={handleOnChange} onBlur={onBlur}/>
                     <label htmlFor="description">Kurs <sub>(pole opcjonalne)</sub></label>
                     <select name="course_id" onChange={handleOnChange}>
-                        <option selected>Wybierz kurs</option>
+                        <option value="0" selected>Wybierz kurs</option>
                         {listOfCourses.map(({id, name}) => (
                             <option value={id} key={id}>{name}</option>
                         ))}
