@@ -321,7 +321,7 @@ const MessagesList = () => {
                                             <span
                                                 className="badge bg-secondary" style={{marginRight: '5px'}}>Ty:</span>
                                         )}
-                                        <Twemoji text={lastMessage?.content}/>
+                                        <Twemoji text={(lastMessage?.content).substring(0,35)}/>...
                                     </td>
                                     <td style={{textAlign: 'center'}}>
                                         <button type="button" className="btn btn-info" style={{color: "#FFF"}}

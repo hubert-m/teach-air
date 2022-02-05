@@ -26,7 +26,7 @@ const Quiz = () => {
     const [ready, setReady] = useState(false);
     const [finish, setFinish] = useState(false);
     const [showAskFinishQuiz, setShowAskFinishQuiz] = useState(false);
-    const [finishData, setFinishData] = useState({title: '', description: '', type: ''})
+    const [finishData, setFinishData] = useState({title: '', description: '', type: 'error'})
     const [preventCheat, setPreventCheat] = useState(0);
     const [quizData, setQuizData] = useState({
         seconds_for_answer: 10
@@ -57,8 +57,8 @@ const Quiz = () => {
                 setFinish(true)
                 setFinishData({
                     title: 'Nie wolno oszukiwać :)',
-                    description: 'Zmieniłeś rozmiar okna, więc quiz się zakończył. Wynik quizu został wysłany zarówno na Twojego maila jak i do wykładowcy',
-                    type: 'danger'
+                    description: 'Zmieniłeś rozmiar okna, więc quiz się zakończył. Wynik quizu został zapisany, a wiadomość została wysłana do wykładowcy',
+                    type: 'error'
                 })
                 endQuiz("RESIZE_WINDOW")
             }
@@ -85,7 +85,9 @@ const Quiz = () => {
 
         // jesli opuscimy quiz przechodząc do innej podstrony
         return function cleanup() {
-            endQuiz("OTHER")
+            if(!finish) {
+                endQuiz("CHANGE_ROUTE")
+            }
         }
 
     }, [])
@@ -97,7 +99,7 @@ const Quiz = () => {
         }
          */
         // jesli opuscimy quiz zamykajac karte przeglądarki, albo całą przeglądarke
-        endQuiz("OTHER")
+        endQuiz("EXIT_BROWSER")
     });
 
     /*
@@ -114,8 +116,8 @@ const Quiz = () => {
             setFinish(true)
             setFinishData({
                 title: 'Nie wolno oszukiwać :)',
-                description: 'Zmieniłeś kartę przeglądarki, więc quiz się zakończył. Wynik quizu został wysłany zarówno na Twojego maila jak i do wykładowcy',
-                type: 'danger'
+                description: 'Zmieniłeś kartę przeglądarki, więc quiz się zakończył. Wynik quizu został zapisany, a wiadomość została wysłana do wykładowcy',
+                type: 'error'
             })
             endQuiz("CHANGE_TAB")
         }
@@ -139,6 +141,7 @@ const Quiz = () => {
 
     // w przypadku zakonczenia quizu z przicisku i potwierdzenia
     const handleSuccessFinishQuiz = () => {
+        // setFinish(true)
         endQuiz("SUCCESS")
         history.push(Routes.QUIZZES)
         // komunikat z wynikami ewentualnie przekierowanie na strone quizów
@@ -147,7 +150,7 @@ const Quiz = () => {
     const endQuiz = (typeOfFinish) => {
         console.log("Strzał do API z wynikami quizu")
         // bez przekierowania
-
+        // setFinish(true)
         finishQuiz({
             quiz_id: id,
             correct_answers: correctAnswers,

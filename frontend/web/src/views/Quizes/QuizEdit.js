@@ -9,9 +9,9 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import LoaderScreen from "../../components/LoaderScreen";
 import {
     addQuestion,
-    deleteQuestion,
+    deleteQuestion, getListOfFinishedUsers,
     getQuestionsList,
-    getQuizById,
+    getQuizById, giveAnotherChance,
     updateQuestion,
     updateQuiz
 } from "../../helpers/Quiz";
@@ -20,6 +20,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit, faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {isEmpty} from "lodash";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
+import {DefaultAvatarSrc} from "../../constants/DefaultAvatar";
 
 const QuizEdit = ({userData}) => {
     let {id} = useParams();
@@ -41,9 +42,13 @@ const QuizEdit = ({userData}) => {
     const [showSuccess, setShowSuccess] = useState(false);
     const [successMessage, setSuccessMessage] = useState(null);
 
-    const [idQuestionToModify ,setIdQuestionToModify] = useState(null);
+    const [idQuestionToModify, setIdQuestionToModify] = useState(null);
     const [showAskAboutDeleteQuestion, setShowAskAboutDeleteQuestion] = useState(false);
     const [showFormAboutEditQuestion, setShowFormAboutEditQuestion] = useState(false);
+
+    const [idUserToGiveAnotherChance, setIdUserToGiveAnotherChance] = useState(null);
+    const [showAskAboutGiveAnotherChance, setShowAskAboutGiveAnotherChance] = useState(false);
+    const [listOfFinishedUsers, setListOfFinishedUsers] = useState([]);
 
     const [showFormAddQuestion, setShowFormAddQuestion] = useState(false);
 
@@ -81,6 +86,12 @@ const QuizEdit = ({userData}) => {
             getQuestionsList(id).then(list => {
                 sortDesc(list, "id");
                 setListOfQuestions(list)
+            }).catch(() => {
+            })
+
+            getListOfFinishedUsers(id).then(list => {
+                sortDesc(list, "id");
+                setListOfFinishedUsers(list)
             }).catch(() => {
             })
         }
@@ -202,6 +213,24 @@ const QuizEdit = ({userData}) => {
         })
     }
 
+    const handleGiveAnotherChance = () => {
+        const payload = {
+            user_id: idUserToGiveAnotherChance,
+            quiz_id: id
+        }
+        giveAnotherChance(payload).then(() => {
+            getListOfFinishedUsers(id).then(list => {
+                sortDesc(list, "id");
+                setListOfFinishedUsers(list)
+            }).catch(() => {
+            })
+        })
+            .catch(err => {
+                setErrorMessage(err)
+                setShowError(true)
+            })
+    }
+
     return (
         <>
             <div className="jumbotron" style={{marginTop: '50px'}}>
@@ -315,6 +344,62 @@ const QuizEdit = ({userData}) => {
                 <hr className="my-4"/>
             </div>
 
+            <div className="table-responsive">
+                <table className="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Rozwiązujący</th>
+                        <th scope="col">Wynik</th>
+                        <th scope="col">Sposób zakończenia quizu</th>
+                        <th scope="col" style={{textAlign: 'center'}}>Daj kolejną szansę</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {!isEmpty(listOfFinishedUsers) ? listOfFinishedUsers.map(({ user_id, correct_answers, wrong_answers, kind_of_finish }) => (
+                        <tr>
+                            <td>
+                                <div className="message-avatar">
+                                    <img
+                                        src={user_id?.profile_image || DefaultAvatarSrc[user_id?.sex_id] || DefaultAvatarSrc[0]}
+                                        alt=""/>
+                                </div>
+                                {user_id?.name} {user_id?.lastname}</td>
+                            <td>
+                                <span
+                                    style={{color: 'green'}}>{correct_answers}</span> / <span
+                                style={{color: 'red'}}>{wrong_answers}</span>
+                            </td>
+                            <td>
+                                {kind_of_finish == "RESIZE_WINDOW" && (<p>Poprzez zmianę rozmiaru okna</p>)}
+                                {kind_of_finish == "CHANGE_TAB" && (<p>Poprzez zmianę karty przeglądarki</p>)}
+                                {kind_of_finish == "SUCCESS" && (<p>Pomyślnie, poprzez dobrowolne zakończenie przyciskiem</p>)}
+                                {kind_of_finish == "CHANGE_ROUTE" && (<p>Poprzez zmianę widoku wewnątrz aplikacji</p>)}
+                                {kind_of_finish == "EXIT_BROWSER" && (<p>Poprzez zamknięcie karty lub okna przeglądarki</p>)}
+                                {kind_of_finish == "OTHER" && (<p>Inny</p>)}
+                            </td>
+                            <td style={{textAlign: 'center'}}>
+                                <button type="button" className="btn btn-danger"
+                                        style={{color: "#FFF", marginLeft: "10px"}}
+                                        onClick={() => {
+                                            setIdUserToGiveAnotherChance(user_id?.id)
+                                            setShowAskAboutGiveAnotherChance(true)
+                                        }}>
+                                    <FontAwesomeIcon
+                                        icon={faTrash}/>
+                                </button>
+                            </td>
+                        </tr>
+                    )) : (
+                        <tr>
+                            <td colSpan={4}>Jeszcze nikt nie rozwiązał tego quizu</td>
+                        </tr>
+                    )}
+
+                    </tbody>
+                </table>
+            </div>
+
             <Modal
                 isOpen={showFormAddQuestion}
                 toggle={() => setShowFormAddQuestion(!showFormAddQuestion)}
@@ -382,8 +467,6 @@ const QuizEdit = ({userData}) => {
                     </button>
                 </ModalFooter>
             </Modal>
-
-
 
 
             <Modal
@@ -472,6 +555,27 @@ const QuizEdit = ({userData}) => {
                 }}
             >
                 Czy na pewno chcesz skasować pytanie o ID={idQuestionToModify} ?
+            </SweetAlert>
+
+            <SweetAlert
+                warning
+                showCancel
+                show={showAskAboutGiveAnotherChance}
+                title="Na pewno?"
+                confirmBtnText="Tak, daj"
+                cancelBtnText="Nie dawaj"
+                confirmBtnBsStyle="danger"
+                cancelBtnBsStyle="secondary"
+                onConfirm={() => {
+                    setShowAskAboutGiveAnotherChance(false)
+                    handleGiveAnotherChance()
+                }}
+                onCancel={() => {
+                    setShowAskAboutGiveAnotherChance(false)
+                }}
+            >
+                Czy na pewno chcesz dać drugą szansę użytkownikowi o ID={idUserToGiveAnotherChance} ? Spowoduje to skasowanie aktualnego wyniku
+                z rozwiązanego quizu
             </SweetAlert>
 
             <SweetAlert
