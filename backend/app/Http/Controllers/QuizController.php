@@ -137,6 +137,7 @@ class QuizController extends Controller
             $course = Course::where('id', '=', $quiz->course_id)->first();
             $quiz->course_id = $course;
         }
+        $quiz->count_questions = count(Quiz_question::where('quiz_id', '=', $id)->get());
         return response()->json($quiz, 200);
     }
 

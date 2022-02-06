@@ -323,7 +323,7 @@ const Settings = ({userData, setUserData}) => {
                     <input type="password" className="form-control" name="new_password"
                            placeholder="Nowe hasło" value={dataPassword?.new_password}
                            onChange={handleOnChangePassword}/>
-                    <PasswordStrengthBar password={dataPassword.password} scoreWords={scoreWords} shortScoreWord={shortScoreWord} minLength={8} />
+                    <PasswordStrengthBar password={dataPassword.new_password} scoreWords={scoreWords} shortScoreWord={shortScoreWord} minLength={8} />
                 </div>
                 <div className="col-lg-4">
                     <label htmlFor="new_password_repeat">Powtórz nowe hasło</label>

@@ -37,6 +37,7 @@ const Quiz = () => {
     const [correctAnswers, setCorrectAnswers] = useState(0)
     const [wrongAnswers, setWrongAnswers] = useState(0)
     const [stopTimerForLoading, setStopTimerForLoading] = useState(false);
+    const [showInfoQuizHasNotQuestions, setShowInfoQuizHasNotQuestions] = useState(false);
 
 
     useInterval(() => {
@@ -134,7 +135,11 @@ const Quiz = () => {
 
     // rozpoczecie quizu po zatwierdzeniu komuniktu
     const startQuiz = () => {
-        setReady(true)
+        if(quizData?.count_questions == "0") {
+            setShowInfoQuizHasNotQuestions(true);
+        } else {
+            setReady(true)
+        }
         // setShowExitPrompt(true)
         // pobranie pytania losowego
 
@@ -237,7 +242,8 @@ const Quiz = () => {
                 zostanie zapisany
             </SweetAlert>
             <SweetAlert
-                variant={finish?.type}
+                // variant={finish?.type}
+                error
                 show={finish}
                 title={finishData?.title}
                 confirmBtnText="Ok"
@@ -247,6 +253,18 @@ const Quiz = () => {
                 }}
             >
                 {finishData?.description}
+            </SweetAlert>
+            <SweetAlert
+                warning
+                show={showInfoQuizHasNotQuestions}
+                title="Quiz jeszcze nie jest gotowy"
+                confirmBtnText="Ok"
+                confirmBtnBsStyle="danger"
+                onConfirm={() => {
+                    history.push(Routes.QUIZZES);
+                }}
+            >
+                Ten quiz jeszcze nie ma zdefiniowanych pytań. Wróć później :)
             </SweetAlert>
             <SweetAlert
                 error
