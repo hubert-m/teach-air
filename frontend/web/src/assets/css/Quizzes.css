@@ -18,9 +18,6 @@
 }
 
 .quiz-absolute-right-corner {
-    position: absolute;
-    right: 0;
-    bottom: 0;
     text-align: right;
 }
 
@@ -37,7 +34,8 @@
     margin-bottom: 5px;
     display: inline-block;
     margin-left: 5px;
-    min-width: 180px;
+    width: 32%;
+    text-align: center;
 }
 
 .form-add-question label {

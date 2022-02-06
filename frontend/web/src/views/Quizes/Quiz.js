@@ -7,7 +7,7 @@ import useInterval from "../../helpers/useInterval";
 import {Badge} from "react-bootstrap";
 import {finishQuiz, getQuizById, updateQuiz} from "../../helpers/Quiz";
 import LoaderScreen from "../../components/LoaderScreen";
-import { useBeforeunload } from 'react-beforeunload';
+import {useBeforeunload} from 'react-beforeunload';
 // import { usePageVisibility } from 'react-page-visibility';
 // https://www.npmjs.com/package/react-page-visibility // moze sie przydac do obslugi konca quizu, kiedy odfocusujemy okno przegladarki
 
@@ -85,7 +85,7 @@ const Quiz = () => {
 
         // jesli opuscimy quiz przechodząc do innej podstrony
         return function cleanup() {
-            if(!finish) {
+            if (!finish) {
                 endQuiz("CHANGE_ROUTE")
             }
         }
@@ -158,7 +158,8 @@ const Quiz = () => {
             kind_of_finish: typeOfFinish
         }).then(() => {
             // bez przekierowania
-        }).catch(() => {})
+        }).catch(() => {
+        })
     }
 
     return (
@@ -166,19 +167,25 @@ const Quiz = () => {
             {ready && (
                 <>
                     <div className="jumbotron" style={{marginTop: '50px'}}>
-                        <h1 className="display-7">{quizData?.title}</h1>
-                        {quizData?.description != "" && (<p>{quizData?.description}</p>)}
-                        <hr className="my-4"/>
-                        <div className="quiz-absolute-right-corner">
-                            <button type="button" className="btn btn-danger"
-                                    onClick={() => setShowAskFinishQuiz(true)}>Zakończ quiz
-                            </button>
-                            <div className="quiz-absolute-right-corner-scores">
-                                <p>Poprawnych <Badge bg="success">{correctAnswers}</Badge></p>
-                                <p>Niepoprawnych <Badge bg="danger">{wrongAnswers}</Badge></p>
-                                <p>Wszystkich <Badge bg="secondary">{correctAnswers + wrongAnswers}</Badge></p>
+                        <div className="row">
+                            <div className="col-lg-6">
+                                <h1 className="display-7">{quizData?.title}</h1>
+                                {quizData?.description != "" && (<p>{quizData?.description}</p>)}
+                            </div>
+                            <div className="col-lg-6">
+                                <div className="quiz-absolute-right-corner">
+                                    <button type="button" className="btn btn-danger"
+                                            onClick={() => setShowAskFinishQuiz(true)}>Zakończ quiz
+                                    </button>
+                                    <div className="quiz-absolute-right-corner-scores">
+                                        <p>Poprawnych <Badge bg="success">{correctAnswers}</Badge></p>
+                                        <p>Niepoprawnych <Badge bg="danger">{wrongAnswers}</Badge></p>
+                                        <p>Wszystkich <Badge bg="secondary">{correctAnswers + wrongAnswers}</Badge></p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <hr className="my-4"/>
                     </div>
                     <div className="row">
                         <div className="col-6">
