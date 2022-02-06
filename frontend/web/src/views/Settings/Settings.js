@@ -15,6 +15,8 @@ import UploadFile from "../Hosting/components/UploadFile";
 import {DefaultAvatarSrc} from "../../constants/DefaultAvatar";
 import Routes from "../../constants/Routes";
 import {useHistory} from "react-router";
+import {scoreWords, shortScoreWord} from "../../constants/scoreWords";
+import PasswordStrengthBar from "react-password-strength-bar";
 
 const Settings = ({userData, setUserData}) => {
     const history = useHistory();
@@ -321,6 +323,7 @@ const Settings = ({userData, setUserData}) => {
                     <input type="password" className="form-control" name="new_password"
                            placeholder="Nowe hasło" value={dataPassword?.new_password}
                            onChange={handleOnChangePassword}/>
+                    <PasswordStrengthBar password={dataPassword.password} scoreWords={scoreWords} shortScoreWord={shortScoreWord} minLength={8} />
                 </div>
                 <div className="col-lg-4">
                     <label htmlFor="new_password_repeat">Powtórz nowe hasło</label>

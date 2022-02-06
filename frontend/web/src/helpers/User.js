@@ -3,6 +3,7 @@ import Settings from "../constants/Settings";
 import validateEmail from "./validateEmail";
 import Routes from "../constants/Routes";
 import ApiEndpoints from "../constants/ApiEndpoints";
+import validatePassword from "./validatePassword";
 
 const getMe = () => {
     return new Promise((resolve, reject) => {
@@ -60,8 +61,9 @@ const changePassword = (data) => {
 
         if (!data?.new_password || !data?.new_password_repeat || !data?.old_password)
             error = "Musisz wypełnić wszystkie pola";
-
-        if (data?.new_password != data?.new_password_repeat)
+        else if (!validatePassword(data.new_password))
+            error = "Nowe hasło nie spełnia kryteriów bezpieczeństwa (min. 8 znaków w tym mała litera, wielka litera, cyfra i znak specjalny)";
+        else if (data?.new_password != data?.new_password_repeat)
             error = "Nowe hasła nie są identyczne";
 
         if (error) {
@@ -134,6 +136,8 @@ const register = (data) => {
             error = "Musisz wypełnić wszystkie pola";
         else if (!validateEmail(data.email))
             error = "Wprowadzony adres e-mail jest nieprawidłowy";
+        else if (!validatePassword(data.password))
+            error = "Hasło nie spełnia kryteriów bezpieczeństwa (min. 8 znaków w tym mała litera, wielka litera, cyfra i znak specjalny)";
         else if (data.password !== data.passwordRepeat)
             error = "Wprowadzone hasła nie są takie same";
 
@@ -358,6 +362,8 @@ const resetPassword = (data) => {
         let error = null;
         if (!data.activate_token)
             error = "Musisz podać kod do resetu hasła";
+        else if (!validatePassword(data.password))
+            error = "Hasło nie spełnia kryteriów bezpieczeństwa (min. 8 znaków w tym mała litera, wielka litera, cyfra i znak specjalny)";
         else if(data.password != data.repeat_password)
             error = "Wprowadzone hasła nie są takie same";
 

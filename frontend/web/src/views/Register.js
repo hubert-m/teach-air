@@ -4,6 +4,8 @@ import Routes from "../constants/Routes";
 import {useHistory} from "react-router";
 import {Link} from "react-router-dom";
 import {getSexList, register} from "../helpers/User";
+import PasswordStrengthBar from "react-password-strength-bar";
+import {scoreWords, shortScoreWord} from "../constants/scoreWords";
 
 
 const Register = () => {
@@ -57,7 +59,6 @@ const Register = () => {
         }
     };
 
-
     return (
         <>
             <div className="wrapper fadeInDown">
@@ -75,6 +76,7 @@ const Register = () => {
                                    name="passwordRepeat"
                                    placeholder="Powtórz hasło" value={data.passwordRepeat}
                                    onChange={handleOnChange} onKeyPress={handleKeyPress}/>
+                            <PasswordStrengthBar password={data.password} scoreWords={scoreWords} shortScoreWord={shortScoreWord} minLength={8} />
                         </div>
                         <div className="col-lg-6">
                             <input type="text" id="name" className="form-control fadeIn second" name="name"
@@ -84,7 +86,7 @@ const Register = () => {
                                    placeholder="Nazwisko" value={data.lastname}
                                    onChange={handleOnChange} onKeyPress={handleKeyPress}/>
                             <select className="fadeIn third" name="sex_id" onChange={handleOnChange} onKeyPress={handleKeyPress}>
-                                <option selected>Wybierz płeć</option>
+                                <option selected disabled>Wybierz płeć</option>
                                 {sexList.map(({id, value}) => (
                                     <option value={id}>{value}</option>
                                 ))}

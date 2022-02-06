@@ -21,6 +21,7 @@ import {faEdit, faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {isEmpty} from "lodash";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
 import {DefaultAvatarSrc} from "../../constants/DefaultAvatar";
+import MethodOfFinishQuiz from "../../constants/MethodOfFinishQuiz";
 
 const QuizEdit = ({userData}) => {
     let {id} = useParams();
@@ -371,12 +372,12 @@ const QuizEdit = ({userData}) => {
                                 style={{color: 'red'}}>{wrong_answers}</span>
                             </td>
                             <td>
-                                {kind_of_finish == "RESIZE_WINDOW" && (<p>Poprzez zmianę rozmiaru okna</p>)}
-                                {kind_of_finish == "CHANGE_TAB" && (<p>Poprzez zmianę karty przeglądarki</p>)}
-                                {kind_of_finish == "SUCCESS" && (<p>Pomyślnie, poprzez dobrowolne zakończenie przyciskiem</p>)}
-                                {kind_of_finish == "CHANGE_ROUTE" && (<p>Poprzez zmianę widoku wewnątrz aplikacji</p>)}
-                                {kind_of_finish == "EXIT_BROWSER" && (<p>Poprzez zamknięcie karty lub okna przeglądarki</p>)}
-                                {kind_of_finish == "OTHER" && (<p>Inny</p>)}
+                                {kind_of_finish == MethodOfFinishQuiz.RESIZE_WINDOW && (<p>Poprzez zmianę rozmiaru okna</p>)}
+                                {kind_of_finish == MethodOfFinishQuiz.CHANGE_TAB && (<p>Poprzez zmianę karty przeglądarki</p>)}
+                                {kind_of_finish == MethodOfFinishQuiz.SUCCESS && (<p>Pomyślnie, poprzez dobrowolne zakończenie przyciskiem</p>)}
+                                {kind_of_finish == MethodOfFinishQuiz.CHANGE_ROUTE && (<p>Poprzez zmianę widoku wewnątrz aplikacji</p>)}
+                                {kind_of_finish == MethodOfFinishQuiz.EXIT_BROWSER && (<p>Poprzez zamknięcie karty lub okna przeglądarki</p>)}
+                                {kind_of_finish == MethodOfFinishQuiz.OTHER && (<p>Inny</p>)}
                             </td>
                             <td style={{textAlign: 'center'}}>
                                 <button type="button" className="btn btn-danger"

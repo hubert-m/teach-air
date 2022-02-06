@@ -8,6 +8,7 @@ import {Badge} from "react-bootstrap";
 import {finishQuiz, getQuizById, updateQuiz} from "../../helpers/Quiz";
 import LoaderScreen from "../../components/LoaderScreen";
 import {useBeforeunload} from 'react-beforeunload';
+import MethodOfFinishQuiz from "../../constants/MethodOfFinishQuiz";
 // import { usePageVisibility } from 'react-page-visibility';
 // https://www.npmjs.com/package/react-page-visibility // moze sie przydac do obslugi konca quizu, kiedy odfocusujemy okno przegladarki
 
@@ -60,7 +61,7 @@ const Quiz = () => {
                     description: 'Zmieniłeś rozmiar okna, więc quiz się zakończył. Wynik quizu został zapisany, a wiadomość została wysłana do wykładowcy',
                     type: 'error'
                 })
-                endQuiz("RESIZE_WINDOW")
+                endQuiz(MethodOfFinishQuiz.RESIZE_WINDOW)
             }
             setPreventCheat((prevState) => {
                 return prevState + 1
@@ -86,7 +87,7 @@ const Quiz = () => {
         // jesli opuscimy quiz przechodząc do innej podstrony
         return function cleanup() {
             if (!finish) {
-                endQuiz("CHANGE_ROUTE")
+                endQuiz(MethodOfFinishQuiz.CHANGE_ROUTE)
             }
         }
 
@@ -99,7 +100,7 @@ const Quiz = () => {
         }
          */
         // jesli opuscimy quiz zamykajac karte przeglądarki, albo całą przeglądarke
-        endQuiz("EXIT_BROWSER")
+        endQuiz(MethodOfFinishQuiz.EXIT_BROWSER)
     });
 
     /*
@@ -119,7 +120,7 @@ const Quiz = () => {
                 description: 'Zmieniłeś kartę przeglądarki, więc quiz się zakończył. Wynik quizu został zapisany, a wiadomość została wysłana do wykładowcy',
                 type: 'error'
             })
-            endQuiz("CHANGE_TAB")
+            endQuiz(MethodOfFinishQuiz.CHANGE_TAB)
         }
     };
 
@@ -142,7 +143,7 @@ const Quiz = () => {
     // w przypadku zakonczenia quizu z przicisku i potwierdzenia
     const handleSuccessFinishQuiz = () => {
         // setFinish(true)
-        endQuiz("SUCCESS")
+        endQuiz(MethodOfFinishQuiz.SUCCESS)
         history.push(Routes.QUIZZES)
         // komunikat z wynikami ewentualnie przekierowanie na strone quizów
     }

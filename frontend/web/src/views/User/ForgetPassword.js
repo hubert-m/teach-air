@@ -2,6 +2,8 @@ import React, {useState} from "react";
 import {resetPassword, sendResetPassword} from "../../helpers/User";
 import SweetAlert from "react-bootstrap-sweetalert";
 import LoaderScreen from "../../components/LoaderScreen";
+import {scoreWords, shortScoreWord} from "../../constants/scoreWords";
+import PasswordStrengthBar from "react-password-strength-bar";
 
 const ForgetPassword = () => {
     const [showLoader, setShowLoader] = useState(false);
@@ -106,6 +108,7 @@ const ForgetPassword = () => {
                         <input type="password" className="form-control" name="password"
                                placeholder="Nowe hasło" value={dataResetPassword?.password}
                                onChange={handleOnChangeResetPassword}/>
+                        <PasswordStrengthBar password={dataResetPassword.password} scoreWords={scoreWords} shortScoreWord={shortScoreWord} minLength={8} />
                     </div>
                     <div className="col-lg-4">
                         <label htmlFor="repeat_password">Powtórz Nowe hasło</label>
