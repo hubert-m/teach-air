@@ -18,8 +18,8 @@ function App() {
             setShowLoader(true);
             getMe().then(userDataTmp => {
                 setUserData(userDataTmp);
-            }).catch(errorMessage => {
-                alert(errorMessage);
+            }).catch(() => {
+                history.push(Routes.LOGOUT);
             }).finally(async () => {
                 await setShowLoader(false);
             });
