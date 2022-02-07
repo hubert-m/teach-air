@@ -45,3 +45,7 @@
 .edit-question-right-bottom-cornet {
     text-align: right;
 }
+
+.answer-boxes-container button {
+    text-transform: none!important;
+}

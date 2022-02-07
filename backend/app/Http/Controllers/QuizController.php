@@ -354,7 +354,7 @@ class QuizController extends Controller
 
         $quiz_of_question = Quiz::where('id', '=', $question->quiz_id)->first();
 
-        if ($quiz_of_question->created_by != $this->request->auth->id || $this->request->auth->status != 3) {
+        if ($quiz_of_question->created_by != $this->request->auth->id && $this->request->auth->status != 3) {
             return response()->json([
                 'error' => 'Nie mozesz usunac tego pytania'
             ], 400);

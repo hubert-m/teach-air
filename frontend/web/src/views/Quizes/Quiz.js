@@ -5,7 +5,7 @@ import Routes from "../../constants/Routes";
 import useWindowSize from "../../helpers/useWindowSize";
 import useInterval from "../../helpers/useInterval";
 import {Badge} from "react-bootstrap";
-import {finishQuiz, getQuizById, updateQuiz} from "../../helpers/Quiz";
+import {checkAnswerOnQuestion, finishQuiz, getQuizById, getRandomQuestion, updateQuiz} from "../../helpers/Quiz";
 import LoaderScreen from "../../components/LoaderScreen";
 import {useBeforeunload} from 'react-beforeunload';
 import MethodOfFinishQuiz from "../../constants/MethodOfFinishQuiz";
@@ -24,6 +24,9 @@ const Quiz = () => {
     const [showSuccess, setShowSuccess] = useState(false);
     const [successMessage, setSuccessMessage] = useState(null);
 
+    const [showErrorAnswer, setShowErrorAnswer] = useState(false);
+    const [showSuccessAnswer, setShowSuccessAnswer] = useState(false);
+
     const [ready, setReady] = useState(false);
     const [finish, setFinish] = useState(false);
     const [showAskFinishQuiz, setShowAskFinishQuiz] = useState(false);
@@ -38,14 +41,31 @@ const Quiz = () => {
     const [wrongAnswers, setWrongAnswers] = useState(0)
     const [stopTimerForLoading, setStopTimerForLoading] = useState(false);
     const [showInfoQuizHasNotQuestions, setShowInfoQuizHasNotQuestions] = useState(false);
+    const [questionData, setQuestionData] = useState({
+        id: '',
+        question: '',
+        answer_a: '',
+        answer_b: '',
+        answer_c: '',
+        answer_d: ''
+    })
 
 
     useInterval(() => {
         if (ready && !finish && quizData?.seconds_for_answer != 0 && !stopTimerForLoading) {
             if (timer == 0) {
-                console.log('skonczyl sie czas, bledna odpowiedz, nastepne pytanie')
-                setWrongAnswers(wrongAnswers + 1)
-                setTimer(quizData?.seconds_for_answer)
+                // console.log('skonczyl sie czas, bledna odpowiedz, nastepne pytanie')
+                setStopTimerForLoading(true);
+                getRandomQuestion(id).then((list) => {
+                    setQuestionData(list)
+                    setWrongAnswers(wrongAnswers + 1)
+                    setTimer(quizData?.seconds_for_answer)
+                    setStopTimerForLoading(false);
+                }).catch((err) => {
+                    setErrorMessage(err)
+                    setShowError(true)
+                })
+
             } else {
                 setTimer(timer - 1);
             }
@@ -79,20 +99,36 @@ const Quiz = () => {
                 seconds_for_answer: Number(list?.seconds_for_answer)
             });
             setTimer(Number(list?.seconds_for_answer))
-            setStopTimerForLoading(false);
         }).catch((err) => {
             setErrorMessage(err)
             setShowError(true)
         })
 
         // jesli opuscimy quiz przechodząc do innej podstrony
+        // Wykonuje się nawet po poprawnym zakonczeniu quizu i w momencie, gdy jeszcze nie ma pytan - uniemozliwia kolejne podejscie do quizu przez zmiane route
+        /*
         return function cleanup() {
-            if (!finish) {
+            console.log(finish)
+            console.log(ready)
+            if (!finish && ready) {
                 endQuiz(MethodOfFinishQuiz.CHANGE_ROUTE)
             }
         }
+         */
 
     }, [])
+
+    useEffect(() => {
+        if (ready) {
+            getRandomQuestion(id).then((list_question) => {
+                setQuestionData(list_question)
+                setStopTimerForLoading(false);
+            }).catch((err) => {
+                setErrorMessage(err)
+                setShowError(true)
+            })
+        }
+    }, [ready])
 
     useBeforeunload((event) => {
         /*
@@ -135,14 +171,11 @@ const Quiz = () => {
 
     // rozpoczecie quizu po zatwierdzeniu komuniktu
     const startQuiz = () => {
-        if(quizData?.count_questions == "0") {
+        if (quizData?.count_questions == "0") {
             setShowInfoQuizHasNotQuestions(true);
         } else {
             setReady(true)
         }
-        // setShowExitPrompt(true)
-        // pobranie pytania losowego
-
     }
 
     // w przypadku zakonczenia quizu z przicisku i potwierdzenia
@@ -165,6 +198,49 @@ const Quiz = () => {
         }).then(() => {
             // bez przekierowania
         }).catch(() => {
+        })
+    }
+
+    const handleCheckAnswer = (answer) => {
+        setStopTimerForLoading(true);
+        setTimer(Number(quizData?.seconds_for_answer))
+        checkAnswerOnQuestion(questionData?.id, answer).then(() => {
+            setCorrectAnswers(correctAnswers + 1)
+            setShowSuccessAnswer(true)
+            const timer = setTimeout(() => {
+                getRandomQuestion(id).then((list_question) => {
+                    setQuestionData(list_question)
+                    setStopTimerForLoading(false);
+                }).catch((err) => {
+                    setErrorMessage(err)
+                    setShowError(true)
+                }).finally(() => {
+                    setShowSuccessAnswer(false)
+                    clearTimeout(timer)
+                })
+            }, 3000)
+
+        }).catch((err) => {
+            if (err == "Niepoprawna odpowiedz") {
+                setWrongAnswers(wrongAnswers + 1)
+                setShowErrorAnswer(true)
+                const timer = setTimeout(() => {
+                    getRandomQuestion(id).then((list_question) => {
+                        setQuestionData(list_question)
+                        setStopTimerForLoading(false);
+                    }).catch((err) => {
+                        setErrorMessage(err)
+                        setShowError(true)
+                    }).finally(() => {
+                        setShowErrorAnswer(false)
+                        clearTimeout(timer)
+                    })
+                }, 3000)
+
+            } else {
+                setErrorMessage(err)
+                setShowError(true)
+            }
         })
     }
 
@@ -193,14 +269,45 @@ const Quiz = () => {
                         </div>
                         <hr className="my-4"/>
                     </div>
-                    <div className="row">
-                        <div className="col-6">
-                            <p>Wyniki...</p>
-                            {quizData?.seconds_for_answer == 0 ? (<p>Bez limitu czasowego</p>) : (
-                                <p>Pozostało {timer} sekund</p>)}
+                    <div className="jumbotron" style={{marginTop: '50px'}}>
+                        <div className="row">
+                            <div className="col-6">
+                                <h1 className="display-7">{questionData?.question}</h1>
+                                {questionData?.description != "" && (<p>{questionData?.description}</p>)}
+                            </div>
+                            <div className="col-6" style={{textAlign: 'right'}}>
+                                {quizData?.seconds_for_answer == 0 ? (<p>Bez limitu czasowego</p>) :
+                                    timer <= 5 ? (
+                                        <span className="badge bg-danger">{timer} sekund</span>
+                                    ) : timer <= 10 ? (
+                                        <span className="badge bg-warning">{timer} sekund</span>
+                                    ) : (
+                                        <span className="badge bg-secondary">{timer} sekund</span>
+                                    )}
+                            </div>
                         </div>
-                        <div className="col-6">
-
+                        <hr className="my-4"/>
+                    </div>
+                    <div className="row answer-boxes-container">
+                        <div className="col-lg-6" style={{padding: '10px', textAlign: 'center'}}>
+                            <button type="button" className="btn btn-secondary"
+                                    onClick={() => handleCheckAnswer("a")}>{questionData?.answer_a}
+                            </button>
+                        </div>
+                        <div className="col-lg-6" style={{padding: '10px', textAlign: 'center'}}>
+                            <button type="button" className="btn btn-secondary"
+                                    onClick={() => handleCheckAnswer("b")}>{questionData?.answer_b}
+                            </button>
+                        </div>
+                        <div className="col-lg-6" style={{padding: '10px', textAlign: 'center'}}>
+                            <button type="button" className="btn btn-secondary"
+                                    onClick={() => handleCheckAnswer("c")}>{questionData?.answer_c}
+                            </button>
+                        </div>
+                        <div className="col-lg-6" style={{padding: '10px', textAlign: 'center'}}>
+                            <button type="button" className="btn btn-secondary"
+                                    onClick={() => handleCheckAnswer("d")}>{questionData?.answer_d}
+                            </button>
                         </div>
                     </div>
                 </>
@@ -283,6 +390,26 @@ const Quiz = () => {
                 onConfirm={() => setShowSuccess(false)}
             >
                 {successMessage}
+            </SweetAlert>
+            <SweetAlert
+                success
+                show={showSuccessAnswer}
+                title="Dobrze!"
+                confirmBtnBsStyle="success"
+                disabled={true}
+                onConfirm={() => {}}
+            >
+                Poprawna odpowiedź! Złap oddech, za chwilę kolejne pytanie
+            </SweetAlert>
+            <SweetAlert
+                error
+                show={showErrorAnswer}
+                title="źle!"
+                confirmBtnBsStyle="danger"
+                disabled={true}
+                onConfirm={() => {}}
+            >
+                Błędna odpowiedź! Złap oddech, za chwilę kolejne pytanie
             </SweetAlert>
             {showLoader && <LoaderScreen/>}
         </>

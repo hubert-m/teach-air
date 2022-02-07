@@ -239,6 +239,40 @@ const giveAnotherChance = (data) => {
     });
 };
 
+const getRandomQuestion = (quiz_id) => {
+    return new Promise((resolve, reject) => {
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.get(Settings.API + ApiEndpoints.GET_RANDOM_QUESTION + quiz_id, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+};
+
+const checkAnswerOnQuestion = (question_id, answer) => {
+    const payload = {
+        question_id: question_id,
+        answer: answer
+    }
+    return new Promise((resolve, reject) => {
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.post(Settings.API + ApiEndpoints.CHECK_ANSWER, payload, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+};
+
 export {
     getQuizzesList,
     addQuiz,
@@ -251,5 +285,7 @@ export {
     updateQuestion,
     deleteQuestion,
     getListOfFinishedUsers,
-    giveAnotherChance
+    giveAnotherChance,
+    getRandomQuestion,
+    checkAnswerOnQuestion
 }
