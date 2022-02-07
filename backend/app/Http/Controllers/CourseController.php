@@ -26,64 +26,6 @@ class CourseController extends Controller
         $this->request = $request;
     }
 
-    public function update(Request $request, $id)
-    {
-        $course = Course::find($id);
-
-        if (!$course) {
-            return response()->json([
-                'error' => 'Kurs nie istnieje'
-            ], 400);
-        }
-
-        $this->validate($this->request, [
-            'parent_id' => 'numeric'
-        ]);
-
-        try {
-            $course->name = $request->input('name') ?: $course->name;
-            $course->description = $request->input('description') ?: $course->description;
-            $course->icon = $request->input('icon') ?: $course->icon;
-            $course->slug = $request->input('slug') ?: self::slugify($request->input('name')) ?: $course->slug;
-            $course->parent_id = $request->input('parent_id') ?: $course->parent_id;
-            $course->save();
-
-            return response()->json([
-                'success' => 'Kurs zaktualizowany pomyslnie',
-                'course' => $course
-            ], 201);
-        } catch (\Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
-        }
-
-    }
-
-    public function destroy($id)
-    {
-        $course = Course::find($id);
-
-        if (!$course) {
-            return response()->json([
-                'error' => 'Kurs nie istnieje'
-            ], 400);
-        }
-
-        try {
-            $course->delete();
-
-            return response()->json([
-                'success' => 'Kurs usuniety pomyslnie',
-                'course' => $course
-            ], 202);
-        } catch (\Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
     public function get_courses_list()
     {
         $parent_id = $this->request->parent_id ?: null;
@@ -577,23 +519,55 @@ class CourseController extends Controller
     }
 
     public function delete_course($id) {
-        if ($this->request->auth->status != 3) {
-            return response()->json([
-                'error' => 'Nie jestes adminem, wiec nie mozesz kasowac kursow'
-            ], 400);
-        }
-
         $course = Course::where('id', '=', $id)->first();
         if(!$course) {
             return response()->json([
                 'error' => 'Taki kurs nie istnieje'
             ], 400);
         }
+
+        if ($this->request->auth->status != 3 && $this->request->auth->id != $course->created_by) {
+            return response()->json([
+                'error' => 'Nie jestes adminem ani autorem kursu, wiec nie mozesz go skasować'
+            ], 400);
+        }
+
         try {
             $course->delete();
 
             return response()->json([
                 'success' => 'Kurs usuniety pomyslnie',
+                'course' => $course
+            ], 202);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function update_course($id) {
+        $course = Course::where('id', '=', $id)->first();
+        if(!$course) {
+            return response()->json([
+                'error' => 'Taki kurs nie istnieje'
+            ], 400);
+        }
+
+        if ($this->request->auth->status != 3 && $this->request->auth->id != $course->created_by) {
+            return response()->json([
+                'error' => 'Nie jestes adminem ani autorem kursu, wiec nie mozesz go zmodyfikowac'
+            ], 400);
+        }
+
+        try {
+            $course->name = $this->request->input('name') ?: $course->name;
+            $course->description = $this->request->input('description') ?: $course->description;
+            $course->icon = $this->request->input('icon') ?: $course->icon;
+            $course->save();
+
+            return response()->json([
+                'success' => 'Kurs zaktualizowany pomyslnie',
                 'course' => $course
             ], 202);
         } catch (\Throwable $e) {

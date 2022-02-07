@@ -72,6 +72,7 @@ const FormAddCourse = ({setCourses, parent_id}) => {
 
                     <Select name="icon"
                             options={IconsOptions}
+                            className="select-course-icon"
                             value={data.icon}
                             onChange={handleOnChangeSelect}
                             placeholder="Wybierz ikonę dla kursu *pole opcjonalne"

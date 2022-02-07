@@ -52,7 +52,7 @@
     right: 25px;
     font-size: 37px;
     color: red;
-    z-index: 10;
+    z-index: 1;
 }
 
 .jumbotron {
@@ -69,4 +69,29 @@
 
 .course-box-name, .course-box-description {
     text-align: center;
+}
+
+.left-top-corner-of-course {
+    position: absolute;
+    top: 45px;
+    left: 19px;
+}
+
+.left-top-corner-of-course svg {
+    transition: .3s;
+    cursor: pointer;
+    font-size: 21px;
+    z-index: 1;
+}
+
+.left-top-corner-of-course svg:hover {
+    color: var(--bs-primary);
+}
+
+.left-top-corner-of-course svg:last-child {
+    margin-left: 5px;
+}
+
+.select-course-icon div {
+    z-index: 11;
 }

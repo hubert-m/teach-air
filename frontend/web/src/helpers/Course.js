@@ -141,6 +141,51 @@ const getCoursesListForSelect = () => {
     });
 }
 
+const editCourse = (course_id, data) => {
+    return new Promise((resolve, reject) => {
+
+        let error = null;
+        if (!data.name)
+            error = "Nie możesz zmienić nazwy kursu na puste pole";
+
+        if (error) {
+            reject(error);
+            return;
+        }
+
+        const data_result = {
+            ...data,
+            icon: data?.icon?.value,
+        }
+
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.put(Settings.API + ApiEndpoints.UPDATE_COURSE + course_id, data_result, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+}
+
+const deleteCourse = (course_id) => {
+    return new Promise((resolve, reject) => {
+        const config = {headers: {token: localStorage.getItem("userToken")}};
+        axios.delete(Settings.API + ApiEndpoints.DELETE_COURSE + course_id, config).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            let message = "Nie udało się połączyć z serwerem";
+            if (error.response && error.response.data.error) {
+                message = error.response.data.error;
+            }
+            reject(message);
+        });
+    });
+}
+
 export {
     getCoursesList,
     addCourse,
@@ -149,5 +194,7 @@ export {
     addMember,
     deleteMember,
     changeFavouriteCourse,
-    getCoursesListForSelect
+    getCoursesListForSelect,
+    editCourse,
+    deleteCourse
 }

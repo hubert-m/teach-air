@@ -38,13 +38,7 @@ $router->post('/users/reset_password', 'UserController@reset_password');
 $router->group(
     ['middleware' => 'jwt.auth'],
     function () use ($router) {
-
-        //$router->put('/courses/{id}', 'CourseController@update');
-        //$router->delete('/courses/{id}', 'CourseController@destroy');
-
         $router->get('/users/me', ['uses' => 'UserController@me']);
-        //$router->put('/users/{id}', 'UserController@update');
-        //$router->delete('/users/{id}', 'UserController@destroy');
 
         $router->post('/users/sex_add', 'UserController@sex_add');
         $router->delete('/users/delete_sex/{id}', 'UserController@delete_sex');
@@ -69,6 +63,7 @@ $router->group(
         $router->post('/courses/change_favourite_course', 'CourseController@change_favourite_course');
         $router->get('/courses/get_courses_list_for_select', 'CourseController@get_courses_list_for_select');
         $router->delete('/courses/delete_course/{id}', 'CourseController@delete_course');
+        $router->put('/courses/update_course/{id}', 'CourseController@update_course');
 
         $router->post('/files/upload', 'FileController@upload');
         $router->post('/files/search', 'FileController@search');

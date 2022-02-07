@@ -7,8 +7,8 @@ const ApiEndpoints = {
     GET_USER_BY_ID: '/users/', // :id
     SEND_ACTIVATION_AGAIN: '/users/send_activation_again',
     ACTIVATE_ACCOUNT: '/users/activate_account',
-    SEND_RESET_PASSWORD: '/users/send_reset_password', // oprogramowac TODO
-    RESET_PASSWORD: '/users/reset_password', // oprogramowac TODO
+    SEND_RESET_PASSWORD: '/users/send_reset_password',
+    RESET_PASSWORD: '/users/reset_password',
 
     SEX_LIST: '/users/sex_list',
     SEX_ADD: '/users/sex_add',
@@ -24,6 +24,8 @@ const ApiEndpoints = {
 
     GET_COURSES_LIST: '/courses/get_courses_list',
     GET_COURSE: '/courses/get_course/', // :id
+    DELETE_COURSE: '/courses/delete_course/', // :id
+    UPDATE_COURSE: '/courses/update_course/', // :id
     ADD_COURSE: '/courses/create_course',
     ADD_MEMBER: '/courses/add_member',
     DELETE_MEMBER: '/courses/delete_member',

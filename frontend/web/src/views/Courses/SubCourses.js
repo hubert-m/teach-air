@@ -85,7 +85,7 @@ const SubCourses = ({userData}) => {
                 <FormAddCourse setCourses={setCourses} parent_id={id}/>
             ))}
 
-            <ListOfCourses courses={courses} updateListCourses={updateListCourses}/>
+            <ListOfCourses courses={courses} updateListCourses={updateListCourses} userData={userData}/>
 
             {course?.isMember == 1 && ((userData?.status == StatusUser.ADMIN || userData?.status == StatusUser.TEACHER) && (
                 <FormAddMember courseId={id}/>

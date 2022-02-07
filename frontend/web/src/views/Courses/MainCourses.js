@@ -43,7 +43,7 @@ const MainCourses = ({userData}) => {
             <BreadcrumbList breadcrumbs={breadcrumbs} />
             {userData?.status ==StatusUser.ADMIN && <FormAddCourse setCourses={setCourses} parent_id={null} /> }
             <TitleOfCourse title="Kursy" />
-            <ListOfCourses courses={courses} updateListCourses={updateListCourses} />
+            <ListOfCourses courses={courses} updateListCourses={updateListCourses} userData={userData} />
             {showLoader && <LoaderScreen/>}
         </>
     )

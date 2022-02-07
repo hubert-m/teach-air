@@ -173,11 +173,14 @@ const MainQuizzes = ({userData}) => {
                                                               }) => (
                         <tr key={id}>
                             <th scope="row">{id}</th>
-                            <td><Twemoji text={title}/> {finished == '1' && (<span>[Ukończony <span
-                                style={{color: 'green'}}>{correct_answers}</span> / <span
-                                style={{color: 'red'}}>{wrong_answers}</span>]</span>)} {course_id != 0 && (
+                            <td><Twemoji text={title}/>
+                                {course_id != 0 && (
                                 <Link to={Routes.SUB_COURSES + course_id?.id}
-                                      className="quizzes-list-course-name"><Twemoji text={course_id?.name}/></Link>)}
+                                      className="quizzes-list-course-name"><Twemoji text={course_id?.name}/></Link>
+                                )}
+                                {finished == '1' && (<span className="quizzes-list-course-name">[Ukończony <span
+                                    style={{color: 'green'}}>{correct_answers}</span> / <span
+                                    style={{color: 'red'}}>{wrong_answers}</span>]</span>)}
                             </td>
                             <td>{seconds_for_answer ? seconds_for_answer + ' sekund' : 'Bez limitu czasowego'}</td>
                             <td>
