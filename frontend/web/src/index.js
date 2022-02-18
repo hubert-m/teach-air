@@ -6,12 +6,12 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import registerServiceWorker from './registerServiceWorker';
-import {BrowserRouter as Router} from 'react-router-dom'
+import {HashRouter} from "react-router-dom";
 
 ReactDOM.render(
-        <Router>
+        <HashRouter hashType="slash">
             <App/>
-        </Router>,
+        </HashRouter>,
     document.getElementById('root')
 );
 
