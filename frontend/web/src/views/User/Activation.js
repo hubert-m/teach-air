@@ -20,15 +20,12 @@ const Activation = () => {
             activate_token: code
         }
 
-        setShowLoader(true);
         activateAccount(data).then(res => {
             setSuccessMessage(res.success);
             setShowSuccess(true);
         }).catch((error) => {
             setErrorMessage(error);
             setShowError(true);
-        }).finally(async () => {
-            await setShowLoader(false);
         })
     }, [])
 
@@ -58,7 +55,6 @@ const Activation = () => {
             >
                 {successMessage}
             </SweetAlert>
-            {showLoader && <LoaderScreen/>}
         </>
     )
 }
