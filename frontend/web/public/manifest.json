@@ -1,6 +1,6 @@
 {
   "short_name": "Teach Air",
-  "name": "Aplikacja wspomagająca prowadzenie szkoleń i kursów online zrealizowana w języku PHP z wykorzystaniem bazy danych MySQL",
+  "name": "Aplikacja wspomagająca prowadzenie szkoleń i kursów online zrealizowana w językach JavaScript i PHP z wykorzystaniem bazy danych MySQL",
   "icons": [
     {
       "src": "favicon.ico",

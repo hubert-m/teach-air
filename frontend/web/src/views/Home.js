@@ -43,7 +43,7 @@ function Home({userToken, userData}) {
             <div className="jumbotron">
                 <h1 className="display-4">Teach Air <Twemoji text={":airplane:"} /><Twemoji text={":teacher:"} /></h1>
                 <p className="lead">Aplikacja wspomagająca prowadzenie szkoleń i kursów online<br/>
-                    zrealizowana w języku <span className="badge bg-primary">JavaScript</span> i <span className="badge bg-primary">PHP</span> z wykorzystaniem bazy
+                    zrealizowana w językach <span className="badge bg-primary">JavaScript</span> i <span className="badge bg-primary">PHP</span> z wykorzystaniem bazy
                     danych <span className="badge bg-primary">MySQL</span></p>
 
                 <hr className="my-4"/>
