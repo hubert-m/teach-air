@@ -178,7 +178,7 @@ const MainQuizzes = ({userData}) => {
                                 <Link to={Routes.SUB_COURSES + course_id?.id}
                                       className="quizzes-list-course-name"><Twemoji text={course_id?.name}/></Link>
                                 )}
-                                {finished == '1' && (<span className="quizzes-list-course-name">[Ukończony <span
+                                {finished == '1' && (<span className="quizzes-list-course-finish">[Ukończony <span
                                     style={{color: 'green'}}>{correct_answers}</span> / <span
                                     style={{color: 'red'}}>{wrong_answers}</span>]</span>)}
                             </td>

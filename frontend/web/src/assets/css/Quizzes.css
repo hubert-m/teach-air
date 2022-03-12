@@ -6,7 +6,7 @@
     min-height: 50px;
 }
 
-.quizzes-list-course-name {
+.quizzes-list-course-name, .quizzes-list-course-finish {
     display: block;
     font-size: 11px;
     text-decoration: none;
