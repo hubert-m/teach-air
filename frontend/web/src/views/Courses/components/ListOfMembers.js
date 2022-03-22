@@ -31,6 +31,7 @@ const ListOfMembers = ({members, handleDeleteMember}) => {
                                           name,
                                           second_name,
                                           lastname,
+                                          show_email,
                                           is_author,
                                           is_author_or_member_of_one_of_parent,
                                           status
@@ -40,7 +41,7 @@ const ListOfMembers = ({members, handleDeleteMember}) => {
                                 <th scope="row">{id}</th>
                                 <td>{name} {second_name}</td>
                                 <td>{lastname}</td>
-                                <td>{email}</td>
+                                <td>{show_email == "1" ? email : "(ukryty)"}</td>
                                 {status == StatusUser.ADMIN ?
                                     (
                                         <td><span className="badge bg-danger">{StatusUserName[StatusUser.ADMIN]}</span>

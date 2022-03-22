@@ -214,7 +214,7 @@ const MessagesList = () => {
                                 </td>
                                 <td>{name} {second_name}</td>
                                 <td>{lastname}</td>
-                                <td>{show_email ? email : "(ukryty)"}</td>
+                                <td>{show_email == "1" ? email : "(ukryty)"}</td>
                                 {status == StatusUser.ADMIN ?
                                     (
                                         <td><span className="badge bg-danger">{StatusUserName[StatusUser.ADMIN]}</span>
@@ -291,7 +291,7 @@ const MessagesList = () => {
                                     </td>
                                     <td>{name} {second_name}</td>
                                     <td>{lastname}</td>
-                                    <td>{show_email ? email : "(ukryty)"}</td>
+                                    <td>{show_email == "1" ? email : "(ukryty)"}</td>
                                     {status == StatusUser.ADMIN ?
                                         (
                                             <td><span

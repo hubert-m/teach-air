@@ -221,7 +221,7 @@ const Users = ({userData}) => {
                                             </td>
                                         )
                             }
-                            {id !== userData?.id && status == StatusUser.UNACTIVATED ? (
+                            {id != userData?.id && status == StatusUser.UNACTIVATED ? (
                                 <>
                                     <td colSpan={2} style={{textAlign: 'center'}}>
                                         <button type="button" className="btn btn-success"
@@ -231,7 +231,7 @@ const Users = ({userData}) => {
                                         </button>
                                     </td>
                                 </>
-                            ) : id !== userData?.id && status == StatusUser.STUDENT ? (
+                            ) : id != userData?.id && status == StatusUser.STUDENT ? (
                                 <>
                                     <td style={{textAlign: 'center'}}>
                                         <button type="button" className="btn btn-warning"
@@ -248,7 +248,7 @@ const Users = ({userData}) => {
                                         </button>
                                     </td>
                                 </>
-                            ) : id !== userData?.id && status == StatusUser.TEACHER ? (
+                            ) : id != userData?.id && status == StatusUser.TEACHER ? (
                                 <>
                                     <td style={{textAlign: 'center'}}>
                                         <button type="button" className="btn btn-primary"
@@ -265,7 +265,7 @@ const Users = ({userData}) => {
                                         </button>
                                     </td>
                                 </>
-                            ) : id !== userData?.id && status == StatusUser.ADMIN ? (
+                            ) : id != userData?.id && status == StatusUser.ADMIN ? (
                                 <>
                                     <td style={{textAlign: 'center'}}>
                                         <button type="button" className="btn btn-primary"

@@ -388,7 +388,7 @@ class CourseController extends Controller
 
     public function delete_member()
     {
-        if ($this->request->auth->status !== 3 && $this->request->auth->status !== 2) {
+        if ($this->request->auth->status != 3 && $this->request->auth->status != 2) {
             return response()->json([
                 'error' => 'Brak uprawnien'
             ], 400);

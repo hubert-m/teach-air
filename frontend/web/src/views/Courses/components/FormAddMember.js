@@ -258,12 +258,12 @@ const FormAddMember = ({courseId}) => {
                         </tr>
                         </thead>
                         <tbody>
-                        {loadOptions.map(({id, email, name, second_name, lastname, status}) => (
+                        {loadOptions.map(({id, email, name, second_name, lastname, status, show_email}) => (
                             <tr key={id}>
                                 <th scope="row">{id}</th>
                                 <td>{name} {second_name}</td>
                                 <td>{lastname}</td>
-                                <td>{email}</td>
+                                <td>{show_email == "1" ? email : "(ukryty)"}</td>
                                 {status == StatusUser.ADMIN ?
                                     (
                                         <td><span className="badge bg-danger">{StatusUserName[StatusUser.ADMIN]}</span>
