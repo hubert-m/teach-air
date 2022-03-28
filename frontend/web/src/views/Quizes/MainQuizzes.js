@@ -182,7 +182,7 @@ const MainQuizzes = ({userData}) => {
                                     style={{color: 'green'}}>{correct_answers}</span> / <span
                                     style={{color: 'red'}}>{wrong_answers}</span>]</span>)}
                             </td>
-                            <td>{seconds_for_answer ? seconds_for_answer + ' sekund' : 'Bez limitu czasowego'}</td>
+                            <td>{seconds_for_answer == "0" ? 'Brak limitu czasowego' : seconds_for_answer + ' sekund'}</td>
                             <td>
                                 <div className="message-avatar">
                                     <img
